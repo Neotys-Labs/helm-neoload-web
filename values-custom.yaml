@@ -1,0 +1,50 @@
+### NLWeb configuration
+neoload:
+  configuration:
+    backend:
+      mongo:
+        host: YOUR_MONGODB_HOST_URL
+        port: 27017
+    # The secret key must be at least 8 characters long
+    secretKey: YOUR_CUSTOM_SECRET_KEY
+
+### MongoDB user configuration
+mongodb:
+  usePassword: true
+  mongodbUsername: YOUR_MONGODB_USER
+  mongodbPassword: YOUR_MONGODB_PASSWORD
+
+### Services host configuration
+services:
+  webapp:
+    host: neoload-web.mycompany.com
+  api:
+    host: neoload-web-api.mycompany.com
+  files:
+    host: neoload-web-files.mycompany.com
+
+### Ingress configuration
+### Choose your preferred ingress controller configuration (nginx|alb)
+ingress:
+  enabled: true
+  # nginx|alb
+  class: nginx
+  # Annotations matching the class name will be used
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    alb.ingress.kubernetes.io/scheme: "internet-facing"
+    alb.ingress.kubernetes.io/backend-protocol: "HTTP"
+  ### TLS configuration
+  ### Uncomment if you want to secure your app with https
+#  tls:
+#    - secretName: tls-secret
+#      secretCertificate: -|
+#        -----BEGIN CERTIFICATE-----
+#        YOUR_CERTIFICATE
+#        -----END CERTIFICATE-----
+#      secretKey: -|
+#        -----BEGIN PRIVATE KEY-----
+#        YOUR_PRIVATE_KEY
+#        -----END PRIVATE KEY-----

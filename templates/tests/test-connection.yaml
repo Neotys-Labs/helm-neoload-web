@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "nlweb.fullname" . }}-test-connection"
+  labels:
+{{ include "nlweb.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args:  ['{{ include "nlweb.fullname" . }}:{{ .Values.services.webapp.port }}']
+  restartPolicy: Never

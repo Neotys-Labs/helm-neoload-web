@@ -1,0 +1,110 @@
+# Default values for nlweb.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  backend:
+    repository: neotys/neoload-web-backend
+    pullPolicy: IfNotPresent
+  frontend:
+    repository: neotys/neoload-web-frontend
+    pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+services:
+  webapp:
+    host: 
+    type: ClusterIP
+    port: 80
+    ingress:
+      paths: [""]
+  api:
+    host: 
+    type: ClusterIP
+    port: 80
+    ingress:
+      paths: [""]
+  files:
+    host: 
+    type: ClusterIP
+    port: 80
+    ingress:
+      paths: [""]
+
+ingress:
+  enabled: true
+  class: nginx
+  annotations: {}
+#  tls:
+#    - secretName: 
+#      secretCertificate: 
+#      secretKey: 
+
+resources:
+  backend:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: 2
+      memory: 3Gi
+  frontend:
+    requests:
+      cpu: 500m
+      memory: 900Mi
+    limits:
+      cpu: 2
+      memory: 2Gi
+
+# NLWeb configuration
+neoload:
+  configuration:
+    backend:
+      mongo:
+        host: 
+        port: 27017
+        poolSize: 50
+      java:
+        xmx: 1800m
+      misc:
+        files:
+          maxUploadSizeInBytes: "250000000"
+          maxUploadPerWeek: "250"
+    frontend:
+      java:
+        xmx: 900m
+
+### MongoDB user configuration
+mongodb:
+  usePassword: true
+  mongodbUsername: 
+  mongodbPassword: 
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

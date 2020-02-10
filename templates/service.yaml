@@ -1,0 +1,26 @@
+{{- if .Values.services -}}
+{{- range $label, $service := .Values.services }}
+
+{{ $serviceName := printf "%s-%s-%s" (include "nlweb.fullname" $) "svc" $label }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "nlweb.labels" $ | nindent 4 }}
+spec:
+  type: {{ default "ClusterIP" $service.type }}
+  ports:
+    - port: {{ default 80 $service.port }}
+      targetPort: {{ $label }}
+      protocol: {{ default "TCP" $service.protocol }}
+      name: http
+  selector:
+    {{- include "nlweb.selectorLabels" $ | nindent 4 }}
+
+---
+
+{{- end -}}
+{{- end -}}

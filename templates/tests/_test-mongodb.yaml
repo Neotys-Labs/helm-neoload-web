@@ -1,0 +1,30 @@
+#apiVersion: batch/v1
+#kind: Job
+#metadata:
+#  name: "{{ .Release.Name }}-mongodb-test"
+#  namespace: {{ .Release.Namespace }}
+#  annotations:
+#    "helm.sh/hook": pre-install
+#    #"helm.sh/hook": test
+#    #"helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded,hook-failed
+#spec:
+#  template:
+#    spec:
+#      containers:
+#      - name: main
+#        image: "mongo:latest"
+#        env:
+#        - name: MONGODB_HOST
+#          value: {{ include "nlweb.mongodb.host" . | required "MongoDb host (.Values.neoload.configuration.backend.mongo.host) value is required." | quote }}
+#        - name: MONGODB_PORT
+#          value: {{ .Values.neoload.configuration.backend.mongo.port | quote }}
+#        {{- if .Values.mongodb.usePassword -}}
+#        - name: MONGODB_LOGIN
+#          value: {{ .Values.mongodb.mongodbUsername }}
+#        - name: MONGODB_PASSWORD
+#          value: {{ .Values.mongodb.mongodbPassword }}
+#        command: ["sh", "-c", "mongo --host=$MONGODB_HOST --port=$MONGODB_PORT --user=$MONGODB_LOGIN --password=$MONGODB_PASSWORD"]
+#        {{- else }}
+#        command: ["sh", "-c", "mongo --host=$MONGODB_HOST --port=$MONGODB_PORT"]        
+#        {{- end }}
+#      restartPolicy: Never
