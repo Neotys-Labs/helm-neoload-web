@@ -1,6 +1,15 @@
 # Neoload Web
 
-[Neoload Web](https://www.neotys.com/neoload/overview) is a performance testing software for all team members from Centers of Excellence to DevOps organizations.
+[Neoload Web](https://www.neotys.com/neoload/overview) Web allows testing teams to view, analyze and monitor tests wherever they're running from and wherever the teams are. Enabling real-time access to this information improves anomaly detection by allowing performance trending and simplifying root cause analysis. 
+
+SaaS version is available [here](https://neoload.saas.neotys.com/) 
+
+**Key features**
+
+- Share a centralized view of the tests from anywhere in the world in real time
+- Monitor big trends with graphs
+- Get a closer look by diving into the details of a test
+- Test data is hosted in the NeoLoad Web Cloud: tests can be accessed even when the NeoLoad Controller which launched them is not available
 
 ## Introduction
 

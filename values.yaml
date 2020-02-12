@@ -96,6 +96,7 @@ neoload:
     frontend:
       java:
         xmx: 900m
+    secretKey:
 
 ### MongoDB user configuration
 mongodb:
