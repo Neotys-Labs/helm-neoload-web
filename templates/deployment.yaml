@@ -26,7 +26,7 @@ spec:
         - name: {{ .Chart.Name }}-backend
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.backend.repository }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.image.backend.repository }}:{{ include "nlweb.backend.imageTag" . }}"
           imagePullPolicy: {{ .Values.image.backend.pullPolicy }}
           env:
             - name: MEMORY_MAX
@@ -101,7 +101,7 @@ spec:
         - name: {{ .Chart.Name }}-frontend
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.frontend.repository }}:{{ .Chart.AppVersion }}"
+          image: "{{ .Values.image.frontend.repository }}:{{ include "nlweb.frontend.imageTag" . }}"
           imagePullPolicy: {{ .Values.image.frontend.pullPolicy }}
           env:
             - name: MEMORY_MAX

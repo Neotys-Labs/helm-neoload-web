@@ -124,3 +124,16 @@ Helper - minLength (name, min, context)
 
 {{- end -}}
 
+{{/*
+Get frontend image tag
+*/}}
+{{- define "nlweb.frontend.imageTag" -}}
+    {{ default .Chart.AppVersion .Values.image.frontend.tag }}
+{{- end -}}
+
+{{/*
+Get backend image tag
+*/}}
+{{- define "nlweb.backend.imageTag" -}}
+    {{ default .Chart.AppVersion .Values.image.backend.tag }}
+{{- end -}}

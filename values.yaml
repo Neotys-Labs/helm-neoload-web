@@ -7,9 +7,11 @@ replicaCount: 1
 image:
   backend:
     repository: neotys/neoload-web-backend
+    tag: latest
     pullPolicy: IfNotPresent
   frontend:
     repository: neotys/neoload-web-frontend
+    tag: latest
     pullPolicy: IfNotPresent
 
 imagePullSecrets: []
