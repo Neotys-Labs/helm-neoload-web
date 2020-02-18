@@ -74,6 +74,12 @@ spec:
                 secretKeyRef:
                   name: {{ include "nlweb.fullname" . }}-key-secret
                   key: nlwSecretKey
+            {{- if .Values.neoload.configuration.backend.others }}
+            {{- range $name, $value := .Values.neoload.configuration.backend.others }}
+            - name: {{ $name }}
+              value: {{ $value }}
+            {{- end }}
+            {{- end }}            
           ports:
             - name: api
               containerPort: 1081
@@ -113,7 +119,13 @@ spec:
             - name: NEOTYS_TRACKING_URL
               value: {{ .Values.neoload.configuration.misc.trackingUrl | quote }}
             {{- end -}}
-            {{- end }}         
+            {{- end }}
+            {{- if .Values.neoload.configuration.frontend.others }}
+            {{- range $name, $value := .Values.neoload.configuration.frontend.others }}
+            - name: {{ $name }}
+              value: {{ $value }}
+            {{- end }}
+            {{- end }}
           ports:
             - name: webapp
               containerPort: 9090

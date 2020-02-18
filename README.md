@@ -60,8 +60,10 @@ Parameter | Description | Default
 ----- | ----------- | -------
 `image.backend.repository` | The backend image repository to pull from | `neotys/neoload-web-backend`
 `image.backend.pullPolicy` | The backend image pull policy | `IfNotPresent`
+`image.backend.tag` | The backend image tag | `latest`
 `image.frontend.repository` | The frontend image repository to pull from | `neotys/neoload-web-backend`
 `image.frontend.pullPolicy` | The frontend image pull policy | `IfNotPresent`
+`image.frontend.tag` | The frontend image tag | `latest`
 `imagePullSecrets` | The image pull secrets | `[]`
  |  | 
 `serviceAccount.create` | Specifies whether a service account should be created | `true`
