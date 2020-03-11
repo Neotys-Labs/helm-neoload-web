@@ -68,15 +68,15 @@ ingress:
 resources:
   backend:
     requests:
-      cpu: 500m
-      memory: 2Gi
+      cpu: 800m
+      memory: 2500Mi
     limits:
       cpu: 2
       memory: 3Gi
   frontend:
     requests:
-      cpu: 500m
-      memory: 900Mi
+      cpu: 800m
+      memory: 1500Mi
     limits:
       cpu: 2
       memory: 2Gi
