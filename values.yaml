@@ -8,11 +8,11 @@ image:
   backend:
     repository: neotys/neoload-web-backend
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   frontend:
     repository: neotys/neoload-web-frontend
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
 imagePullSecrets: []
 nameOverride: ""
