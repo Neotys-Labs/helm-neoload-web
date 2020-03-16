@@ -39,11 +39,17 @@ You can find detailed documentation for ingresses annotations and parameters her
 
 ## Installation
 
-1. Download and set up your **[values-custom.yaml](/nlweb/values-custom.yaml)** file
-2. Install with the following command
+1. Add the Neotys chart repository
 
 ```bash		
-helm install my-release stable/nlweb -f ./values-custom.yaml
+helm repo add neotys https://helm.neotys.com/stable
+```
+
+2. Download and set up your **[values-custom.yaml](/nlweb/values-custom.yaml)** file
+3. Install with the following command
+
+```bash		
+helm install my-release neotys/nlweb -f ./values-custom.yaml
 ```
 
 ## Uninstalling the Chart
@@ -121,7 +127,7 @@ We suggest you maintain your own *values-custom.yaml* and update it with your re
 ```bash
 $ helm install my-release \
     --set ingress.tls=[] \
-    stable/nlweb
+    neotys/nlweb
 ```
 
 ## TLS
