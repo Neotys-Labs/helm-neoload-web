@@ -42,7 +42,7 @@ You can find detailed documentation for ingresses annotations and parameters her
 1. Add the Neotys chart repository
 
 ```bash		
-helm repo add neotys https://helm.neotys.com/stable
+helm repo add neotys https://helm.prod.neotys.com/stable
 ```
 
 2. Download and set up your **[values-custom.yaml](/values-custom.yaml)** file
