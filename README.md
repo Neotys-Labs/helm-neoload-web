@@ -75,8 +75,8 @@ Parameter | Description | Default
 `serviceAccount.create` | Specifies whether a service account should be created | `true`
 `serviceAccount.name` | The name of the service account to use | 
  |  | 
-`podSecurityContext`| The pod security context | `{}`
-`securityContext` | The security context | `{}`
+`podSecurityContext`| The pod security context | `{ fsGroup: 2000 }`
+`securityContext` | The security context | `{ runAsUser: 2000 }`
  |  | 
 `services.webapp.host` | The hostname for the webapp/front deployment | 
 `services.webapp.type` | The service type for the webapp/front deployment | `ClusterIP`
