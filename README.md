@@ -98,22 +98,22 @@ Parameter | Description | Default
 `ingress.tls[0].secretCertificate` | The content of your imported certificate | `{}`
 `ingress.tls[0].secretKey` | The content of your imported private key | 
  |  | 
-`resources.backend.requests.cpu` | CPU resource requests for the backend | `500m`
+`resources.backend.requests.cpu` | CPU resource requests for the backend | `1`
 `resources.backend.requests.memory` | Memory resource requests for the backend | `2Gi`
 `resources.backend.limits.cpu` | CPU resource requests for the backend | `2`
 `resources.backend.limits.memory` | Memory resource requests for the backend | `3Gi`
-`resources.frontend.requests.cpu` | CPU resource requests for the frontend | `500m`
-`resources.frontend.requests.memory` | Memory resource requests for the frontend | `900Mi`
+`resources.frontend.requests.cpu` | CPU resource requests for the frontend | `1`
+`resources.frontend.requests.memory` | Memory resource requests for the frontend | `1500Mi`
 `resources.frontend.limits.cpu` | CPU resource requests for the frontend | `2`
 `resources.frontend.limits.memory` | Memory resource requests for the frontend | `2Gi`
  |  | 
 `neoload.configuration.backend.mongo.host` | MongoDB host | 
 `neoload.configuration.backend.mongo.port` | MongoDB port | `27017`
 `neoload.configuration.backend.mongo.poolSize` | MongoDB pool size | `50`
-`neoload.configuration.backend.java.xmx` | Java JVM Max heap size for the backend | `1800m`
+`neoload.configuration.backend.java.xmx` | Java JVM Max heap size for the backend | `2000m`
 `neoload.configuration.backend.misc.files.maxUploadSizeInBytes` | Max file upload size in bytes | `250000000`
 `neoload.configuration.backend.misc.files.maxUploadPerWeek` | Max file upload count per week | `250`
-`neoload.configuration.frontend.java.xmx` | Java JVM Max heap size for the frontend | `900m`
+`neoload.configuration.frontend.java.xmx` | Java JVM Max heap size for the frontend | `1200m`
  |  | 
 `mongodb.usePassword` | Set to false if your MongoDB connection doesn't require authentication | `true`
 `mongodb.mongodbUsername` | MongoDB Username | 

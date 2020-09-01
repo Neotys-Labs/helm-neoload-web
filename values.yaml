@@ -68,14 +68,14 @@ ingress:
 resources:
   backend:
     requests:
-      cpu: 800m
+      cpu: 1
       memory: 2500Mi
     limits:
       cpu: 2
       memory: 3Gi
   frontend:
     requests:
-      cpu: 800m
+      cpu: 1
       memory: 1500Mi
     limits:
       cpu: 2
@@ -90,14 +90,14 @@ neoload:
         port: 27017
         poolSize: 50
       java:
-        xmx: 1800m
+        xmx: 2000m
       misc:
         files:
           maxUploadSizeInBytes: "250000000"
           maxUploadPerWeek: "250"
     frontend:
       java:
-        xmx: 900m
+        xmx: 1200m
     secretKey:
 
 ### MongoDB user configuration
