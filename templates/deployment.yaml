@@ -77,7 +77,7 @@ spec:
             {{- if .Values.neoload.configuration.backend.others }}
             {{- range $name, $value := .Values.neoload.configuration.backend.others }}
             - name: {{ $name }}
-              value: {{ $value }}
+              value: {{ $value | quote }}
             {{- end }}
             {{- end }}            
           ports:
@@ -123,7 +123,7 @@ spec:
             {{- if .Values.neoload.configuration.frontend.others }}
             {{- range $name, $value := .Values.neoload.configuration.frontend.others }}
             - name: {{ $name }}
-              value: {{ $value }}
+              value: {{ $value | quote }}
             {{- end }}
             {{- end }}
           ports:
