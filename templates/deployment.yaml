@@ -29,6 +29,8 @@ spec:
           image: "{{ .Values.image.backend.repository }}:{{ include "nlweb.backend.imageTag" . }}"
           imagePullPolicy: {{ .Values.image.backend.pullPolicy }}
           env:
+            - name: PRODUCT_VERSION
+              value: {{ .Chart.AppVersion | quote }}
             - name: MEMORY_MAX
               value: {{ .Values.neoload.configuration.backend.java.xmx }}
             - name: MONGODB_HOST
@@ -110,6 +112,8 @@ spec:
           image: "{{ .Values.image.frontend.repository }}:{{ include "nlweb.frontend.imageTag" . }}"
           imagePullPolicy: {{ .Values.image.frontend.pullPolicy }}
           env:
+            - name: PRODUCT_VERSION
+              value: {{ .Chart.AppVersion | quote }}            
             - name: MEMORY_MAX
               value: {{ .Values.neoload.configuration.frontend.java.xmx }}
             - name: DEPLOYMENT_TYPE
