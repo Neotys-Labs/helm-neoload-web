@@ -34,6 +34,10 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     nginx.ingress.kubernetes.io/rewrite-target: /
+
+    # match the default size of the nlweb-backend value
+    nginx.ingress.kubernetes.io/proxy-body-size: 250m
+
     alb.ingress.kubernetes.io/scheme: "internet-facing"
     alb.ingress.kubernetes.io/backend-protocol: "HTTP"
   ### TLS configuration
