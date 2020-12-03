@@ -134,7 +134,7 @@ $ helm install my-release \
 
 ## Custom environment variables
 
-`neoload.configuration.backend.others` and `neoload.configuration.backend.others` sections of *values-custom.yaml* allow to define custom environement variables.
+`neoload.configuration.backend.others` and `neoload.configuration.frontend.others` sections of *values-custom.yaml* allow to define custom environement variables.
 These environement variables will be applied either on the backend or the frontend depending on the used property.
 
 ### Example
