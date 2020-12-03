@@ -28,12 +28,12 @@ This chart is meant for advanced Kubernetes/Helm users as a successful installat
 
 There are many different ingress controller providers.
 
-This chart has been tested and is shipped with default values for both [**nginx**](https://hub.helm.sh/charts/bitnami/nginx) and [**alb**](https://hub.helm.sh/charts/incubator/aws-alb-ingress-controller).
+This chart has been tested and is shipped with default values for both [**nginx**](https://hub.helm.sh/charts/bitnami/nginx) and [**alb**](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/).
 
 You can find detailed documentation for ingresses annotations and parameters here :
 
 - [nginx](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/)
-- [alb](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/ingress/annotation/)
+- [alb](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/)
 
 > **Caution**: Selecting any other ingress controllers may require additional chart tuning from your part.
 
