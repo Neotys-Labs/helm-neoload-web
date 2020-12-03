@@ -113,8 +113,10 @@ Parameter | Description | Default
 `neoload.configuration.backend.java.xmx` | Java JVM Max heap size for the backend | `2000m`
 `neoload.configuration.backend.misc.files.maxUploadSizeInBytes` | Max file upload size in bytes | `250000000`
 `neoload.configuration.backend.misc.files.maxUploadPerWeek` | Max file upload count per week | `250`
+`neoload.configuration.backend.others` | Custom backend environment variables. [See](#custom-environment-variables) | |
 `neoload.configuration.frontend.java.xmx` | Java JVM Max heap size for the frontend | `1200m`
  |  | 
+`neoload.configuration.frontend.others` | Custom frontend environment variables. [See](#custom-environment-variables) | |
 `mongodb.usePassword` | Set to false if your MongoDB connection doesn't require authentication | `true`
 `mongodb.mongodbUsername` | MongoDB Username | 
 `mongodb.mongodbPassword` | MongoDB Password | 
@@ -128,6 +130,28 @@ We suggest you maintain your own *values-custom.yaml* and update it with your re
 $ helm install my-release \
     --set ingress.tls=[] \
     neotys/nlweb
+```
+
+## Custom environment variables
+
+`neoload.configuration.backend.others` and `neoload.configuration.backend.others` sections of *values-custom.yaml* allow to define custom environement variables.
+These environement variables will be applied either on the backend or the frontend depending on the used property.
+
+### Example
+
+The following example will define `ENV_VAR_1` and `ENV_VAR_2` as environement variables for the backend deployment.
+
+```yaml
+neoload:
+  configuration:
+    backend:
+      mongo:
+        host: YOUR_MONGODB_HOST_URL
+        port: 27017
+      other:
+        ENV_VAR_1: variable1 
+        ENV_VAR_2: variable2
+
 ```
 
 ## TLS
