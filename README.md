@@ -1,6 +1,6 @@
 # Neoload Web
 
-[Neoload Web](https://www.neotys.com/neoload/overview) Web allows testing teams to view, analyze and monitor tests wherever they're running from and wherever the teams are. Enabling real-time access to this information improves anomaly detection by allowing performance trending and simplifying root cause analysis. 
+[Neoload Web](https://www.neotys.com/neoload/overview) allows testing teams to view, analyze and monitor tests wherever they're running from and wherever the teams are. Enabling real-time access to this information improves anomaly detection by allowing performance trending and simplifying root cause analysis. 
 
 SaaS version is available [here](https://neoload.saas.neotys.com/) 
 
