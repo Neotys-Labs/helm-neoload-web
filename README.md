@@ -15,49 +15,70 @@ SaaS version is available [here](https://neoload.saas.neotys.com/)
 
 This chart deploys Neoload Web on your Kubernetes cluster.
 
-This chart is meant for advanced Kubernetes/Helm users as a successful installation and exploitation of the application is very environment dependant.
+## Targeted audience
+
+This chart is meant for experimented Kubernetes/Helm users as a successful installation and exploitation of the application is very environment dependant.
 
 ## Prerequisites
 
-- A running [Kubernetes](https://kubernetes.io/) cluster (1.14+)
+### Hardware
+
+NeoLoad Web will run in a pod that requires the following minimal resources :
+- cpu 2
+- memory 4Gi
+
+> You will need to provision a node in your cluster that can host such a pod.
+### Software
+
+- [kubectl]() CLI (1.14+)
 - [Helm](https://helm.sh/docs/intro/install/) CLI  (~3.0.2)
+- A running [Kubernetes](https://kubernetes.io/) cluster (1.14+)
 - A running [mongodb](https://www.mongodb.com/) accessible from the Kubernetes cluster ([see supported versions](https://www.neotys.com/documents/doc/nlweb/latest/en/html/#26054.htm#o39020))
-- One of the following ingress controller installed on your Kubernetes cluster
+- A running ingress controller deployed on the Kubernetes cluster
 
 #### Ingress controller
 
-There are many different ingress controller providers.
+You can use your favorite [ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) for enabling your ingresses to route external traffic to NeoLoad Web.
 
-This chart has been tested and is shipped with default values for both [**nginx**](https://hub.helm.sh/charts/bitnami/nginx) and [**alb**](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/).
+This chart is tested, maintained and shipped with default values for the [**nginx**](https://hub.helm.sh/charts/bitnami/nginx) ingress controller.
 
-You can find detailed documentation for ingresses annotations and parameters here :
+You can find detailed documentation for nginx ingress controller annotations and parameters [here](https://kubernetes.github.io/ingress-nginx/).
 
-- [nginx](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/)
-- [alb](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/)
-
-> **Caution**: Selecting any other ingress controllers may require additional chart tuning from your part.
+> **Caution**: Using another ingress controller may require additional chart tuning from your part.
 
 ## Installation
 
-1. Add the Neotys chart repository
+1. Add the Neotys chart repository or update it if you already had it registered
 
 ```bash		
 helm repo add neotys https://helm.prod.neotys.com/stable/
 ```
 
+```bash		
+helm repo update
+```
+
 2. Download and set up your **[values-custom.yaml](/values-custom.yaml)** file
-3. Install with the following command
+3. Create a dedicated namespace
 
 ```bash		
-helm install my-release neotys/nlweb -f ./values-custom.yaml
+kubectl create namespace my-namespace
 ```
+
+4. Install with the following command
+
+```bash		
+helm install my-release neotys/nlweb -n my-namespace -f ./values-custom.yaml
+```
+
+> Since Helm 3.2+ you can skip step 3, and add the --create-namespace option to this command
 
 ## Uninstalling the Chart
 
 To uninstall the `my-release` deployment:
 
 ```bash
-$ helm uninstall my-release
+$ helm uninstall my-release -n my-namespace
 ```
 
 ## Configuration
@@ -98,14 +119,14 @@ Parameter | Description | Default
 `ingress.tls[0].secretCertificate` | The content of your imported certificate | `{}`
 `ingress.tls[0].secretKey` | The content of your imported private key | 
  |  | 
-`resources.backend.requests.cpu` | CPU resource requests for the backend | `1`
-`resources.backend.requests.memory` | Memory resource requests for the backend | `2Gi`
-`resources.backend.limits.cpu` | CPU resource requests for the backend | `2`
-`resources.backend.limits.memory` | Memory resource requests for the backend | `3Gi`
-`resources.frontend.requests.cpu` | CPU resource requests for the frontend | `1`
-`resources.frontend.requests.memory` | Memory resource requests for the frontend | `1500Mi`
-`resources.frontend.limits.cpu` | CPU resource requests for the frontend | `2`
-`resources.frontend.limits.memory` | Memory resource requests for the frontend | `2Gi`
+`resources.backend.requests.cpu` | CPU resource request for the backend | `1`
+`resources.backend.requests.memory` | Memory resource request for the backend | `2Gi`
+`resources.backend.limits.cpu` | CPU resource limit for the backend | `2`
+`resources.backend.limits.memory` | Memory resource limit for the backend | `3Gi`
+`resources.frontend.requests.cpu` | CPU resource request for the frontend | `1`
+`resources.frontend.requests.memory` | Memory resource request for the frontend | `1500Mi`
+`resources.frontend.limits.cpu` | CPU resource limit for the frontend | `2`
+`resources.frontend.limits.memory` | Memory resource limit for the frontend | `2Gi`
  |  | 
 `neoload.configuration.backend.mongo.host` | MongoDB host | 
 `neoload.configuration.backend.mongo.port` | MongoDB port | `27017`

@@ -24,10 +24,10 @@ services:
     host: neoload-web-files.mycompany.com
 
 ### Ingress configuration
-### Choose your preferred ingress controller configuration (nginx|alb)
+### Choose your preferred ingress controller configuration
 ingress:
   enabled: true
-  # nginx|alb
+  # nginx
   class: nginx
   # Annotations matching the class name will be used
   annotations:
@@ -35,11 +35,9 @@ ingress:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     nginx.ingress.kubernetes.io/rewrite-target: /
 
-    # match the default size of the nlweb-backend value
+    # match the proxy-body-size with the neoload.configuration.backend.misc.files.maxUploadSizeInBytes value
     nginx.ingress.kubernetes.io/proxy-body-size: 250m
 
-    alb.ingress.kubernetes.io/scheme: "internet-facing"
-    alb.ingress.kubernetes.io/backend-protocol: "HTTP"
   ### TLS configuration
   ### Uncomment if you want to secure your app with https
 #  tls:
