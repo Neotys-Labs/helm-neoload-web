@@ -1,6 +1,6 @@
-# Neoload Web
+# NeoLoad Web
 
-[Neoload Web](https://www.neotys.com/neoload/overview) allows testing teams to view, analyze and monitor tests wherever they're running from and wherever the teams are. Enabling real-time access to this information improves anomaly detection by allowing performance trending and simplifying root cause analysis. 
+[NeoLoad Web](https://www.neotys.com/neoload/overview) allows testing teams to view, analyze and monitor tests wherever they're running from and wherever the teams are. Enabling real-time access to this information improves anomaly detection by allowing performance trending and simplifying root cause analysis. 
 
 SaaS version is available [here](https://neoload.saas.neotys.com/) 
 
@@ -13,7 +13,7 @@ SaaS version is available [here](https://neoload.saas.neotys.com/)
 
 ## Introduction
 
-This chart deploys Neoload Web on your Kubernetes cluster.
+This chart deploys NeoLoad Web on your Kubernetes cluster.
 
 ## Targeted audience
 
@@ -285,12 +285,12 @@ neoload:
 
 ## TLS
 
-To enable TLS and access Neoload Web via https, the parameters :
+To enable TLS and access NeoLoad Web via https, the parameters :
 
 - `ingress.enabled` must be true
 - `ingress.tls` must contain at least one item with the tls secret data
 
-> **Caution**: Ingresses support multiple TLS mapped to respective hosts and paths. This feature is not supported for Neoload Web, i.e. exactly zero or one TLS configuration is expected.
+> **Caution**: Ingresses support multiple TLS mapped to respective hosts and paths. This feature is not supported for NeoLoad Web, i.e. exactly zero or one TLS configuration is expected.
 
 ### Using an existing tls secret
 
