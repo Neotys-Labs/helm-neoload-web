@@ -81,6 +81,21 @@ To uninstall the `my-release` deployment:
 $ helm uninstall my-release -n my-namespace
 ```
 
+## Architecture
+
+This schema describe:
+* Components created inside the kubernetes cluster by this chart
+* How they interact between them
+* How they interact with components outside the cluster:
+  * NeoLoad Web UI through a web browser
+  * NeoLoad Controller
+  * NeoLoad Load Generator
+  * Any integration based on NeoLoad Web API
+  * MongoDB server
+
+![NeoLoad Web deployment schema](./nlweb-architecture-schema.png)
+
+
 ## Configuration
 
 Parameter | Description | Default
