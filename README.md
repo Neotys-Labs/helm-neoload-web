@@ -40,9 +40,10 @@ NeoLoad Web will run in a pod that requires the following minimal resources :
 
 You can use your favorite [ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) for enabling your ingresses to route external traffic to NeoLoad Web.
 
-This chart is tested, maintained and shipped with default values for the [**nginx**](https://hub.helm.sh/charts/bitnami/nginx) ingress controller.
+This chart is tested, maintained and shipped with default values for the nginx ingress controller.
 
-You can find detailed documentation for nginx ingress controller annotations and parameters [here](https://kubernetes.github.io/ingress-nginx/).
+You can find documentation for nginx ingress controller [here](https://kubernetes.github.io/ingress-nginx/).
+Basic configuration options are detailled [here](https://kubernetes.github.io/ingress-nginx/deploy/) and you can find advanced configuration options [here](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/).
 
 > **Caution**: Using another ingress controller may require additional chart tuning from your part.
 
@@ -59,6 +60,10 @@ helm repo update
 ```
 
 2. Download and set up your **[values-custom.yaml](/values-custom.yaml)** file
+```bash
+wget https://raw.githubusercontent.com/Neotys-Labs/helm-neoload-web/master/values-custom.yaml
+```
+
 3. Create a dedicated namespace
 
 ```bash		
