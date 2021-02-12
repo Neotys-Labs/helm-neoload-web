@@ -59,6 +59,9 @@ helm repo update
 ```
 
 2. Download and set up your **[values-custom.yaml](/values-custom.yaml)** file
+
+>You can refer to the ['Getting started'](#getting-started) section for basic configuration options.
+
 3. Create a dedicated namespace
 
 ```bash		
@@ -82,6 +85,92 @@ $ helm uninstall my-release -n my-namespace
 ```
 
 ## Configuration
+
+### Getting started
+
+Here is a quick guide about the modifications that must be done on the `values-custom.yaml` file.
+
+#### MongoDB configuration
+
+##### Host and port
+
+You need to replace `YOUR_MONGODB_HOST_URL` by your MongoDB server host.
+You also need to change the `port` value accoding to your MongoDB setup. 
+
+```yaml
+neoload:
+  configuration:
+    backend:
+      mongo:
+        host: YOUR_MONGODB_HOST_URL
+        port: 27017
+
+```
+
+>**Note:** For MongoDB requiring SSL connection, you must specify a MongoDB connection string as `host`. You must also set `port` to "0".
+*Example*: `mongo.mycompnay.com:27017/admin?ssl=true`
+
+>**Note:** For MongoDB as a cluster of machines (replica set), you can specify the MongoDB URL of your cluster changing the `host` property value. You must also set `port` to `0`.
+*Example:* The MONGODB_HOST value must look like: 
+`rs1.mongo.mycompany.com:27017,rs2.mongo.mycompany.com:27017,rs3.mongo.mycompany.com:27017/admin`
+
+
+>**Note:** Other custom connection options are supported, see MongoDB offcial documentation [here](https://docs.mongodb.com/v4.0/reference/connection-string/#connection-string-options).
+
+##### Authentication
+
+Depending on your mongoDB setup you must specify if an authentication is required or not by setting `usePassword` to `true` of `false`
+
+```yaml
+### MongoDB user configuration
+mongodb:
+  usePassword: true
+  mongodbUsername: YOUR_MONGODB_USER
+  mongodbPassword: YOUR_MONGODB_PASSWORD
+```
+
+Obviously, if you set `usePassword` to `true` you must replace `YOUR_MONGODB_USER` and `YOUR_MONGODB_PASSWORD` placeholders.
+
+
+#### NeoLoad Web secret key
+
+The NeoLoad Web secret key is used to encrypt and store the passwords that are stored by NeoLoad Web.
+It must be 8 characters minimum.
+If not set, NeoLoad Web will not start.
+
+```yaml
+    # The secret key must be at least 8 characters long
+    secretKey: MySecretKeyForNeoLoadWeb
+```
+
+>**Warning:** If this key is modified, all secrets stored using previously will be lost.
+
+#### NeoLoad Web URLs
+
+NeoLoad Web need to know under which hostnames it will be available. You need to carefully configure these URLs.
+
+```yaml
+services:
+  webapp:
+    host: neoload-web.mycompany.com
+  api:
+    host: neoload-web-api.mycompany.com
+  files:
+    host: neoload-web-files.mycompany.com
+```
+
+>**Note:** You must configure your DNS records. These 3 hostname must point to the Ingress controller endpoint.
+>*Example:* If the nginx ingress controller is bound to the IP 10.0.0.0, your must define the following DNS records:
+>```
+>neoload-web.mycompany.com.        60 IN A	10.0.0.0
+>neoload-web-api.mycompany.com.    60 IN A	10.0.0.0
+>neoload-web-files.mycompany.com.  60 IN A	10.0.0.0
+>```
+>
+
+### Advanced configuration
+
+Here is a list of all parameters supported by this helm chart.
 
 Parameter | Description | Default
 ----- | ----------- | -------
