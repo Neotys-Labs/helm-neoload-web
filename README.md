@@ -92,14 +92,14 @@ $ helm uninstall my-release -n my-namespace
 
 ### Getting started
 
-Here is a quick guide about the modifications that must be done on the `values-custom.yaml` file.
+Here is a guide for a quick setup of your `values-custom.yaml` file.
 
 #### MongoDB configuration
 
 ##### Host and port
 
 You need to replace `YOUR_MONGODB_HOST_URL` by your MongoDB server host.
-You also need to change the `port` value accoding to your MongoDB setup. 
+You also need to change the `port` value according to your MongoDB setup. 
 
 ```yaml
 neoload:
@@ -133,12 +133,12 @@ mongodb:
   mongodbPassword: YOUR_MONGODB_PASSWORD
 ```
 
-Obviously, if you set `usePassword` to `true` you must replace `YOUR_MONGODB_USER` and `YOUR_MONGODB_PASSWORD` placeholders.
+If `usePassword` is set to `true`, you must replace the `YOUR_MONGODB_USER` and `YOUR_MONGODB_PASSWORD` placeholders accordingly.
 
 
 #### NeoLoad Web secret key
 
-The NeoLoad Web secret key is used to encrypt and store the passwords that are stored by NeoLoad Web.
+The NeoLoad Web secret key is used to encrypt and decrypt the passwords that are stored by NeoLoad Web.
 It must be 8 characters minimum.
 If not set, NeoLoad Web will not start.
 
@@ -147,11 +147,11 @@ If not set, NeoLoad Web will not start.
     secretKey: MySecretKeyForNeoLoadWeb
 ```
 
->**Warning:** If this key is modified, all secrets stored using previously will be lost.
+>**Warning:** Do not modify this key from one deployment to another, otherwise NeoLoad Web will not be able to read previously stored secrets from your database.
 
 #### NeoLoad Web URLs
 
-NeoLoad Web need to know under which hostnames it will be available. You need to carefully configure these URLs.
+NeoLoad Web needs to know the set of hostnames it will be available under. You need to carefully configure them.
 
 ```yaml
 services:
@@ -163,7 +163,7 @@ services:
     host: neoload-web-files.mycompany.com
 ```
 
->**Note:** You must configure your DNS records. These 3 hostname must point to the Ingress controller endpoint.
+>**Note:** You must configure your DNS records. These 3 hostnames must point to the Ingress controller endpoint.
 >*Example:* If the nginx ingress controller is bound to the IP 10.0.0.0, your must define the following DNS records:
 >```
 >neoload-web.mycompany.com.        60 IN A	10.0.0.0
