@@ -59,6 +59,10 @@ helm repo update
 ```
 
 2. Download and set up your **[values-custom.yaml](/values-custom.yaml)** file
+```bash
+wget https://raw.githubusercontent.com/Neotys-Labs/helm-neoload-web/master/values-custom.yaml
+```
+
 3. Create a dedicated namespace
 
 ```bash		
