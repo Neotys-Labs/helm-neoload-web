@@ -277,7 +277,7 @@ neoload:
       mongo:
         host: YOUR_MONGODB_HOST_URL
         port: 27017
-      other:
+      others:
         ENV_VAR_1: variable1 
         ENV_VAR_2: variable2
 
