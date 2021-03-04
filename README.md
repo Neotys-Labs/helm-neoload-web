@@ -126,7 +126,7 @@ neoload:
 
 ```
 
->**Note:** For MongoDB requiring SSL connection, you must specify a MongoDB connection string as `host`. You must also set `port` to "0".
+>**Note:** For MongoDB requiring SSL connection, you must specify a MongoDB connection string as `host`. You must also set `port` to 0.
 *Example*: `mongo.mycompnay.com:27017/admin?ssl=true`
 
 >**Note:** For MongoDB as a cluster of machines (replica set), you can specify the MongoDB URL of your cluster changing the `host` property value. You must also set `port` to `0`.
