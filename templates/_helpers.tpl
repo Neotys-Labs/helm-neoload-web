@@ -49,6 +49,7 @@ Selector labels
 {{- define "nlweb.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "nlweb.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
