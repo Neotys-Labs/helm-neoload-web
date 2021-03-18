@@ -11,7 +11,7 @@ spec:
   clusterIP: None
   {{- end }}
   ports:
-    - port: 6701
+    - port: 5701
       protocol: "TCP"
       name: http
   selector:

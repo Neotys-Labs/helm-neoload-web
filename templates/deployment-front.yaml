@@ -34,8 +34,8 @@ spec:
               value: "helm/kubernetes"
             - name: HA
               value: "true"
-            - name: AWS_HZ_PORT
-              value: "6701"
+            - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
+              value: "true"
             - name: START_MODE
               value: "CLUSTER_KUB"
             - name: KUB_NAMESPACE
@@ -68,7 +68,7 @@ spec:
               containerPort: 9091
               protocol: TCP
             - name: hazelcast
-              containerPort: 6701
+              containerPort: 5701
               protocol: TCP
           livenessProbe:
             httpGet:
