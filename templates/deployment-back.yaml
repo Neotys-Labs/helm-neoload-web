@@ -67,8 +67,8 @@ spec:
                   key: nlwSecretKey
             - name: DEPLOYMENT_TYPE
               value: "helm/kubernetes"
-            - name: AWS_HZ_PORT
-              value: "6701"
+            - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
+              value: "true"
             - name: HA
               value: "true"
             - name: START_MODE
@@ -106,7 +106,7 @@ spec:
               containerPort: 9092
               protocol: TCP
             - name: hazelcast
-              containerPort: 6701
+              containerPort: 5701
               protocol: TCP
           livenessProbe:
             httpGet:
