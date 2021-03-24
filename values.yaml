@@ -2,8 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-frontReplicaCount: 2
-backReplicaCount: 2
+replicaCount:
+  frontend: 2
+  backend: 2
 
 image:
   backend:
@@ -99,7 +100,9 @@ neoload:
     frontend:
       java:
         xmx: 1200m
-    secretKey: TTT
+    ha:
+      mode: "API"
+    secretKey: 
 
 ### MongoDB user configuration
 mongodb:
