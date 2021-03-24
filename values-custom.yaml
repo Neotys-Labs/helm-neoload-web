@@ -40,6 +40,13 @@ ingress:
     # match the proxy-body-size with the neoload.configuration.backend.misc.files.maxUploadSizeInBytes value
     nginx.ingress.kubernetes.io/proxy-body-size: 250m
 
+    # Enable sticky sessions for HA
+    # More parameters here : https://kubernetes.github.io/ingress-nginx/examples/affinity/cookie/
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/affinity-mode: persistent
+    nginx.ingress.kubernetes.io/session-cookie-max-age: 3600
+    nginx.ingress.kubernetes.io/session-cookie-change-on-failure: true
+
   ### TLS configuration
   ### Uncomment if you want to secure your app with https
 #  tls:
