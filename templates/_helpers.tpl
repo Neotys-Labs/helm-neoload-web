@@ -138,3 +138,16 @@ Get backend image tag
 {{- define "nlweb.backend.imageTag" -}}
     {{ default .Chart.AppVersion .Values.image.backend.tag }}
 {{- end -}}
+
+{{/*
+High Availability (HA) Mode
+Must be one of [API,DNS]
+*/}}
+{{- define "nlweb.ha.mode" -}}
+    {{- $haMode := default "API" .Values.neoload.configuration.ha.mode -}}
+    {{- if or (eq $haMode "API") (eq $haMode "DNS") -}}
+        {{ $haMode }}
+    {{- else -}}
+        {{ "" | required (printf "The HA mode must be API or DNS. Got : %s" $haMode) }}
+    {{- end -}}
+{{- end -}}
