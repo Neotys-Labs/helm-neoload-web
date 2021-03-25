@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "nlweb.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.frontReplicaCount }}
+  replicas: {{ .Values.replicaCount.frontend }}
   selector:
     matchLabels:
       {{- include "nlweb.selectorLabels" . | nindent 6 }}
