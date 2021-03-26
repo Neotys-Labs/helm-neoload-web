@@ -141,13 +141,15 @@ Get backend image tag
 
 {{/*
 High Availability (HA) Mode
-Must be one of [API,DNS]
+Add "DNS" to $availableHaModes when it is supported by nlweb
 */}}
 {{- define "nlweb.ha.mode" -}}
+    {{- $availableHaModes := list "API" -}}
     {{- $haMode := default "API" .Values.neoload.configuration.ha.mode -}}
-    {{- if or (eq $haMode "API") (eq $haMode "DNS") -}}
+    {{- if (has $haMode $availableHaModes) -}}
         {{ $haMode }}
     {{- else -}}
-        {{ "" | required (printf "The HA mode must be API or DNS. Got : %s" $haMode) }}
+        {{- $error := printf "The HA mode must be API or DNS. Got : %s" $haMode -}}
+        {{ required $error "" }}
     {{- end -}}
 {{- end -}}

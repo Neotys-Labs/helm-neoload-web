@@ -108,6 +108,23 @@ This schema describe:
 
 ![NeoLoad Web deployment schema](./nlweb-architecture-schema.png)
 
+## High Availability
+
+From versions 2.0.0 of this chart and 2.9.0 of NeoLoad Web, we include a mecanism for **High Availability**. This means you can easily scale your NeoLoad Web frontend/backend, and the application will be more failure tolerant.
+
+> Use `replicaCount.frontend` and `replicaCount.backend` values to arrange your Deployment the way you see fit. We set a default of 2 frontend instances and 2 backend instances so you get a resilient NeoLoad Web application out of the box.
+
+This change has a few impacts on your NeoLoad Web deployment.
+
+- From now on your cluster will need to be able to deploy at least 2 pods (one for frontend and one for backend) instead of 1. Some nodes can restrain the number of simultaneous pods, so you need to make sure it is allowed.
+- Your ingress controller needs to support **sticky sessions**, meaning that it can ensure a user is always dispatched to the same frontend instance throughout his session. We provide a basic configuration for nginx in our [values-custom.yaml](/values-custom.yaml) file.
+- Some additional cluster roles are required. See [cluster-role.yaml](/templates/cluster-role.yaml).
+
+> If you currently have a NeoLoad Web application deployed with a v1.x.x chart, please follow [this guide](#chart-v1.x.x-to-v2.x.x) before attempting to upgrade.
+
+### Discovery mode
+
+For now, we only support the `API` discovery mode.
 
 ## Configuration
 
@@ -294,22 +311,6 @@ neoload:
 
 ```
 
-## High Availability
-
-From versions 2.0.0 of this chart and 2.9.0 of NeoLoad Web, we include a mecanism for **High Availability**. This means you can easily scale your NeoLoad Web frontend/backend, and the application will be more failure tolerant.
-
-> Use `replicaCount.frontend` and `replicaCount.backend` values to arrange your Deployment the way you see fit. We set a default of 2 frontend instances and 2 backend instances so you get a resilient NeoLoad Web application out of the box.
-
-This change has a few impacts on your NeoLoad Web deployment.
-
-- From now on your cluster will need to be able to deploy at least 2 pods (one for frontend and one for backend) instead of 1. Some nodes can restrain the number of simultaneous pods, so you need to make sure it is allowed.
-- Your ingress controller needs to support **sticky sessions**, meaning that it can ensure a user is always dispatched to the same frontend instance throughout his session. We provide a basic configuration for nginx in our [values-custom.yaml](/values-custom.yaml) file.
-- Some additional cluster roles are required. See [cluster-role.yaml](/templates/cluster-role.yaml).
-
-### Discovery mode
-
-For now, we only support the `API` discovery mode.
-
 ## TLS
 
 To enable TLS and access NeoLoad Web via https, the parameters :
@@ -338,3 +339,13 @@ Copy the content of the files into the `ingress.tls[0].secretCertificate` and `i
 #### Specify your new tls secret name
 
 Set a name for your new tls secret name into the `ingress.tls[0].secretName` parameter.
+
+## Upgrading
+
+### Upgrading Chart version only
+
+### Upgrading NeoLoad Web version only
+### Specific upgrades
+
+#### Chart v1.x.x to v2.x.x
+
