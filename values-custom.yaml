@@ -34,6 +34,8 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_ignore_client_abort "on";  
 
     # match the proxy-body-size with the neoload.configuration.backend.misc.files.maxUploadSizeInBytes value
     nginx.ingress.kubernetes.io/proxy-body-size: 250m
