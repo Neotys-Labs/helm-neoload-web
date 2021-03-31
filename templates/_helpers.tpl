@@ -53,6 +53,22 @@ app: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
+Frontend Selector labels
+*/}}
+{{- define "nlweb.frontend.selectorLabels" -}}
+{{ include "nlweb.selectorLabels" . }}
+app.kubernetes.io/component: frontend
+{{- end -}}
+
+{{/*
+Backend Selector labels
+*/}}
+{{- define "nlweb.backend.selectorLabels" -}}
+{{ include "nlweb.selectorLabels" . }}
+app.kubernetes.io/component: backend
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "nlweb.serviceAccountName" -}}
@@ -141,7 +157,7 @@ Get backend image tag
 
 {{/*
 High Availability (HA) Mode
-Add "DNS" to $availableHaModes when it is supported by nlweb
+TODO : Add "DNS" to $availableHaModes when it is supported by nlweb
 */}}
 {{- define "nlweb.ha.mode" -}}
     {{- $availableHaModes := list "API" -}}

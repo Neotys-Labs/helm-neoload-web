@@ -9,11 +9,11 @@ spec:
   replicas: {{ .Values.replicaCount.backend }}
   selector:
     matchLabels:
-      {{- include "nlweb.selectorLabels" . | nindent 6 }}
+      {{- include "nlweb.backend.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "nlweb.selectorLabels" . | nindent 8 }}
+        {{- include "nlweb.backend.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
