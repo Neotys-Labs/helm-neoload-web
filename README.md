@@ -120,7 +120,7 @@ This change has a few impacts on your NeoLoad Web deployment.
 - Your ingress controller needs to support **sticky sessions**, meaning that it can ensure a user is always dispatched to the same frontend instance throughout his session. We provide a basic configuration for nginx in our [values-custom.yaml](/values-custom.yaml) file.
 - Some additional cluster roles are required. See [cluster-role.yaml](/templates/cluster-role.yaml).
 
-> If you currently have a NeoLoad Web application deployed with a v1.x.x chart, please follow [this guide](#chart-v1.x.x-to-v2.x.x) before attempting to upgrade.
+> Check out the [upgrading section](#upgrading) to learn more about upgrading your chart.
 
 ### Discovery mode
 
@@ -150,7 +150,7 @@ neoload:
 ```
 
 >**Note:** For MongoDB requiring SSL connection, you must specify a MongoDB connection string as `host`. You must also set `port` to 0.
-*Example*: `mongo.mycompnay.com:27017/admin?ssl=true`
+*Example*: `mongo.mycompany.com:27017/admin?ssl=true`
 
 >**Note:** For MongoDB as a cluster of machines (replica set), you can specify the MongoDB URL of your cluster changing the `host` property value. You must also set `port` to `0`.
 *Example:* The MONGODB_HOST value must look like: 
@@ -342,10 +342,32 @@ Set a name for your new tls secret name into the `ingress.tls[0].secretName` par
 
 ## Upgrading
 
-### Upgrading Chart version only
+You can use the `helm upgrade` command when you want to :
+1. Upgrade your NeoLoad Web installation.
+2. Benefit from a newer chart version.
+3. Change some values/environment variables in your deployment.
 
-### Upgrading NeoLoad Web version only
-### Specific upgrades
+> **Warning** : In that last case, keep in mind that when updating your repositories, you may fetch a new chart/application version that could change your whole deployment. To avoid that, you can add the `--version=x.x.x` to the `helm upgrade` command and force your chart version to remain the same as the one deployed.
 
-#### Chart v1.x.x to v2.x.x
+```bash		
+helm repo update
+```
 
+```bash		
+helm upgrade my-release neotys/nlweb -n my-namespace -f ./values-custom.yaml
+```
+
+## Version compatibility
+
+Due to Helm Charts nature, there are two distinct version numbers to keep track of :
+- NeoLoad Web version
+- The Chart version
+
+You should always upgrade ([see the upgrading section](#upgrading)) with the new chart version, as we release a new one for every NeoLoad Web release we make. But you also have the possibility to manage independantly NeoLoad Web version by changing the images tags ([see `image.backend.repository` and `image.frontend.repository`](#advanced-configuration) ).
+
+However you should be aware of the following compatibility table to understand which combinations are supported.
+
+_ | NeoLoad Web Version < 2.9.X | NeoLoad Web Version >= 2.9.X
+--|-----------------|-----------------
+Chart Version < 2.0.0 | OK | OK
+Chart Version >= 2.0.0 | **KO** | OK
