@@ -20,3 +20,5 @@
 .idea/
 *.tmproj
 .vscode/
+
+./nlweb-architecture-schema.png
