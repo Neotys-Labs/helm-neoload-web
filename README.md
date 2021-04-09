@@ -30,7 +30,7 @@ Deployment | Content | Requests | Limits
 ----- | ----------- | ----- | -----
 Minimal | 1 Frontend Pod, 1 Backend Pod | **2 CPU, 4Gi RAM** | **4 CPU, 5Gi RAM**
 Default | 2 Frontend Pods, 2 Backend Pods | **4 CPU, 8Gi RAM** | **8CPU, 10Gi RAM**
-Advanced | X Frontend Pods, Y Backend Pods | **X\*1 + Y\*1 CPU, X\*1500 + Y\*2500 Gi RAM** | **X\*2 + Y\*2 CPU, X\*2 + Y\*3 Gi RAM**
+Advanced | X Frontend Pods, Y Backend Pods | **X\*1 + Y\*1 CPU, X\*1500 + Y\*2500 Mi RAM** | **X\*2 + Y\*2 CPU, X\*2 + Y\*3 Gi RAM**
 
 
 
