@@ -122,10 +122,6 @@ This change has a few impacts on your NeoLoad Web deployment.
 
 > Check out the [upgrading section](#upgrading) to learn more about upgrading your chart.
 
-### Discovery mode
-
-For now, we only support the `API` discovery mode.
-
 ## Configuration
 
 ### Getting started
@@ -269,8 +265,6 @@ Parameter | Description | Default
 | | 
 `neoload.configuration.frontend.java.xmx` | Java JVM Max heap size for the frontend | `1200m`
 `neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
-| | 
-`neoload.configuration.ha.mode` | The HA discovery mode. [Learn more.](#discovery-mode) | `API`
 | | 
 `mongodb.usePassword` | Set to false if your MongoDB connection doesn't require authentication | `true`
 `mongodb.mongodbUsername` | MongoDB Username | 
