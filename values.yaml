@@ -61,7 +61,22 @@ services:
 ingress:
   enabled: true
   class: nginx
-  annotations: {}
+  annotations: 
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_ignore_client_abort "on";  
+
+    # match the proxy-body-size with the neoload.configuration.backend.misc.files.maxUploadSizeInBytes value
+    nginx.ingress.kubernetes.io/proxy-body-size: 250m
+
+    # Enable sticky sessions for HA
+    # More parameters here : https://kubernetes.github.io/ingress-nginx/examples/affinity/cookie/
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/affinity-mode: persistent
+    nginx.ingress.kubernetes.io/session-cookie-max-age: 3600
+    nginx.ingress.kubernetes.io/session-cookie-change-on-failure: true  
 #  tls:
 #    - secretName: 
 #      secretCertificate: 

@@ -86,13 +86,53 @@ helm install my-release neotys/nlweb -n my-namespace -f ./values-custom.yaml
 
 > Since Helm 3.2+ you can skip step 3, and add the --create-namespace option to this command
 
-## Uninstalling the Chart
+## Uninstall
 
 To uninstall the `my-release` deployment:
 
 ```bash
 $ helm uninstall my-release -n my-namespace
 ```
+
+## Upgrade
+
+You can use the `helm upgrade` command when you want to :
+1. Upgrade your NeoLoad Web installation.
+2. Benefit from a newer chart version.
+3. Change some values/environment variables in your deployment.
+
+> **Warning** : In that last case, keep in mind that when updating your repositories, you may fetch a new chart/application version that could change your whole deployment. To avoid that, you can add the `--version=x.x.x` to the `helm upgrade` command and force your chart version to remain the same as the one deployed.
+
+```bash		
+helm repo update
+```
+
+```bash		
+helm upgrade my-release neotys/nlweb -n my-namespace -f ./values-custom.yaml
+```
+
+### Upgrade guides
+
+The following docs can help you when migrating chart version with breaking changes.
+
+| Targeted versions | Link |
+| -------- | ---- | 
+| 1.x.x to 2.x.x | [Upgrade Guide](/doc/upgrade-1.x.x-to-2.x.x.md) |
+
+### Version compatibility
+
+Due to Helm Charts nature, there are two distinct version numbers to keep track of :
+- NeoLoad Web version
+- The Chart version
+
+You should always upgrade ([see the upgrade section](#upgrade)) with the new chart version, as we release a new one for every NeoLoad Web release we make. But you also have the possibility to manage independantly NeoLoad Web version by changing the images tags ([see `image.backend.repository` and `image.frontend.repository`](#advanced-configuration) ).
+
+However you should be aware of the following compatibility table to understand which combinations are supported.
+
+_ | NeoLoad Web Version < 2.9.X | NeoLoad Web Version >= 2.9.X
+--|-----------------|-----------------
+Chart Version < 2.0.0 | OK | OK
+Chart Version >= 2.0.0 | **KO** | OK
 
 ## Architecture
 
@@ -120,7 +160,7 @@ This change has a few impacts on your NeoLoad Web deployment.
 - Your ingress controller needs to support **sticky sessions**, meaning that it can ensure a user is always dispatched to the same frontend instance throughout his session. We provide a basic configuration for nginx in our [values-custom.yaml](/values-custom.yaml) file.
 - Some additional cluster roles are required. See [cluster-role.yaml](/templates/cluster-role.yaml).
 
-> Check out the [upgrading section](#upgrading) to learn more about upgrading your chart.
+> Check out the [upgrade section](#upgrade) to learn more about upgrading your chart.
 
 ## Configuration
 
@@ -333,35 +373,3 @@ Copy the content of the files into the `ingress.tls[0].secretCertificate` and `i
 #### Specify your new tls secret name
 
 Set a name for your new tls secret name into the `ingress.tls[0].secretName` parameter.
-
-## Upgrading
-
-You can use the `helm upgrade` command when you want to :
-1. Upgrade your NeoLoad Web installation.
-2. Benefit from a newer chart version.
-3. Change some values/environment variables in your deployment.
-
-> **Warning** : In that last case, keep in mind that when updating your repositories, you may fetch a new chart/application version that could change your whole deployment. To avoid that, you can add the `--version=x.x.x` to the `helm upgrade` command and force your chart version to remain the same as the one deployed.
-
-```bash		
-helm repo update
-```
-
-```bash		
-helm upgrade my-release neotys/nlweb -n my-namespace -f ./values-custom.yaml
-```
-
-## Version compatibility
-
-Due to Helm Charts nature, there are two distinct version numbers to keep track of :
-- NeoLoad Web version
-- The Chart version
-
-You should always upgrade ([see the upgrading section](#upgrading)) with the new chart version, as we release a new one for every NeoLoad Web release we make. But you also have the possibility to manage independantly NeoLoad Web version by changing the images tags ([see `image.backend.repository` and `image.frontend.repository`](#advanced-configuration) ).
-
-However you should be aware of the following compatibility table to understand which combinations are supported.
-
-_ | NeoLoad Web Version < 2.9.X | NeoLoad Web Version >= 2.9.X
---|-----------------|-----------------
-Chart Version < 2.0.0 | OK | OK
-Chart Version >= 2.0.0 | **KO** | OK

@@ -1,3 +1,8 @@
+### ReplicaSet configuration
+replicaCount:
+  frontend: 2
+  backend: 2
+
 ### NLWeb configuration
 neoload:
   configuration:
