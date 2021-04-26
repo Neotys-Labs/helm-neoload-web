@@ -23,11 +23,17 @@ This chart is meant for experimented Kubernetes/Helm users as a successful insta
 
 ### Hardware
 
-NeoLoad Web will run in a pod that requires the following minimal resources :
-- cpu 2
-- memory 4Gi
+NeoLoad Web will require your cluster to run a minimum of 2 pods, hosting the frontend and the backend separately.
+Here is a table to let you quickly estimate the resource requirements of your nodes, based on `resources.frontend.*` and `resources.backend.*` [(see Advanced Configuration)](#advanced-configuration).
 
-> You will need to provision a node in your cluster that can host such a pod.
+Deployment | Content | Requests | Limits
+----- | ----------- | ----- | -----
+Minimal | 1 Frontend Pod, 1 Backend Pod | **2 CPU, 4Gi RAM** | **4 CPU, 5Gi RAM**
+Default | 2 Frontend Pods, 2 Backend Pods | **4 CPU, 8Gi RAM** | **8CPU, 10Gi RAM**
+Advanced | X Frontend Pods, Y Backend Pods | **X\*1 + Y\*1 CPU, X\*1500 + Y\*2500 Mi RAM** | **X\*2 + Y\*2 CPU, X\*2 + Y\*3 Gi RAM**
+
+
+
 ### Software
 
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) CLI (1.14+)
@@ -80,13 +86,53 @@ helm install my-release neotys/nlweb -n my-namespace -f ./values-custom.yaml
 
 > Since Helm 3.2+ you can skip step 3, and add the --create-namespace option to this command
 
-## Uninstalling the Chart
+## Uninstall
 
 To uninstall the `my-release` deployment:
 
 ```bash
 $ helm uninstall my-release -n my-namespace
 ```
+
+## Upgrade
+
+You can use the `helm upgrade` command when you want to :
+1. Upgrade your NeoLoad Web installation.
+2. Benefit from a newer chart version.
+3. Change some values/environment variables in your deployment.
+
+> **Warning** : In that last case, keep in mind that when updating your repositories, you may fetch a new chart/application version that could change your whole deployment. To avoid that, you can add the `--version=x.x.x` to the `helm upgrade` command and force your chart version to remain the same as the one deployed.
+
+```bash		
+helm repo update
+```
+
+```bash		
+helm upgrade my-release neotys/nlweb -n my-namespace -f ./values-custom.yaml
+```
+
+### Upgrade guides
+
+The following docs can help you when migrating chart version with breaking changes.
+
+| Targeted versions | Link |
+| -------- | ---- | 
+| 1.x.x to 2.x.x | [Upgrade Guide](/doc/upgrade-1.x.x-to-2.x.x.md) |
+
+### Version compatibility
+
+Due to Helm Charts nature, there are two distinct version numbers to keep track of :
+- NeoLoad Web version
+- The Chart version
+
+You should always upgrade ([see the upgrade section](#upgrade)) with the new chart version, as we release a new one for every NeoLoad Web release we make. But you also have the possibility to manage independantly NeoLoad Web version by changing the images tags ([see `image.backend.repository` and `image.frontend.repository`](#advanced-configuration) ).
+
+However you should be aware of the following compatibility table to understand which combinations are supported.
+
+_ | NeoLoad Web Version < 2.9.X | NeoLoad Web Version >= 2.9.X
+--|-----------------|-----------------
+Chart Version < 2.0.0 | OK | OK
+Chart Version >= 2.0.0 | **KO** | OK
 
 ## Architecture
 
@@ -102,6 +148,19 @@ This schema describe:
 
 ![NeoLoad Web deployment schema](./nlweb-architecture-schema.png)
 
+## High Availability
+
+From versions 2.0.0 of this chart and 2.9.0 of NeoLoad Web, we include a mecanism for **High Availability**. This means you can easily scale your NeoLoad Web frontend/backend, and the application will be more failure tolerant.
+
+> Use `replicaCount.frontend` and `replicaCount.backend` values to arrange your Deployment the way you see fit. We set a default of 2 frontend instances and 2 backend instances so you get a resilient NeoLoad Web application out of the box.
+
+This change has a few impacts on your NeoLoad Web deployment.
+
+- From now on your cluster will need to be able to deploy at least 2 pods (one for frontend and one for backend) instead of 1. Some nodes can restrain the number of simultaneous pods, so you need to make sure it is allowed.
+- Your ingress controller needs to support **sticky sessions**, meaning that it can ensure a user is always dispatched to the same frontend instance throughout his session. We provide a basic configuration for nginx in our [values-custom.yaml](/values-custom.yaml) file.
+- Some additional cluster roles are required. See [cluster-role.yaml](/templates/cluster-role.yaml).
+
+> Check out the [upgrade section](#upgrade) to learn more about upgrading your chart.
 
 ## Configuration
 
@@ -127,7 +186,7 @@ neoload:
 ```
 
 >**Note:** For MongoDB requiring SSL connection, you must specify a MongoDB connection string as `host`. You must also set `port` to 0.
-*Example*: `mongo.mycompnay.com:27017/admin?ssl=true`
+*Example*: `mongo.mycompany.com:27017/admin?ssl=true`
 
 >**Note:** For MongoDB as a cluster of machines (replica set), you can specify the MongoDB URL of your cluster changing the `host` property value. You must also set `port` to `0`.
 *Example:* The MONGODB_HOST value must look like: 
@@ -242,16 +301,19 @@ Parameter | Description | Default
 `neoload.configuration.backend.java.xmx` | Java JVM Max heap size for the backend | `2000m`
 `neoload.configuration.backend.misc.files.maxUploadSizeInBytes` | Max file upload size in bytes | `250000000`
 `neoload.configuration.backend.misc.files.maxUploadPerWeek` | Max file upload count per week | `250`
-`neoload.configuration.backend.others` | Custom backend environment variables. [See](#custom-environment-variables) | |
+`neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
+| | 
 `neoload.configuration.frontend.java.xmx` | Java JVM Max heap size for the frontend | `1200m`
- |  | 
-`neoload.configuration.frontend.others` | Custom frontend environment variables. [See](#custom-environment-variables) | |
+`neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
+| | 
 `mongodb.usePassword` | Set to false if your MongoDB connection doesn't require authentication | `true`
 `mongodb.mongodbUsername` | MongoDB Username | 
 `mongodb.mongodbPassword` | MongoDB Password | 
  |  | 
 `nodeSelector` | Node Selector | `{}`
 `tolerations` | Pod's tolerations | `[]`
+`replicaCount.frontend` | Number of frontend pods in your Deployment. [Learn more.](#high-availability) | 2
+`replicaCount.backend` | Number of backend pods in your Deployment. [Learn more.](#high-availability) | 2
 
 We suggest you maintain your own *values-custom.yaml* and update it with your relevant parameters, but you can also specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

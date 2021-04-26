@@ -49,6 +49,23 @@ Selector labels
 {{- define "nlweb.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "nlweb.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+app: {{ .Release.Name }}
+{{- end -}}
+
+{{/*
+Frontend Selector labels
+*/}}
+{{- define "nlweb.frontend.selectorLabels" -}}
+{{ include "nlweb.selectorLabels" . }}
+app.kubernetes.io/component: frontend
+{{- end -}}
+
+{{/*
+Backend Selector labels
+*/}}
+{{- define "nlweb.backend.selectorLabels" -}}
+{{ include "nlweb.selectorLabels" . }}
+app.kubernetes.io/component: backend
 {{- end -}}
 
 {{/*
@@ -136,4 +153,19 @@ Get backend image tag
 */}}
 {{- define "nlweb.backend.imageTag" -}}
     {{ default .Chart.AppVersion .Values.image.backend.tag }}
+{{- end -}}
+
+{{/*
+High Availability (HA) Mode
+TODO : Add "DNS" to $availableHaModes when it is supported by nlweb
+*/}}
+{{- define "nlweb.ha.mode" -}}
+    {{- $availableHaModes := list "API" -}}
+    {{- $haMode := default "API" .Values.neoload.configuration.ha.mode -}}
+    {{- if (has $haMode $availableHaModes) -}}
+        {{ $haMode }}
+    {{- else -}}
+        {{- $error := printf "The HA mode must be API or DNS. Got : %s" $haMode -}}
+        {{ required $error "" }}
+    {{- end -}}
 {{- end -}}

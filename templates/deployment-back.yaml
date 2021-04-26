@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "nlweb.fullname" . }}
+  name: {{ include "nlweb.fullname" . }}-back
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "nlweb.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.replicaCount.backend }}
   selector:
     matchLabels:
-      {{- include "nlweb.selectorLabels" . | nindent 6 }}
+      {{- include "nlweb.backend.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "nlweb.selectorLabels" . | nindent 8 }}
+        {{- include "nlweb.backend.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -60,25 +60,41 @@ spec:
               value: {{ int .Values.neoload.configuration.backend.misc.files.maxUploadPerWeek | quote }}
             - name: SEND_USAGE_STATISTICS
               value: {{ true | quote }}
+            - name: NLWEB_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nlweb.fullname" . }}-key-secret
+                  key: nlwSecretKey
             - name: DEPLOYMENT_TYPE
               value: "helm/kubernetes"
+            - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
+              value: "true"
+            - name: HA
+              value: "true"
+            - name: START_MODE
+              value: "CLUSTER_KUB"
+            - name: KUB_NAMESPACE
+              value: {{ .Release.Namespace | quote }}
+            {{- if eq (include "nlweb.ha.mode" .) "API" }}
+            - name: KUB_SERVICE_NAME
+              value: "{{ include "nlweb.fullname" . }}-svc-hazelcast"
+            {{- end -}}
+            {{- if eq (include "nlweb.ha.mode" .) "DNS" }}
+            - name: KUB_SERVICE_DNS_NAME
+              value: "{{ include "nlweb.fullname" . }}-svc-hazelcast.{{ .Release.Namespace }}.svc.cluster.local"
+            {{- end -}}
             {{- if .Values.neoload.configuration.misc -}}
             {{- if .Values.neoload.configuration.misc.trackingUrl }}
             - name: NEOTYS_TRACKING_URL
               value: {{ .Values.neoload.configuration.misc.trackingUrl | quote }}
             {{- end -}}
             {{- end }}
-            - name: NLWEB_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "nlweb.fullname" . }}-key-secret
-                  key: nlwSecretKey
             {{- if .Values.neoload.configuration.backend.others }}
             {{- range $name, $value := .Values.neoload.configuration.backend.others }}
             - name: {{ $name }}
               value: {{ $value | quote }}
             {{- end }}
-            {{- end }}            
+            {{- end }}
           ports:
             - name: api
               containerPort: 1081
@@ -88,6 +104,9 @@ spec:
               protocol: TCP
             - name: backend-admin
               containerPort: 9092
+              protocol: TCP
+            - name: hazelcast
+              containerPort: 5701
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -103,49 +122,6 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources.backend | nindent 12 }}
-        - name: {{ .Chart.Name }}-frontend
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.frontend.repository }}:{{ include "nlweb.frontend.imageTag" . }}"
-          imagePullPolicy: {{ .Values.image.frontend.pullPolicy }}
-          env:
-            - name: MEMORY_MAX
-              value: {{ .Values.neoload.configuration.frontend.java.xmx }}
-            - name: DEPLOYMENT_TYPE
-              value: "helm/kubernetes"
-            {{- if .Values.neoload.configuration.misc -}}
-            {{- if .Values.neoload.configuration.misc.trackingUrl }}
-            - name: NEOTYS_TRACKING_URL
-              value: {{ .Values.neoload.configuration.misc.trackingUrl | quote }}
-            {{- end -}}
-            {{- end }}
-            {{- if .Values.neoload.configuration.frontend.others }}
-            {{- range $name, $value := .Values.neoload.configuration.frontend.others }}
-            - name: {{ $name }}
-              value: {{ $value | quote }}
-            {{- end }}
-            {{- end }}
-          ports:
-            - name: webapp
-              containerPort: 9090
-              protocol: TCP
-            - name: frontend-admin
-              containerPort: 9091
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /status
-              port: webapp
-            initialDelaySeconds: 60
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /status
-              port: webapp
-            initialDelaySeconds: 60
-            periodSeconds: 10
-          resources:
-            {{- toYaml .Values.resources.frontend | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
