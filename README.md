@@ -36,9 +36,9 @@ Advanced | X Frontend Pods, Y Backend Pods | **X\*1 + Y\*1 CPU, X\*1500 + Y\*250
 
 ### Software
 
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) CLI (1.14+)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) CLI
 - [Helm](https://helm.sh/docs/intro/install/) CLI  (~3.0.2)
-- A running [Kubernetes](https://kubernetes.io/) cluster (1.14+)
+- A running [Kubernetes](https://kubernetes.io/) cluster (1.14.0 - 1.19.0)
 - A running [mongodb](https://www.mongodb.com/) accessible from the Kubernetes cluster ([see supported versions](https://www.neotys.com/documents/doc/nlweb/latest/en/html/#26054.htm#o39020))
 - A running ingress controller deployed on the Kubernetes cluster
 
