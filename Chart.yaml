@@ -24,7 +24,10 @@ description: A Helm chart for deploying NeoLoad Web on Kubernetes
 icon: https://www.neotys.com/favicon-32x32.png
 keywords:
   - Neotys
+  - Tricentis
   - NeoLoad Web
+  - NLWeb
+  - NLW
   - nlweb
 sources:
  - https://github.com/Neotys-Labs/helm-neoload-web
