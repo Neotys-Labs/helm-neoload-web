@@ -42,6 +42,28 @@ spec:
     {{- $serviceName := printf "%s-%s-%s" (include "nlweb.fullname" $) "svc" $label }}
     - host: {{ $service.host | quote }}
       http:
+      {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.Version }}
+        paths:
+        {{- if $service.ingress }}
+        {{- range $service.ingress.paths }}
+        - path: {{ . }}
+          pathType: Prefix
+          backend:
+            service:
+              name: {{ $serviceName }}
+              port:
+                number: {{ $service.port }}
+        {{- end }}
+        {{- else -}}
+        - path: "/"
+          pathType: Prefix
+          backend:
+            service:
+              name: {{ $serviceName }}
+              port:
+                number: {{ $service.port }}
+        {{- end }}
+      {{- else }}
         paths:
         {{- if $service.ingress }}
         {{- range $service.ingress.paths }}
@@ -51,10 +73,11 @@ spec:
             servicePort: {{ $service.port }}
         {{- end }}
         {{- else -}}
-        - path: ""
+        - path: "/"
           backend:
             serviceName: {{ $serviceName }}
             servicePort: {{ $service.port }}
         {{- end }}
+      {{- end }}
     {{- end }}
 {{- end }}

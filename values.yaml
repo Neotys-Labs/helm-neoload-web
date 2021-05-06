@@ -44,19 +44,19 @@ services:
     type: ClusterIP
     port: 80
     ingress:
-      paths: [""]
+      paths: ["/"]
   api:
     host: 
     type: ClusterIP
     port: 80
     ingress:
-      paths: [""]
+      paths: ["/"]
   files:
     host: 
     type: ClusterIP
     port: 80
     ingress:
-      paths: [""]
+      paths: ["/"]
 
 ingress:
   enabled: true
