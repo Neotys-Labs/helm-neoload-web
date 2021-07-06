@@ -60,6 +60,10 @@ spec:
               value: {{ $value | quote }}
             {{- end }}
             {{- end }}
+            {{- if and (not .Values.ingress.tls) (not .Values.neoload.configuration.frontend.secureSessionCookie) }}
+            - name: JESSIONID_SECURE_FLAG
+              value: "false"
+            {{- end }}
           ports:
             - name: webapp
               containerPort: 9090

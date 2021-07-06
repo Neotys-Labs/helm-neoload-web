@@ -304,6 +304,7 @@ Parameter | Description | Default
 `neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
 | | 
 `neoload.configuration.frontend.java.xmx` | Java JVM Max heap size for the frontend | `1200m`
+`neoload.configuration.frontend.secureSessionCookie` | Put secure flag on JSESSIONID cookie | `true` if `ingress.tls` is preent, else `false`
 `neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
 | | 
 `mongodb.usePassword` | Set to false if your MongoDB connection doesn't require authentication | `true`
@@ -344,8 +345,13 @@ neoload:
         ENV_VAR_2: variable2
 
 ```
+## External TLS termination
 
-## TLS
+>**Caution**: If you choose to not handle TLS through the ingress feature, we recommend, for security reason, to set the >value of the property `neoload.configuration.frontend.secureSessionCookie` to `true`.
+>
+>This will put a secure flag on the JSESSIONID cookie (the Java Servlet session identifier). 
+
+## Cluster TLS termination
 
 To enable TLS and access NeoLoad Web via https, the parameters :
 
