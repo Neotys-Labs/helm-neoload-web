@@ -304,7 +304,7 @@ Parameter | Description | Default
 `neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
 | | 
 `neoload.configuration.frontend.java.xmx` | Java JVM Max heap size for the frontend | `1200m`
-`neoload.configuration.frontend.secureSessionCookie` | Put secure flag on JSESSIONID cookie | `true` if `ingress.tls` is preent, else `false`
+`neoload.configuration.frontend.secureSessionCookie` | Put secure flag on JSESSIONID cookie | `true` if `ingress.tls` is present, else `false`
 `neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
 | | 
 `mongodb.usePassword` | Set to false if your MongoDB connection doesn't require authentication | `true`
