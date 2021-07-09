@@ -46,6 +46,13 @@ spec:
                   name: {{ include "nlweb.fullname" . }}-mongo-secret
                   key: password
             {{- end }}
+            {{- if .Values.neoload.configuration.backend.licensingPlatformToken }}
+            - name: LICENSING_PLATFORM_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nlweb.fullname" . }}-licensing-secret
+                  key: licensingPlatformToken
+            {{- end }}
             - name: MONGODB_MAX_POOLSIZE
               value: {{ .Values.neoload.configuration.backend.mongo.poolSize | quote }}
             - name: NEOLOAD_WEB_PUBLIC_URL
@@ -87,6 +94,12 @@ spec:
             {{- if .Values.neoload.configuration.misc.trackingUrl }}
             - name: NEOTYS_TRACKING_URL
               value: {{ .Values.neoload.configuration.misc.trackingUrl | quote }}
+            {{- end -}}
+            {{- end -}}
+            {{- if .Values.neoload.configuration.proxy -}}
+            {{- if .Values.neoload.configuration.proxy.https }}
+            - name: NEOLOAD_WEB_HTTPS_PROXY
+              value: {{ .Values.neoload.configuration.proxy.https | quote }}
             {{- end -}}
             {{- end }}
             {{- if .Values.neoload.configuration.backend.others }}

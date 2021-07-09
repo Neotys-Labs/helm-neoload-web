@@ -6,12 +6,17 @@ replicaCount:
 ### NLWeb configuration
 neoload:
   configuration:
+    # The secret key must be at least 8 characters long
+    secretKey: YOUR_CUSTOM_SECRET_KEY
     backend:
       mongo:
         host: YOUR_MONGODB_HOST_URL
         port: 27017
-    # The secret key must be at least 8 characters long
-    secretKey: YOUR_CUSTOM_SECRET_KEY
+      # Enable licensing features by setting this token, or leave it empty
+      licensingPlatformToken: 
+    proxy:
+      # Set an https proxy for NeoLoad Web (learn more in the README.md)
+      https: 
 
 ### MongoDB user configuration
 mongodb:

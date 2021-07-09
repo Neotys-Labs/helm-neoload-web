@@ -111,12 +111,15 @@ neoload:
         files:
           maxUploadSizeInBytes: "250000000"
           maxUploadPerWeek: "250"
+      licensingPlatformToken: 
     frontend:
       java:
         xmx: 1200m
     ha:
       mode: "API"
     secretKey: 
+    proxy:
+      https: 
 
 ### MongoDB user configuration
 mongodb:

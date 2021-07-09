@@ -118,6 +118,7 @@ The following docs can help you when migrating chart version with breaking chang
 | Targeted versions | Link |
 | -------- | ---- | 
 | 1.x.x to 2.x.x | [Upgrade Guide](/doc/upgrade-1.x.x-to-2.x.x.md) |
+| 2.x.x to 2.3.x | [Upgrade Guide](/doc/upgrade-2.x.x-to-2.3.x.md) |
 
 ### Version compatibility
 
@@ -344,6 +345,17 @@ neoload:
         ENV_VAR_2: variable2
 
 ```
+
+## Proxy
+
+You can define an https proxy that will be used by NeoLoad Web when using the following set of features. This set will be extended in future upgrades.
+
+*Features taking advantage of proxies in NeoLoad Web 2.11.0*
+- Licensing
+
+The proxy can be enabled by setting the following property :
+
+`neoload.configuration.proxy.https=https://username:password@host:port`
 
 ## TLS
 
