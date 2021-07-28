@@ -4,7 +4,7 @@
 
 ### Configuration
 
-A new set of licensing related features available as of NeoLoad Web v2.11.0 can be enabled by setting up a licensing key in your values file.
+A new set of licensing related features (such as VUHs) available as of NeoLoad Web v2.11.0 can be enabled by setting up a licensing key in your values file.
 
 Also take note that your NeoLoad Web instance must be able to make external network calls to our public licensing platform. 
 
