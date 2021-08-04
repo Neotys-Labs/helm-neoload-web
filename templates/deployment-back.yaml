@@ -53,7 +53,7 @@ spec:
             - name: NEOLOAD_WEB_API_PUBLIC_URL
               value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (.Values.services.api.host) | required "NeoLoad Web API URL (.Values.services.api.host) value is required." | quote }}
             - name: FILE_STORAGE_ROUTER_BASE_URL
-              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (.Values.services.files.host) | required "NeoLoad Web Files API URL (.Values.services.webapp.host) value is required." | quote }}
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (.Values.services.files.host) | required "NeoLoad Web Files API URL (.Values.services.files.host) value is required." | quote }}
             - name: FILE_PROJECT_MAX_SIZE_IN_BYTES
               value: {{ int .Values.neoload.configuration.backend.misc.files.maxUploadSizeInBytes | quote }}
             - name: NLPROJECT_MAX_UPLOADED_FILES_PER_WEEK
