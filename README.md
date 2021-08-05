@@ -295,7 +295,7 @@ Parameter | Description | Default
 `resources.frontend.limits.cpu` | CPU resource limit for the frontend | `2`
 `resources.frontend.limits.memory` | Memory resource limit for the frontend | `2Gi`
  |  | 
-`neoload.configuration.externalTlsTermination` | Must be set to true if TLS termination is [handled by your own way](#external-tls-termination).  | `false`
+`neoload.configuration.externalTlsTermination` | Must be set to `true` if TLS termination is handled by a component [outside of the Helm Chart management](#external-tls-termination).  | `false`
  |  | 
 `neoload.configuration.backend.mongo.host` | MongoDB host | 
 `neoload.configuration.backend.mongo.port` | MongoDB port | `27017`
@@ -387,5 +387,5 @@ Set a name for your new TLS secret name into the `ingress.tls[0].secretName` par
 > If you choose to handle TLS on front of the Ingress controller, we recommend, for security reason, to set the 
 > value of the property `neoload.configuration.externalTlsTermination` to `true`.
 >
-> It will define URLs to NeoLoad Web to use `https://` protocol. 
+> It will enable the 'https://' protocol in NeoLoad Web URLs. 
 > And it will ensure that NeoLoad Web flags the JSESSIONID cookie as `secure`.
