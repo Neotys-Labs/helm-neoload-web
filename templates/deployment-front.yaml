@@ -54,6 +54,12 @@ spec:
               value: {{ .Values.neoload.configuration.misc.trackingUrl | quote }}
             {{- end -}}
             {{- end }}
+            - name: JSESSIONID_SECURE_FLAG
+            {{- if eq ((include "nlweb.helpers.getScheme" .) | toString) "https://" }}
+              value: "true"
+            {{- else }}
+              value: "false"
+            {{- end }}
             {{- if .Values.neoload.configuration.frontend.others }}
             {{- range $name, $value := .Values.neoload.configuration.frontend.others }}
             - name: {{ $name }}

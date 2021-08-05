@@ -295,6 +295,8 @@ Parameter | Description | Default
 `resources.frontend.limits.cpu` | CPU resource limit for the frontend | `2`
 `resources.frontend.limits.memory` | Memory resource limit for the frontend | `2Gi`
  |  | 
+`neoload.configuration.externalTlsTermination` | Must be set to true if TLS termination is [handled by your own way](#external-tls-termination).  | `false`
+ |  | 
 `neoload.configuration.backend.mongo.host` | MongoDB host | 
 `neoload.configuration.backend.mongo.port` | MongoDB port | `27017`
 `neoload.configuration.backend.mongo.poolSize` | MongoDB pool size | `50`
@@ -346,6 +348,11 @@ neoload:
 ```
 
 ## TLS
+If you want to secure NeoLoad Web through TLS, you should either:
+ - configure [TLS at ingress level](#ingress-tls-termination)
+ - handle [TLS termination on front of the Ingress controller](#external-tls-termination)
+
+### Ingress TLS termination
 
 To enable TLS and access NeoLoad Web via https, the parameters :
 
@@ -354,22 +361,31 @@ To enable TLS and access NeoLoad Web via https, the parameters :
 
 > **Caution**: Ingresses support multiple TLS mapped to respective hosts and paths. This feature is not supported for NeoLoad Web, i.e. exactly zero or one TLS configuration is expected.
 
-### Using an existing tls secret
+#### Using an existing TLS secret
 
 Simply refer to your secret in the `ingress.tls[0].secretName` parameter, and leave both `ingress.tls[0].secretCertificate` and `ingress.tls[0].secretKey` empty.
 
-### Creating a new tls secret
+#### Creating a new TLS secret
 
-#### Provide a certificate and a private key
+##### Provide a certificate and a private key
 
 Use the following documentation or use your own means to provide both a certificate and a private key.
 
 - [Kubernetes TLS Secret generation documentation](https://kubernetes.github.io/ingress-nginx/user-guide/tls/)
 
-#### Add these to your custom values file
+##### Add these to your custom values file
 
 Copy the content of the files into the `ingress.tls[0].secretCertificate` and `ingress.tls[0].secretKey` parameters.
 
-#### Specify your new tls secret name
+##### Specify your new TLS secret name
 
-Set a name for your new tls secret name into the `ingress.tls[0].secretName` parameter.
+Set a name for your new TLS secret name into the `ingress.tls[0].secretName` parameter.
+
+### External TLS termination
+
+>**Caution**: 
+> If you choose to handle TLS on front of the Ingress controller, we recommend, for security reason, to set the 
+> value of the property `neoload.configuration.externalTlsTermination` to `true`.
+>
+> It will define URLs to NeoLoad Web to use `https://` protocol. 
+> And it will ensure that NeoLoad Web flags the JSESSIONID cookie as `secure`.

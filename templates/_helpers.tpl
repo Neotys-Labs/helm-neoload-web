@@ -107,10 +107,8 @@ Helper - getScheme
 */}}
 {{- define "nlweb.helpers.getScheme" -}}
     http
-    {{- if .Values.ingress.enabled -}}
-    {{- if .Values.ingress.tls -}}
+    {{- if or (and .Values.ingress.enabled .Values.ingress.tls) (eq (.Values.neoload.configuration.externalTlsTermination | toString) "true") -}}
         s
-    {{- end -}}
     {{- end -}}
     ://
 {{- end -}}
