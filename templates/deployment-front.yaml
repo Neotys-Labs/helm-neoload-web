@@ -54,9 +54,17 @@ spec:
               value: {{ .Values.neoload.configuration.misc.trackingUrl | quote }}
             {{- end -}}
             {{- end }}
+<<<<<<< HEAD
             {{- if eq ((include "nlweb.helpers.getScheme" .) | toString) "http://" }}
             - name: JESSIONID_SECURE_FLAG
               value: "false"
+=======
+            - name: JSESSIONID_SECURE_FLAG
+            {{- if eq ((include "nlweb.helpers.getScheme" .) | toString) "http://" }}
+              value: "false"
+            {{- else }}
+              value: "true"
+>>>>>>> a4f9499 ([LOAD-24493] - Add secure flag to JSESSIONID)
             {{- end }}
             {{- if .Values.neoload.configuration.frontend.others }}
             {{- range $name, $value := .Values.neoload.configuration.frontend.others }}
