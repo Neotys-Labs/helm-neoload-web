@@ -54,6 +54,10 @@ spec:
               value: {{ .Values.neoload.configuration.misc.trackingUrl | quote }}
             {{- end -}}
             {{- end }}
+            {{- if eq ((include "nlweb.helpers.getScheme" .) | toString) "http://" }}
+            - name: JESSIONID_SECURE_FLAG
+              value: "false"
+            {{- end }}
             {{- if .Values.neoload.configuration.frontend.others }}
             {{- range $name, $value := .Values.neoload.configuration.frontend.others }}
             - name: {{ $name }}
