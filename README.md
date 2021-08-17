@@ -147,7 +147,7 @@ This schema describe:
   * Any integration based on NeoLoad Web API
   * MongoDB server
 
-![NeoLoad Web deployment schema](./nlweb-architecture-schema.png)
+![NeoLoad Web deployment schema](./doc/nlweb-architecture-schema.png)
 
 ## High Availability
 
