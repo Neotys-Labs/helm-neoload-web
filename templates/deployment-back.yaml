@@ -68,7 +68,7 @@ spec:
             - name: NLPROJECT_MAX_UPLOADED_FILES_PER_WEEK
               value: {{ int .Values.neoload.configuration.backend.misc.files.maxUploadPerWeek | quote }}
             - name: SEND_USAGE_STATISTICS
-              value: {{ true | quote }}
+              value: {{ default "true" (.Values.neoload.configuration.sendUsageStatistics | quote) }}
             - name: NLWEB_SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -91,12 +91,6 @@ spec:
             {{- if eq (include "nlweb.ha.mode" .) "DNS" }}
             - name: KUB_SERVICE_DNS_NAME
               value: "{{ include "nlweb.fullname" . }}-svc-hazelcast.{{ .Release.Namespace }}.svc.cluster.local"
-            {{- end -}}
-            {{- if .Values.neoload.configuration.misc -}}
-            {{- if .Values.neoload.configuration.misc.trackingUrl }}
-            - name: NEOTYS_TRACKING_URL
-              value: {{ .Values.neoload.configuration.misc.trackingUrl | quote }}
-            {{- end -}}
             {{- end -}}
             {{- if .Values.neoload.configuration.proxy -}}
             {{- if .Values.neoload.configuration.proxy.https }}

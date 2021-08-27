@@ -120,6 +120,7 @@ neoload:
     secretKey: 
     proxy:
       https: 
+    sendUsageStatistics: true
 
 ### MongoDB user configuration
 mongodb:

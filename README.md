@@ -296,6 +296,9 @@ Parameter | Description | Default
 `resources.frontend.limits.cpu` | CPU resource limit for the frontend | `2`
 `resources.frontend.limits.memory` | Memory resource limit for the frontend | `2Gi`
  |  | 
+`neoload.configuration.externalTlsTermination` | Must be set to `true` if TLS termination is handled by a component [outside of the Helm Chart management](#external-tls-termination).  | `false`
+`neoload.configuration.sendUsageStatistics` | Can be set to `false` to avoid usage data collection | `true`
+ |  | 
 `neoload.configuration.backend.mongo.host` | MongoDB host | 
 `neoload.configuration.backend.mongo.port` | MongoDB port | `27017`
 `neoload.configuration.backend.mongo.poolSize` | MongoDB pool size | `50`
@@ -388,3 +391,33 @@ Copy the content of the files into the `ingress.tls[0].secretCertificate` and `i
 #### Specify your new tls secret name
 
 Set a name for your new tls secret name into the `ingress.tls[0].secretName` parameter.
+
+### External TLS termination
+
+>**Caution**: 
+> If you choose to handle TLS on front of the Ingress controller, we recommend, for security reason, to set the 
+> value of the property `neoload.configuration.externalTlsTermination` to `true`.
+>
+> It will enable the 'https://' protocol in NeoLoad Web URLs. 
+> And it will ensure that NeoLoad Web flags the JSESSIONID cookie as `secure`.
+
+## Usage data
+
+NeoLoad Web collects and sends anonymized usage and navigation data to our servers in order to continuously improve our products.
+
+You can disable this option by setting the `neoload.configuration.sendUsageStatistics` key to `false`.
+
+### Service data
+
+NeoLoad Web gathers and sends data related to the usage of specific features and services.
+
+### Navigation data
+
+NeoLoad Web uses Google Analytics cookies to track navigation data.
+
+Any end user can prevent Google from collecting and processing his/her data by downloading and installing the browser plug-in available here: https://tools.google.com/dlpage/gaoptout?hl=en-GB.
+
+*For more information about Data privacy management by Google, see the links below:*
+
+- [Data privacy and security for Google Analytics](https://support.google.com/analytics/answer/6004245)
+- [How Google uses information from sites or applications that use their services](https://www.google.com/policies/privacy/partners/)
