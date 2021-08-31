@@ -415,7 +415,7 @@ NeoLoad Web gathers and sends data related to the usage of specific features and
 
 NeoLoad Web uses Google Analytics cookies to track navigation data.
 
-Any end user can prevent Google from collecting and processing his/her data by downloading and installing the browser plug-in available here: https://tools.google.com/dlpage/gaoptout?hl=en-GB.
+Any end user can prevent Google from collecting and processing their data by downloading and installing the browser plug-in available here: https://tools.google.com/dlpage/gaoptout?hl=en-GB.
 
 *For more information about Data privacy management by Google, see the links below:*
 
