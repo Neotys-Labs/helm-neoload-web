@@ -60,7 +60,7 @@ spec:
             - name: NEOLOAD_WEB_API_PUBLIC_URL
               value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (.Values.services.api.host) | required "NeoLoad Web API URL (.Values.services.api.host) value is required." | quote }}
             - name: FILE_STORAGE_ROUTER_BASE_URL
-              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (.Values.services.files.host) | required "NeoLoad Web Files API URL (.Values.services.webapp.host) value is required." | quote }}
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (.Values.services.files.host) | required "NeoLoad Web Files API URL (.Values.services.files.host) value is required." | quote }}
             - name: INTERNAL_FILE_STORAGE_ROUTER_BASE_URL
               value: "http://{{ include "nlweb.fullname" . }}-svc-files.{{ .Release.Namespace }}.svc.cluster.local"              
             - name: FILE_PROJECT_MAX_SIZE_IN_BYTES

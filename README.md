@@ -255,10 +255,10 @@ Parameter | Description | Default
 ----- | ----------- | -------
 `image.backend.repository` | The backend image repository to pull from | `neotys/neoload-web-backend`
 `image.backend.pullPolicy` | The backend image pull policy | `IfNotPresent`
-`image.backend.tag` | The backend image tag | `latest`
+`image.backend.tag` | The backend image tag | See appVersion in [Chart.yaml](./Chart.yaml)
 `image.frontend.repository` | The frontend image repository to pull from | `neotys/neoload-web-backend`
 `image.frontend.pullPolicy` | The frontend image pull policy | `IfNotPresent`
-`image.frontend.tag` | The frontend image tag | `latest`
+`image.frontend.tag` | The frontend image tag | See appVersion in [Chart.yaml](./Chart.yaml)
 `imagePullSecrets` | The image pull secrets | `[]`
  |  | 
 `serviceAccount.create` | Specifies whether a service account should be created | `true`
@@ -364,6 +364,11 @@ The proxy can be enabled by setting the following property :
 `neoload.configuration.proxy.https=https://username:password@host:port`
 
 ## TLS
+If you want to secure NeoLoad Web through TLS, you should either:
+ - configure [TLS at ingress level](#ingress-tls-termination)
+ - handle [TLS termination on front of the Ingress controller](#external-tls-termination)
+
+### Ingress TLS termination
 
 To enable TLS and access NeoLoad Web via https, the parameters :
 
@@ -372,25 +377,25 @@ To enable TLS and access NeoLoad Web via https, the parameters :
 
 > **Caution**: Ingresses support multiple TLS mapped to respective hosts and paths. This feature is not supported for NeoLoad Web, i.e. exactly zero or one TLS configuration is expected.
 
-### Using an existing tls secret
+#### Using an existing TLS secret
 
 Simply refer to your secret in the `ingress.tls[0].secretName` parameter, and leave both `ingress.tls[0].secretCertificate` and `ingress.tls[0].secretKey` empty.
 
-### Creating a new tls secret
+#### Creating a new TLS secret
 
-#### Provide a certificate and a private key
+##### Provide a certificate and a private key
 
 Use the following documentation or use your own means to provide both a certificate and a private key.
 
 - [Kubernetes TLS Secret generation documentation](https://kubernetes.github.io/ingress-nginx/user-guide/tls/)
 
-#### Add these to your custom values file
+##### Add these to your custom values file
 
 Copy the content of the files into the `ingress.tls[0].secretCertificate` and `ingress.tls[0].secretKey` parameters.
 
-#### Specify your new tls secret name
+##### Specify your new TLS secret name
 
-Set a name for your new tls secret name into the `ingress.tls[0].secretName` parameter.
+Set a name for your new TLS secret name into the `ingress.tls[0].secretName` parameter.
 
 ### External TLS termination
 
@@ -421,3 +426,4 @@ Any end user can prevent Google from collecting and processing their data by dow
 
 - [Data privacy and security for Google Analytics](https://support.google.com/analytics/answer/6004245)
 - [How Google uses information from sites or applications that use their services](https://www.google.com/policies/privacy/partners/)
+
