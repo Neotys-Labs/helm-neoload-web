@@ -118,6 +118,7 @@ The following docs can help you when migrating chart version with breaking chang
 | Targeted versions | Link |
 | -------- | ---- | 
 | 1.x.x to 2.x.x | [Upgrade Guide](/doc/upgrade-1.x.x-to-2.x.x.md) |
+| 2.x.x to 2.3.x | [Upgrade Guide](/doc/upgrade-2.x.x-to-2.3.x.md) |
 
 ### Version compatibility
 
@@ -146,7 +147,7 @@ This schema describe:
   * Any integration based on NeoLoad Web API
   * MongoDB server
 
-![NeoLoad Web deployment schema](./nlweb-architecture-schema.png)
+![NeoLoad Web deployment schema](./doc/nlweb-architecture-schema.png)
 
 ## High Availability
 
@@ -296,6 +297,7 @@ Parameter | Description | Default
 `resources.frontend.limits.memory` | Memory resource limit for the frontend | `2Gi`
  |  | 
 `neoload.configuration.externalTlsTermination` | Must be set to `true` if TLS termination is handled by a component [outside of the Helm Chart management](#external-tls-termination).  | `false`
+`neoload.configuration.sendUsageStatistics` | Can be set to `false` to avoid usage data collection | `true`
  |  | 
 `neoload.configuration.backend.mongo.host` | MongoDB host | 
 `neoload.configuration.backend.mongo.port` | MongoDB port | `27017`
@@ -303,10 +305,13 @@ Parameter | Description | Default
 `neoload.configuration.backend.java.xmx` | Java JVM Max heap size for the backend | `2000m`
 `neoload.configuration.backend.misc.files.maxUploadSizeInBytes` | Max file upload size in bytes | `250000000`
 `neoload.configuration.backend.misc.files.maxUploadPerWeek` | Max file upload count per week | `250`
+`neoload.configuration.backend.licensingPlatformToken` | Token for enabling licensing features (such as VUHs) | 
 `neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
 | | 
 `neoload.configuration.frontend.java.xmx` | Java JVM Max heap size for the frontend | `1200m`
 `neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
+| | 
+`neoload.configuration.proxy.https` | Connection string for your https proxy. [Learn more.](#proxy)
 | | 
 `mongodb.usePassword` | Set to false if your MongoDB connection doesn't require authentication | `true`
 `mongodb.mongodbUsername` | MongoDB Username | 
@@ -346,6 +351,17 @@ neoload:
         ENV_VAR_2: variable2
 
 ```
+
+## Proxy
+
+You can define an https proxy that will be used by NeoLoad Web when using the following set of features. This set will be extended in future upgrades.
+
+*Features taking advantage of proxies in NeoLoad Web 2.11.0*
+- Licensing
+
+The proxy can be enabled by setting the following property :
+
+`neoload.configuration.proxy.https=https://username:password@host:port`
 
 ## TLS
 If you want to secure NeoLoad Web through TLS, you should either:
@@ -389,3 +405,25 @@ Set a name for your new TLS secret name into the `ingress.tls[0].secretName` par
 >
 > It will enable the 'https://' protocol in NeoLoad Web URLs. 
 > And it will ensure that NeoLoad Web flags the JSESSIONID cookie as `secure`.
+
+## Usage data
+
+NeoLoad Web collects and sends anonymized usage and navigation data to our servers in order to continuously improve our products.
+
+You can disable this option by setting the `neoload.configuration.sendUsageStatistics` key to `false`.
+
+### Service data
+
+NeoLoad Web gathers and sends data related to the usage of specific features and services.
+
+### Navigation data
+
+NeoLoad Web uses Google Analytics cookies to track navigation data.
+
+Any end user can prevent Google from collecting and processing their data by downloading and installing the browser plug-in available here: https://tools.google.com/dlpage/gaoptout?hl=en-GB.
+
+*For more information about Data privacy management by Google, see the links below:*
+
+- [Data privacy and security for Google Analytics](https://support.google.com/analytics/answer/6004245)
+- [How Google uses information from sites or applications that use their services](https://www.google.com/policies/privacy/partners/)
+

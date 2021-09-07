@@ -21,5 +21,4 @@
 *.tmproj
 .vscode/
 
-./nlweb-architecture-schema.png
 doc/

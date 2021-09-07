@@ -46,6 +46,13 @@ spec:
                   name: {{ include "nlweb.fullname" . }}-mongo-secret
                   key: password
             {{- end }}
+            {{- if .Values.neoload.configuration.backend.licensingPlatformToken }}
+            - name: LICENSING_PLATFORM_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nlweb.fullname" . }}-licensing-secret
+                  key: licensingPlatformToken
+            {{- end }}
             - name: MONGODB_MAX_POOLSIZE
               value: {{ .Values.neoload.configuration.backend.mongo.poolSize | quote }}
             - name: NEOLOAD_WEB_PUBLIC_URL
@@ -54,12 +61,14 @@ spec:
               value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (.Values.services.api.host) | required "NeoLoad Web API URL (.Values.services.api.host) value is required." | quote }}
             - name: FILE_STORAGE_ROUTER_BASE_URL
               value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (.Values.services.files.host) | required "NeoLoad Web Files API URL (.Values.services.files.host) value is required." | quote }}
+            - name: INTERNAL_FILE_STORAGE_ROUTER_BASE_URL
+              value: "http://{{ include "nlweb.fullname" . }}-svc-files.{{ .Release.Namespace }}.svc.cluster.local"              
             - name: FILE_PROJECT_MAX_SIZE_IN_BYTES
               value: {{ int .Values.neoload.configuration.backend.misc.files.maxUploadSizeInBytes | quote }}
             - name: NLPROJECT_MAX_UPLOADED_FILES_PER_WEEK
               value: {{ int .Values.neoload.configuration.backend.misc.files.maxUploadPerWeek | quote }}
             - name: SEND_USAGE_STATISTICS
-              value: {{ true | quote }}
+              value: {{ default "true" (.Values.neoload.configuration.sendUsageStatistics | quote) }}
             - name: NLWEB_SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -83,10 +92,10 @@ spec:
             - name: KUB_SERVICE_DNS_NAME
               value: "{{ include "nlweb.fullname" . }}-svc-hazelcast.{{ .Release.Namespace }}.svc.cluster.local"
             {{- end -}}
-            {{- if .Values.neoload.configuration.misc -}}
-            {{- if .Values.neoload.configuration.misc.trackingUrl }}
-            - name: NEOTYS_TRACKING_URL
-              value: {{ .Values.neoload.configuration.misc.trackingUrl | quote }}
+            {{- if .Values.neoload.configuration.proxy -}}
+            {{- if .Values.neoload.configuration.proxy.https }}
+            - name: NEOLOAD_WEB_HTTPS_PROXY
+              value: {{ .Values.neoload.configuration.proxy.https | quote }}
             {{- end -}}
             {{- end }}
             {{- if .Values.neoload.configuration.backend.others }}
