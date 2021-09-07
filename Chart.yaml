@@ -17,7 +17,7 @@ version: 2.3.0
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: "2.10.1"
+appVersion: "2.11.0"
 
 home: https://www.neotys.com/neoload
 description: A Helm chart for deploying NeoLoad Web on Kubernetes
