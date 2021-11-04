@@ -173,8 +173,10 @@ Here is a guide for a quick setup of your `values-custom.yaml` file.
 
 ##### Host and port
 
-You need to replace `YOUR_MONGODB_HOST_URL` by your MongoDB server host.
-You also need to change the `port` value according to your MongoDB setup. 
+The preferred way to configure MongoDB connection information is to replace `YOUR_MONGODB_HOST_URL` by the
+full connection string URI. See [MongoDB official documentation](https://docs.mongodb.com/v4.0/reference/connection-string/). <br/>
+You must also set `port` to `0`. <br/>
+Username and/or password can be provided in the URI, special characters must be URL-encoded. By doing this, you must set `usePassword` to `false` in the below section "Authentication".
 
 ```yaml
 neoload:
@@ -182,23 +184,26 @@ neoload:
     backend:
       mongo:
         host: YOUR_MONGODB_HOST_URL
-        port: 27017
+        port: 0
 
 ```
 
->**Note:** For MongoDB requiring SSL connection, you must specify a MongoDB connection string as `host`. You must also set `port` to 0.
-*Example*: `mongo.mycompany.com:27017/admin?ssl=true`
+>**Example:** For MongoDB requiring SSL connection, the `host` value must look like: `mongodb://mongo.mycompany.com:27017/admin?ssl=true`
 
->**Note:** For MongoDB as a cluster of machines (replica set), you can specify the MongoDB URL of your cluster changing the `host` property value. You must also set `port` to `0`.
-*Example:* The MONGODB_HOST value must look like: 
-`rs1.mongo.mycompany.com:27017,rs2.mongo.mycompany.com:27017,rs3.mongo.mycompany.com:27017/admin`
+>**Example:** For MongoDB as a cluster of machines (replica set), the `host` value must look like: `mongodb://rs1.mongo.mycompany.com:27017,rs2.mongo.mycompany.com:27017,rs3.mongo.mycompany.com:27017/admin`
 
+>**Example:** For MongoDB connection with DNS Seedlist Connection Format, the `host` value must look like: `mongodb+srv://rs1.mongo.mycompany.com:27017,rs2.mongo.mycompany.com:27017,rs3.mongo.mycompany.com:27017/admin`
 
->**Note:** Other custom connection options are supported, see MongoDB offcial documentation [here](https://docs.mongodb.com/v4.0/reference/connection-string/#connection-string-options).
+>**Note:** The compatibility with older configurations is kept. The `host` and `port` values can be set to your MongoDB server hostname and port according to your setup.
+
+>**Note:** Other custom connection options are supported, see MongoDB connection string options official documentation [here](https://docs.mongodb.com/v4.0/reference/connection-string/#connection-string-options).
 
 ##### Authentication
 
-Depending on your mongoDB setup you must specify if an authentication is required or not by setting `usePassword` to `true` of `false`
+Depending on your mongoDB setup you must specify if an authentication is required or not. There are two options:
+
+- Either set user info directly in the URI (see above section "Host and port")
+- Or set `usePassword` to `true` and replace the `YOUR_MONGODB_USER` and `YOUR_MONGODB_PASSWORD` placeholders accordingly in below example.
 
 ```yaml
 ### MongoDB user configuration
@@ -208,7 +213,6 @@ mongodb:
   mongodbPassword: YOUR_MONGODB_PASSWORD
 ```
 
-If `usePassword` is set to `true`, you must replace the `YOUR_MONGODB_USER` and `YOUR_MONGODB_PASSWORD` placeholders accordingly.
 
 
 #### NeoLoad Web secret key
