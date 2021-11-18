@@ -119,6 +119,7 @@ The following docs can help you when migrating chart version with breaking chang
 | -------- | ---- | 
 | 1.x.x to 2.x.x | [Upgrade Guide](/doc/upgrade-1.x.x-to-2.x.x.md) |
 | 2.x.x to 2.3.x | [Upgrade Guide](/doc/upgrade-2.x.x-to-2.3.x.md) |
+| 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
 
 ### Version compatibility
 

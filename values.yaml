@@ -118,8 +118,6 @@ neoload:
     ha:
       mode: "API"
     secretKey: 
-    proxy:
-      https: 
     sendUsageStatistics: true
 
 ### MongoDB user configuration

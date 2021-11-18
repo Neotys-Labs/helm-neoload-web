@@ -14,9 +14,6 @@ neoload:
         port: 27017
       # Enable licensing features (VUHs) by setting this token, or leave it empty
       licensingPlatformToken: 
-    proxy:
-      # Set an https proxy for NeoLoad Web (learn more in the README.md)
-      https: 
 
 ### MongoDB user configuration
 mongodb:

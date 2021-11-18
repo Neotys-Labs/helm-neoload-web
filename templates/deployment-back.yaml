@@ -95,12 +95,6 @@ spec:
             - name: KUB_SERVICE_DNS_NAME
               value: "{{ include "nlweb.fullname" . }}-svc-hazelcast.{{ .Release.Namespace }}.svc.cluster.local"
             {{- end -}}
-            {{- if .Values.neoload.configuration.proxy -}}
-            {{- if .Values.neoload.configuration.proxy.https }}
-            - name: NEOLOAD_WEB_HTTPS_PROXY
-              value: {{ .Values.neoload.configuration.proxy.https | quote }}
-            {{- end -}}
-            {{- end }}
             {{- if .Values.neoload.configuration.backend.others }}
             {{- range $name, $value := .Values.neoload.configuration.backend.others }}
             - name: {{ $name }}
