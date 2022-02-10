@@ -261,7 +261,7 @@ Parameter | Description | Default
 `image.backend.repository` | The backend image repository to pull from | `neotys/neoload-web-backend`
 `image.backend.pullPolicy` | The backend image pull policy | `IfNotPresent`
 `image.backend.tag` | The backend image tag | See appVersion in [Chart.yaml](./Chart.yaml)
-`image.frontend.repository` | The frontend image repository to pull from | `neotys/neoload-web-backend`
+`image.frontend.repository` | The frontend image repository to pull from | `neotys/neoload-web-frontend`
 `image.frontend.pullPolicy` | The frontend image pull policy | `IfNotPresent`
 `image.frontend.tag` | The frontend image tag | See appVersion in [Chart.yaml](./Chart.yaml)
 `imagePullSecrets` | The image pull secrets | `[]`
