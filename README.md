@@ -39,7 +39,7 @@ Advanced | X Frontend Pods, Y Backend Pods | **X\*1 + Y\*1 CPU, X\*1500 + Y\*250
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) CLI
 - [Helm](https://helm.sh/docs/intro/install/) CLI  (~3.0.2)
 - A running [Kubernetes](https://kubernetes.io/) cluster (1.14.0 - 1.21.0)
-- A running [mongodb](https://www.mongodb.com/) accessible from the Kubernetes cluster ([see supported versions](https://www.neotys.com/documents/doc/nlweb/latest/en/html/#26054.htm#o39020))
+- A running [mongodb](https://www.mongodb.com/) accessible from the Kubernetes cluster ([see supported versions](/doc/mongo-prerequisites.md))
 - A running ingress controller deployed on the Kubernetes cluster
 
 #### Ingress controller
@@ -48,7 +48,9 @@ You can use your favorite [ingress controller](https://kubernetes.io/docs/concep
 
 This chart is tested, maintained and shipped with default values for the nginx ingress controller.
 
-You can find documentation for nginx ingress controller [here](https://kubernetes.github.io/ingress-nginx/). Basic configuration options are detailled [here](https://kubernetes.github.io/ingress-nginx/deploy/) and you can find advanced configuration options [here](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/).
+You can find documentation for nginx ingress controller [here](https://kubernetes.github.io/ingress-nginx/).
+
+Basic configuration options are detailled [here](https://kubernetes.github.io/ingress-nginx/deploy/) and you can find advanced configuration options [here](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/).
 
 > **Caution**: Using another ingress controller may require additional chart tuning from your part.
 
