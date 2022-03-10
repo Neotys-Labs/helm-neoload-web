@@ -15,6 +15,12 @@ SaaS version is available [here](https://neoload.saas.neotys.com/)
 
 This chart deploys NeoLoad Web on your Kubernetes cluster.
 
+## License
+
+NeoLoad is licensed under the following [License Agreement](https://www.neotys.com/documents/legal/eula/neoload/eula_en.html). You must agree to this license agreement to download and use the image.
+
+> **Note**: This license does not permit further distribution.
+
 ## Targeted audience
 
 This chart is meant for experimented Kubernetes/Helm users as a successful installation and exploitation of the application is very environment dependant.
