@@ -12,7 +12,7 @@
 
 ## Software
 
-Currently Supported Versions of MongoDB: 4.2, 4.4 and 4.0 (deprecated, EOL April 2022)
+Currently Supported Versions of MongoDB: 4.2, 4.4
 
 *We do not support versions not supported by MongoDB.* 
 
