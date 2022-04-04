@@ -57,11 +57,11 @@ ingress:
   ### Uncomment if you want to secure your app with https
 #  tls:
 #    - secretName: tls-secret
-#      secretCertificate: -|
+#      secretCertificate: |-
 #        -----BEGIN CERTIFICATE-----
 #        YOUR_CERTIFICATE
 #        -----END CERTIFICATE-----
-#      secretKey: -|
+#      secretKey: |-
 #        -----BEGIN PRIVATE KEY-----
 #        YOUR_PRIVATE_KEY
 #        -----END PRIVATE KEY-----
