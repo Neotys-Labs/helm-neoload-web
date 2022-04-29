@@ -59,15 +59,14 @@ services:
 ingress:
   enabled: true
   class: nginx
+  # Replace these annotations accordingly if you are not using the nginx ingress controller
   annotations: 
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/configuration-snippet: |
       proxy_ignore_client_abort "on";  
-
     nginx.ingress.kubernetes.io/proxy-body-size: 0
-
     # Enable sticky sessions for HA
     # More parameters here : https://kubernetes.github.io/ingress-nginx/examples/affinity/cookie/
     nginx.ingress.kubernetes.io/affinity: cookie
