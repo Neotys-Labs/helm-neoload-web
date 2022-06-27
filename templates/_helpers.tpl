@@ -25,6 +25,13 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
+Build the name of the secrets-key secret.
+*/}}
+{{- define "nlweb.secrets.key.name" -}}
+{{- printf "%s-%s" (include "nlweb.fullname" .) "key-secret" -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "nlweb.chart" -}}

@@ -54,6 +54,11 @@ spec:
               value: {{ .Values.neoload.configuration.misc.trackingUrl | quote }}
             {{- end -}}
             {{- end }}
+            - name: INTERNAL_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nlweb.secrets.key.name" . }}
+                  key: internalTokenSecret
             - name: JSESSIONID_SECURE_FLAG
             {{- if eq ((include "nlweb.helpers.getScheme" .) | toString) "https://" }}
               value: "true"
