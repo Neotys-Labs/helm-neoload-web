@@ -75,8 +75,13 @@ spec:
             - name: NLWEB_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "nlweb.fullname" . }}-key-secret
+                  name: {{ include "nlweb.secrets.key.name" . }}
                   key: nlwSecretKey
+            - name: INTERNAL_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nlweb.secrets.key.name" . }}
+                  key: internalTokenSecret
             - name: DEPLOYMENT_TYPE
               value: "helm/kubernetes"
             - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
