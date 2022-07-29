@@ -328,7 +328,12 @@ Parameter | Description | Default
 `neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
 | | 
 `neoload.configuration.proxy.https` | Connection string for your https proxy. [Learn more.](#proxy)
-| | 
+| |
+`neoload.labels.backend` | Add labels to backend resources ex: `key: value`.
+`neoload.labels.frontend` | Add labels to frontend resources ex: `key: value`.
+`neoload.annotations.backend` | Add annotations to backend resources ex: `key: value`.
+`neoload.annotations.frontend` | Add annotations to frontend resources ex: `key: value`.
+| |
 `mongodb.usePassword` | Set to false if your MongoDB connection doesn't require authentication | `true`
 `mongodb.mongodbUsername` | MongoDB Username | 
 `mongodb.mongodbPassword` | MongoDB Password | 
