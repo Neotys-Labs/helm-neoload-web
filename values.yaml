@@ -96,6 +96,12 @@ resources:
 
 # NLWeb configuration
 neoload:
+  labels:
+    backend: {}
+    frontend: {}
+  annotations:
+    backend: {}
+    frontend: {}
   configuration:
     backend:
       mongo:
