@@ -18,7 +18,11 @@ spec:
       protocol: {{ default "TCP" $service.protocol }}
       name: http
   selector:
-    {{- include "nlweb.selectorLabels" $ | nindent 4 }}
+    {{- if eq $label "webapp" }}
+    {{- include "nlweb.frontend.selectorLabels" $ | nindent 4 }}
+    {{- else if or (eq $label "files") (eq $label "api") }}
+    {{- include "nlweb.backend.selectorLabels" $ | nindent 4 }}
+    {{- end }}
 
 ---
 

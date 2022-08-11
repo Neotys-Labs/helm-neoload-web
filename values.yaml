@@ -25,16 +25,17 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name:
 
-podSecurityContext:
-  fsGroup: 2000
+#podSecurityContext:
+#  fsGroup: 2000
 
 securityContext:
-  # capabilities:
-  #   drop:
-  #   - ALL
+  capabilities:
+     drop:
+     - ALL
+  allowPrivilegeEscalation: false
+  runAsNonRoot: true
   # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  runAsUser: 2000
+  # runAsUser: 2000
 
 services:
   webapp:
@@ -55,28 +56,6 @@ services:
     port: 80
     ingress:
       paths: ["/"]
-
-ingress:
-  enabled: true
-  class: nginx
-  # Replace these annotations accordingly if you are not using the nginx ingress controller
-  annotations: 
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_ignore_client_abort "on";  
-    nginx.ingress.kubernetes.io/proxy-body-size: 0
-    # Enable sticky sessions for HA
-    # More parameters here : https://kubernetes.github.io/ingress-nginx/examples/affinity/cookie/
-    nginx.ingress.kubernetes.io/affinity: cookie
-    nginx.ingress.kubernetes.io/affinity-mode: persistent
-    nginx.ingress.kubernetes.io/session-cookie-max-age: 3600
-    nginx.ingress.kubernetes.io/session-cookie-change-on-failure: true  
-#  tls:
-#    - secretName: 
-#      secretCertificate: 
-#      secretKey: 
 
 resources:
   backend:

@@ -53,8 +53,10 @@ Advanced | X Frontend Pods, Y Backend Pods | **X\*1 + Y\*1 CPU, X\*1500 + Y\*250
 You can use your favorite [ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) for enabling your ingresses to route external traffic to NeoLoad Web.
 
 This chart is tested, maintained and shipped with default values for the nginx ingress controller.
+Supported ingress controllers are: nginx, OpenShift.
 
 You can find documentation for nginx ingress controller [here](https://kubernetes.github.io/ingress-nginx/).
+You can find documentation for OpenShift ingress controller [here](https://docs.openshift.com/container-platform/4.7/networking/ingress-operator.html).
 
 Basic configuration options are detailled [here](https://kubernetes.github.io/ingress-nginx/deploy/) and you can find advanced configuration options [here](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/).
 
@@ -63,6 +65,18 @@ Basic configuration options are detailled [here](https://kubernetes.github.io/in
 #### MongoDB Prerequisites
 
 You can find your external MongoDB prerequisites [here](/doc/mongo-prerequisites.md).
+
+#### OpenShift
+
+You have a specific values-custom to ease the deployment of NeoLoad Web on OpenShift: values-custom-openshift.yaml.
+
+In this file you will have to modify the security context parameters to match your cluster rights.
+You can find documentation on security context [here](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/).
+
+To enable TLS on your routes you should:
+- Have a valid certificate.
+- Fill your certificate in the values-custom-openshift.yaml file.
+- Or reference the name of the secret that holds that certificat.
 
 ## Installation
 

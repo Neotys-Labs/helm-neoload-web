@@ -14,8 +14,6 @@ neoload:
         port: 27017
       # Enable licensing features (VUHs) by setting this token, or leave it empty
       licensingPlatformToken:
-securityContext:
-  runAsUser: 2000
 
 ### MongoDB user configuration
 mongodb:
@@ -36,22 +34,10 @@ services:
 ### Choose your preferred ingress controller configuration
 ingress:
   enabled: true
-  # Replace these annotations accordingly if you are not using the nginx ingress controller
+  # Replace these annotations accordingly if you are not using the openshift ingress controller
   annotations:
-    # nginx
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_ignore_client_abort "on";  
-    nginx.ingress.kubernetes.io/proxy-body-size: 0
-    # Enable sticky sessions for HA
-    # More parameters here : https://kubernetes.github.io/ingress-nginx/examples/affinity/cookie/
-    nginx.ingress.kubernetes.io/affinity: cookie
-    nginx.ingress.kubernetes.io/affinity-mode: persistent
-    nginx.ingress.kubernetes.io/session-cookie-max-age: 3600
-    nginx.ingress.kubernetes.io/session-cookie-change-on-failure: true
+    haproxy.router.openshift.io/rewrite-target: "/"
+    route.openshift.io/termination: "edge"
 
   ### TLS configuration
   ### Uncomment if you want to secure your app with https
