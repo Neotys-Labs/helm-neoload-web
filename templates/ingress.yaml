@@ -14,7 +14,6 @@ metadata:
   labels:
     {{- include "nlweb.labels" . | nindent 4 }}
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
     {{- range $label, $annotation := .Values.ingress.annotations }}
     {{ $label }}: {{ $annotation | quote }}
     {{- end }}
