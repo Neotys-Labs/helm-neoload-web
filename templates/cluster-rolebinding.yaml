@@ -5,7 +5,7 @@ metadata:
   name: {{ .Release.Name }}-hazelcast-cluster-role-binding
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: {{ include "nlweb.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
