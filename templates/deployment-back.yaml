@@ -99,8 +99,6 @@ spec:
                   key: internalTokenSecret
             - name: DEPLOYMENT_TYPE
               value: "helm/kubernetes"
-            - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
-              value: "true"
             - name: HA
               value: "true"
             - name: START_MODE
@@ -110,6 +108,8 @@ spec:
             {{- if eq (include "nlweb.ha.mode" .) "API" }}
             - name: KUB_SERVICE_NAME
               value: "{{ include "nlweb.fullname" . }}-svc-hazelcast"
+            - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
+              value: "true"
             {{- end -}}
             {{- if eq (include "nlweb.ha.mode" .) "DNS" }}
             - name: KUB_SERVICE_DNS_NAME

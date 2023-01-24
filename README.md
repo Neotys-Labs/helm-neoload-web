@@ -343,6 +343,8 @@ Parameter | Description | Default
 | | 
 `neoload.configuration.proxy.https` | Connection string for your https proxy. [Learn more.](#proxy)
 | |
+`neoload.configuration.ha.mode` | Pod discovery mecanism, can be `DNS` or `API`                                                                                         | `DNS`
+| |
 `neoload.labels.backend` | Add labels to backend resources ex: `key: value`. | `{}`
 `neoload.labels.frontend` | Add labels to frontend resources ex: `key: value`. | `{}`
 `neoload.annotations.backend` | Add annotations to backend resources ex: `key: value`. | `{}`

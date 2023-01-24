@@ -98,7 +98,7 @@ neoload:
       java:
         xmx: 1200m
     ha:
-      mode: "API"
+      mode: "DNS"
     secretKey: 
     sendUsageStatistics: true
 
