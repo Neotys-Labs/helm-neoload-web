@@ -8,6 +8,7 @@ metadata:
 spec:
   type: "ClusterIP"
   {{- if eq (include "nlweb.ha.mode" .) "DNS" }}
+  publishNotReadyAddresses: true
   clusterIP: None
   {{- end }}
   ports:

@@ -165,7 +165,7 @@ High Availability (HA) Mode
 TODO : Add "DNS" to $availableHaModes when it is supported by nlweb
 */}}
 {{- define "nlweb.ha.mode" -}}
-    {{- $availableHaModes := list "API" -}}
+    {{- $availableHaModes := list "API" "DNS" -}}
     {{- $haMode := default "API" .Values.neoload.configuration.ha.mode -}}
     {{- if (has $haMode $availableHaModes) -}}
         {{ $haMode }}
