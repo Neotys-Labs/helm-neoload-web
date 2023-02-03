@@ -162,7 +162,6 @@ Get backend image tag
 
 {{/*
 High Availability (HA) Mode
-TODO : Add "DNS" to $availableHaModes when it is supported by nlweb
 */}}
 {{- define "nlweb.ha.mode" -}}
     {{- $availableHaModes := list "API" "DNS" -}}
@@ -173,4 +172,8 @@ TODO : Add "DNS" to $availableHaModes when it is supported by nlweb
         {{- $error := printf "The HA mode must be API or DNS. Got : %s" $haMode -}}
         {{ required $error "" }}
     {{- end -}}
+{{- end -}}
+
+{{- define "nlweb.service-hazelcast-name" -}}
+    {{ include "nlweb.fullname" . }}-svc-hazelcast-{{ include "nlweb.ha.mode" . | lower }}
 {{- end -}}
