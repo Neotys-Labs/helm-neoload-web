@@ -57,11 +57,11 @@ spec:
               value: {{ .Release.Namespace | quote }}
             {{- if eq (include "nlweb.ha.mode" .) "API" }}
             - name: KUB_SERVICE_NAME
-              value: "{{ include "nlweb.fullname" . }}-svc-hazelcast"
+              value: "{{ include "nlweb.service-hazelcast-name" . }}"
             {{- end -}}
             {{- if eq (include "nlweb.ha.mode" .) "DNS" }}
             - name: KUB_SERVICE_DNS_NAME
-              value: "{{ include "nlweb.fullname" . }}-svc-hazelcast.{{ .Release.Namespace }}.svc.cluster.local"
+              value: "{{ include "nlweb.service-hazelcast-name" . }}.{{ .Release.Namespace }}.svc.cluster.local"
             {{- end -}}
             {{- if .Values.neoload.configuration.misc -}}
             {{- if .Values.neoload.configuration.misc.trackingUrl }}
