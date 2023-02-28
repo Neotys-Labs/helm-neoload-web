@@ -200,7 +200,7 @@ Here is a guide for a quick setup of your `values-custom.yaml` file.
 ##### Host and port
 
 The preferred way to configure MongoDB connection information is to replace `YOUR_MONGODB_HOST_URL` by the
-full connection string URI. See [MongoDB official documentation](https://docs.mongodb.com/v4.0/reference/connection-string/). <br/>
+full connection string URI. See [MongoDB official documentation](https://www.mongodb.com/docs/v4.4/reference/connection-string/). <br/>
 You must also set `port` to `0`. <br/>
 Username and/or password can be provided in the URI, special characters must be URL-encoded. By doing this, you must set `usePassword` to `false` in the below section "Authentication".
 
@@ -222,7 +222,7 @@ neoload:
 
 >**Note:** The compatibility with older configurations is kept. The `host` and `port` values can be set to your MongoDB server hostname and port according to your setup.
 
->**Note:** Other custom connection options are supported, see MongoDB connection string options official documentation [here](https://docs.mongodb.com/v4.0/reference/connection-string/#connection-string-options).
+>**Note:** Other custom connection options are supported, see MongoDB connection string options official documentation [here](https://www.mongodb.com/docs/v4.4/reference/connection-string/).
 
 ##### Authentication
 
