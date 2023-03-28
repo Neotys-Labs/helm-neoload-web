@@ -283,7 +283,6 @@ Here is a list of all parameters supported by this helm chart.
 
 Parameter | Description | Default
 ----- | ----------- | -------
-`clusterRbac.enabled` | Specifies whether a ClusterRole and ClusterRoleBinding should be created | `true`
 `image.backend.repository` | The backend image repository to pull from | `neotys/neoload-web-backend`
 `image.backend.pullPolicy` | The backend image pull policy | `IfNotPresent`
 `image.backend.tag` | The backend image tag | See appVersion in [Chart.yaml](./Chart.yaml)
@@ -355,6 +354,7 @@ Parameter | Description | Default
 `mongodb.mongodbUsername` | MongoDB Username | 
 `mongodb.mongodbPassword` | MongoDB Password | 
  |  | 
+`clusterRbac.enabled` | Specifies whether a ClusterRole and ClusterRoleBinding should be created | `true`
 `nodeSelector` | Node Selector | `{}`
 `tolerations` | Pod's tolerations | `[]`
 `replicaCount.frontend` | Number of frontend pods in your Deployment. [Learn more.](#high-availability) | 2
