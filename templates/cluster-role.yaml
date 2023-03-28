@@ -1,4 +1,5 @@
 {{- if eq (include "nlweb.ha.mode" .) "API" -}}
+{{- if .Values.clusterRbac.enabled -}}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
@@ -7,4 +8,5 @@ rules:
 - apiGroups: [""]
   resources: ["endpoints", "pods", "nodes", "services"]
   verbs: ["get", "list"]
+{{- end }}
 {{- end }}
