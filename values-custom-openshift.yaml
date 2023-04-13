@@ -30,6 +30,8 @@ services:
   files:
     host: neoload-web-files.mycompany.com
 
+domain: .mycompany.com
+
 ### Ingress configuration
 ### Choose your preferred ingress controller configuration
 ingress:
