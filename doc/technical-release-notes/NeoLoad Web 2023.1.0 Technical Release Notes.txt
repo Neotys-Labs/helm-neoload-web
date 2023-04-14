@@ -1,0 +1,15 @@
+NeoLoad Web 2023.1.0 Technical Release Notes
+
+[LOAD-28102] - The download of the usage events with the public API was not working.
+[LOAD-28109] - A bad status was returned when a test result without a Test Setting was launched from NeoLoad.
+[LOAD-28421] - Cloud IP sessions were not properly managed after due date modifications.
+[LOAD-28423] - Unexpected error was raised when trying to reserve a dedicated IP from Customer Area.
+[LOAD-28318] - Missing support for asian character in PDF export.
+[LOAD-28215] - The NeoLoad Web Front’s authorization cookie was not flagged as secure.
+[LOAD-28144] - No scrollbar for tabs was displayed when using very small screens.
+[LOAD-28247] - Test Analysis Graph unit should be hidden when curve is hidden.
+[LOAD-28219] - Tests without transaction could cause the result to remain in status « computing ».
+[LOAD-28069] - No error messages were issued when unauthorized users retrieved audit events.
+[LOAD-28073] - In Test Analysis Configuration, objectives values were still editable in Reference mode.
+
+--
