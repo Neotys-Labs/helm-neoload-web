@@ -299,7 +299,7 @@ Parameter | Description | Default
 `podSecurityContext`| The pod security context | `{ fsGroup: 2000 }`
 `securityContext` | The security context | `{ runAsUser: 2000 }`
  |  |
-`domain` | Domain name | `.neotys.com`
+`domain` | Domain name |
 |  |
 `services.webapp.host` | The hostname for the webapp/front deployment | 
 `services.webapp.type` | The service type for the webapp/front deployment | `ClusterIP`
