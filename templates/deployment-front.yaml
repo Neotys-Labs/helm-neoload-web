@@ -86,6 +86,14 @@ spec:
               value: {{ $value | quote }}
             {{- end }}
             {{- end }}
+            - name: COOKIE_USE_SSL
+            {{- if eq ((include "nlweb.helpers.getScheme" .) | toString) "https://" }}
+              value: "true"
+            {{- else }}
+              value: "false"
+            {{- end }}
+            - name: COOKIE_DOMAIN
+              value: {{ .Values.domain | required "NeoLoad Web domain (.Values.domain) value is required." | quote }}
           ports:
             - name: webapp
               containerPort: 9090

@@ -145,6 +145,8 @@ The following docs can help you when migrating chart version with breaking chang
 | 1.x.x to 2.x.x | [Upgrade Guide](/doc/upgrade-1.x.x-to-2.x.x.md) |
 | 2.x.x to 2.3.x | [Upgrade Guide](/doc/upgrade-2.x.x-to-2.3.x.md) |
 | 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
+| 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
+| 4.2.x to 2023.1.x | [Upgrade Guide](/doc/upgrade-4.2.x-to-2023.1.x.md) |
 
 ### Version compatibility
 
@@ -296,7 +298,9 @@ Parameter | Description | Default
  |  | 
 `podSecurityContext`| The pod security context | `{ fsGroup: 2000 }`
 `securityContext` | The security context | `{ runAsUser: 2000 }`
- |  | 
+ |  |
+`domain` | Domain name |
+|  |
 `services.webapp.host` | The hostname for the webapp/front deployment | 
 `services.webapp.type` | The service type for the webapp/front deployment | `ClusterIP`
 `services.webapp.port` | The service port for the webapp/front deployment | `80`
