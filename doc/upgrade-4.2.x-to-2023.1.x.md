@@ -2,7 +2,7 @@
 
 *Before you proceed, make sure you've read on our general [Upgrade](../README.md#Upgrade) section.* 
 
-### Configuration
+## Configuration
 
 A new mandatory parameter is to add in your values custom file :
 
@@ -11,7 +11,7 @@ domain: .my-company-name.com
 
 ```
 This parameter is used for cookies purpose, especially if you try to access API link in the Front like for the Audit feature.
-This parameter is now mandatory and the deployment will not be applied if it is not set.
+This parameter is now mandatory and the deployment will fail if it is not set.
 
 ## Steps
 
