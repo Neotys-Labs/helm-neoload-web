@@ -59,8 +59,6 @@ spec:
               value: {{ .Release.Namespace | quote }}
             - name: KUB_HZ_PORT
               value: "6701"
-            - name: CLUSTER_GROUP
-              value: "nlw"
             {{- if eq (include "nlweb.ha.mode" .) "API" }}
             - name: KUB_SERVICE_NAME
               value: "{{ include "nlweb.service-hazelcast-name" . }}"
