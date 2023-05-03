@@ -299,7 +299,7 @@ Parameter | Description | Default
 `podSecurityContext`| The pod security context | `{ fsGroup: 2000 }`
 `securityContext` | The security context | `{ runAsUser: 2000 }`
  |  |
-`domain` | Domain name |
+`domain` | Domain name used to configure cookies. If your frontend and api URLs are `web.mycompany.com` & `api.mycompany.com`, then the value of domain must be `.mycompany.com` |
 |  |
 `services.webapp.host` | The hostname for the webapp/front deployment | 
 `services.webapp.type` | The service type for the webapp/front deployment | `ClusterIP`
