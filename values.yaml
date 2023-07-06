@@ -57,6 +57,8 @@ services:
     ingress:
       paths: ["/"]
 
+domain: .mycompany.com
+
 resources:
   backend:
     requests:
