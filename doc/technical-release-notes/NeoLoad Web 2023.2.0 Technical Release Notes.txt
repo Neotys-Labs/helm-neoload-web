@@ -1,0 +1,11 @@
+NeoLoad Web 2023.2.0 Technical Release Notes
+
+
+[LOAD-28667] - "Current license expire sooner than the test duration" error could occur when using permanent licenses.
+[LOAD-28817] - Test could terminate too soon when requesting NCP infrastructure.
+[LOAD-28784] - Neoload Web could fail to use VUHs when VUs were not available.
+[LOAD-28783] - Companion was not available for guest users.
+[LOAD-28950] - Event details for Objective events may not be updated correctly.
+[LOAD-28793] - Overriding a scenario with as-code could sometimes not work in public API.
+
+--
