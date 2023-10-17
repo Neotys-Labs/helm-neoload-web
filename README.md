@@ -244,6 +244,11 @@ mongodb:
   mongodbPassword: YOUR_MONGODB_PASSWORD
 ```
 
+##### TLS configuration
+
+See the dedicated page ['Configuring MongoDB and TLS'](./doc/configuring-mongodb-and-tls.md)
+
+
 #### NeoLoad Web secret key
 
 The NeoLoad Web secret key is used to encrypt and decrypt the passwords that are stored by NeoLoad Web.
