@@ -1,3 +1,21 @@
+NeoLoad Web 2023.1.2 Technical Release Notes
+
+
+[LOAD-28806] - HTTP proxy was not used for GIT configurations.
+[LOAD-28878] - Recording with Microsoft Edge did not work.
+[LOAD-28887] - [QTest Integration] External URL to qTest was missing in NLW.
+[LOAD-29217] - Fix CVE issues.
+[LOAD-29257] - The XML formatter did not process spaces correctly.
+
+--
+
+NeoLoad Web 2023.1.1 Technical Release Notes
+
+
+[LOAD-28672] - Fix several CVE issues.
+
+--
+
 NeoLoad Web 2023.1.0 Technical Release Notes
 
 [LOAD-28102] - The download of the usage events with the public API was not working.

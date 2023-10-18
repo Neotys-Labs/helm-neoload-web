@@ -1,0 +1,6 @@
+NeoLoad Web 2023.3.0 Technical Release Notes
+
+[LOAD-29549] - Webhooks could not be invoked in some cases.
+[LOAD-29281] - Running benches could be moved from a test settings to another one in the same workspace.
+
+--
