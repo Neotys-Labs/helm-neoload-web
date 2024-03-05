@@ -37,6 +37,10 @@ domain: .mycompany.com
 ### Ingress configuration
 ### Choose your preferred ingress controller configuration
 ingress:
+  ## If the cluster has multiple ingress controllers set the ingressClassName to the proper value, default value is "nginx"
+  ##
+  # spec:
+  #   ingressClassName: 
   enabled: true
   # Replace these annotations accordingly if you are not using the nginx ingress controller
   annotations:

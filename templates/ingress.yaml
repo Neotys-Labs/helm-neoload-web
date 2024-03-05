@@ -18,6 +18,7 @@ metadata:
     {{ $label }}: {{ $annotation | quote }}
     {{- end }}
 spec:
+  ingressClassName: {{ $.Values.ingress.spec.ingressClassName | default "nginx" }}
 {{- if .Values.ingress.tls }}
   tls:
   {{- range .Values.ingress.tls }}
