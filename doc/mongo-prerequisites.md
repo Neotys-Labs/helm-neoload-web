@@ -12,7 +12,7 @@
 
 ## Software
 
-Currently Supported Versions of MongoDB: 4.4, 5.0
+Currently Supported Versions of MongoDB: 5.0, 6.0
 
 *We do not support versions not supported by MongoDB.* 
 
