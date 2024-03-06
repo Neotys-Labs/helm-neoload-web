@@ -39,9 +39,8 @@ domain: .mycompany.com
 ingress:
   enabled: true
   # Replace these annotations accordingly if you are not using the nginx ingress controller
+  className: nginx
   annotations:
-    # nginx
-    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     nginx.ingress.kubernetes.io/rewrite-target: /
