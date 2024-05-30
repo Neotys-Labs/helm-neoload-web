@@ -1,8 +1,8 @@
 # NeoLoad Web
 
-[NeoLoad Web](https://www.neotys.com/neoload/overview) allows testing teams to view, analyze and monitor tests wherever they're running from and wherever the teams are. Enabling real-time access to this information improves anomaly detection by allowing performance trending and simplifying root cause analysis. 
+[NeoLoad Web](https://www.neotys.com/neoload/overview) allows testing teams to view, analyze and monitor tests wherever they're running from and wherever the teams are. Enabling real-time access to this information improves anomaly detection by allowing performance trending and simplifying root cause analysis.
 
-SaaS version is available [here](https://neoload.saas.neotys.com/) 
+SaaS version is available [here](https://neoload.saas.neotys.com/)
 
 **Key features**
 
@@ -73,6 +73,7 @@ In this file you will have to modify the security context parameters to match yo
 You can find documentation on security context [here](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/).
 
 To enable TLS on your routes you should:
+
 - Have a valid certificate.
 - Fill your certificate in the values-custom-openshift.yaml file.
 - Or reference the name of the secret that holds that certificat.
@@ -81,11 +82,11 @@ To enable TLS on your routes you should:
 
 1. Add the Neotys chart repository or update it if you already had it registered
 
-```bash		
+```bash  
 helm repo add neotys https://helm.prod.neotys.com/stable/
 ```
 
-```bash		
+```bash  
 helm repo update
 ```
 
@@ -94,17 +95,18 @@ helm repo update
 ```bash
 wget https://raw.githubusercontent.com/Neotys-Labs/helm-neoload-web/master/values-custom.yaml
 ```
+
 >You can refer to the ['Getting started'](#getting-started) section for basic configuration options.
 
 3. Create a dedicated namespace
 
-```bash		
+```bash  
 kubectl create namespace my-namespace
 ```
 
 4. Install with the following command
 
-```bash		
+```bash  
 helm install my-release neotys/nlweb -n my-namespace -f ./values-custom.yaml
 ```
 
@@ -115,23 +117,24 @@ helm install my-release neotys/nlweb -n my-namespace -f ./values-custom.yaml
 To uninstall the `my-release` deployment:
 
 ```bash
-$ helm uninstall my-release -n my-namespace
+helm uninstall my-release -n my-namespace
 ```
 
 ## Upgrade
 
 You can use the `helm upgrade` command when you want to :
+
 1. Upgrade your NeoLoad Web installation.
 2. Benefit from a newer chart version.
 3. Change some values/environment variables in your deployment.
 
 > **Warning** : In that last case, keep in mind that when updating your repositories, you may fetch a new chart/application version that could change your whole deployment. To avoid that, you can add the `--version=x.x.x` to the `helm upgrade` command and force your chart version to remain the same as the one deployed.
 
-```bash		
+```bash  
 helm repo update
 ```
 
-```bash		
+```bash  
 helm upgrade my-release neotys/nlweb -n my-namespace -f ./values-custom.yaml
 ```
 
@@ -140,7 +143,7 @@ helm upgrade my-release neotys/nlweb -n my-namespace -f ./values-custom.yaml
 The following docs can help you when migrating chart version with breaking changes.
 
 | Targeted versions | Link |
-| -------- | ---- | 
+| -------- | ---- |
 | 1.x.x to 2.x.x | [Upgrade Guide](/doc/upgrade-1.x.x-to-2.x.x.md) |
 | 2.x.x to 2.3.x | [Upgrade Guide](/doc/upgrade-2.x.x-to-2.3.x.md) |
 | 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
@@ -150,6 +153,7 @@ The following docs can help you when migrating chart version with breaking chang
 ### Version compatibility
 
 Due to Helm Charts nature, there are two distinct version numbers to keep track of :
+
 - NeoLoad Web version
 - The Chart version
 
@@ -165,14 +169,15 @@ Chart Version >= 2.0.0 | **KO** | OK
 ## Architecture
 
 This schema describe:
-* Components created inside the kubernetes cluster by this chart
-* How they interact between them
-* How they interact with components outside the cluster:
-  * NeoLoad Web UI through a web browser
-  * NeoLoad Controller
-  * NeoLoad Load Generator
-  * Any integration based on NeoLoad Web API
-  * MongoDB server
+
+- Components created inside the kubernetes cluster by this chart
+- How they interact between them
+- How they interact with components outside the cluster:
+  - NeoLoad Web UI through a web browser
+  - NeoLoad Controller
+  - NeoLoad Load Generator
+  - Any integration based on NeoLoad Web API
+  - MongoDB server
 
 ![NeoLoad Web deployment schema](./doc/nlweb-architecture-schema.png)
 
@@ -240,6 +245,9 @@ mongodb:
   mongodbPassword: YOUR_MONGODB_PASSWORD
 ```
 
+##### TLS configuration
+
+See the dedicated page ['Configuring MongoDB and TLS'](./doc/configuring-mongodb-and-tls.md)
 
 
 #### NeoLoad Web secret key
@@ -271,10 +279,11 @@ services:
 
 >**Note:** You must configure your DNS records. These 3 hostnames must point to the Ingress controller endpoint.
 >*Example:* If the nginx ingress controller is bound to the IP 10.0.0.0, your must define the following DNS records:
+>
 >```
->neoload-web.mycompany.com.        60 IN A	10.0.0.0
->neoload-web-api.mycompany.com.    60 IN A	10.0.0.0
->neoload-web-files.mycompany.com.  60 IN A	10.0.0.0
+>neoload-web.mycompany.com.        60 IN A 10.0.0.0
+>neoload-web-api.mycompany.com.    60 IN A 10.0.0.0
+>neoload-web-files.mycompany.com.  60 IN A 10.0.0.0
 >```
 >
 
@@ -291,35 +300,35 @@ Parameter | Description | Default
 `image.frontend.pullPolicy` | The frontend image pull policy | `IfNotPresent`
 `image.frontend.tag` | The frontend image tag | See appVersion in [Chart.yaml](./Chart.yaml)
 `imagePullSecrets` | The image pull secrets | `[]`
- |  | 
+ |  |
 `serviceAccount.create` | Specifies whether a service account should be created | `true`
-`serviceAccount.name` | The name of the service account to use | 
- |  | 
+`serviceAccount.name` | The name of the service account to use |
+ |  |
 `podSecurityContext`| The pod security context | `{ fsGroup: 2000 }`
 `securityContext` | The security context | `{ runAsUser: 2000 }`
  |  |
 `domain` | Domain name used to configure cookies. If your frontend and api URLs are `web.mycompany.com` & `api.mycompany.com`, then the value of domain must be `.mycompany.com` |
 |  |
-`services.webapp.host` | The hostname for the webapp/front deployment | 
+`services.webapp.host` | The hostname for the webapp/front deployment |
 `services.webapp.type` | The service type for the webapp/front deployment | `ClusterIP`
 `services.webapp.port` | The service port for the webapp/front deployment | `80`
 `services.webapp.ingress.paths` | The path mapping for the webapp/front ingress | `[""]`
-`services.api.host` | The hostname for the api deployment | 
+`services.api.host` | The hostname for the api deployment |
 `services.api.type` | The service type for the api deployment | `ClusterIP`
 `services.api.port` | The service port for the api deployment | `80`
 `services.api.ingress.paths` | The path mapping for the api ingress | `[""]`
-`services.files.host` | The hostname for the files deployment | 
+`services.files.host` | The hostname for the files deployment |
 `services.files.type` | The service type for the files deployment | `ClusterIP`
 `services.files.port` | The service port for the files deployment | `80`
 `services.files.ingress.paths` | The path mapping for the files ingress | `[""]`
- |  | 
+ |  |
 `ingress.enabled` | Enable ingresses | `true`
 `ingress.class` | Specifies which ingress controller class should listen to this ingress | `nginx`
-`ingress.annotations` | Annotations for configuring the ingress | 
-`ingress.tls[0].secretName` | The name of your TLS secret | 
+`ingress.annotations` | Annotations for configuring the ingress |
+`ingress.tls[0].secretName` | The name of your TLS secret |
 `ingress.tls[0].secretCertificate` | The content of your imported certificate | `{}`
-`ingress.tls[0].secretKey` | The content of your imported private key | 
- |  | 
+`ingress.tls[0].secretKey` | The content of your imported private key |
+ |  |
 `resources.backend.requests.cpu` | CPU resource request for the backend | `1`
 `resources.backend.requests.memory` | Memory resource request for the backend | `2Gi`
 `resources.backend.limits.cpu` | CPU resource limit for the backend | `2`
@@ -328,22 +337,22 @@ Parameter | Description | Default
 `resources.frontend.requests.memory` | Memory resource request for the frontend | `1500Mi`
 `resources.frontend.limits.cpu` | CPU resource limit for the frontend | `2`
 `resources.frontend.limits.memory` | Memory resource limit for the frontend | `2Gi`
- |  | 
+ |  |
 `neoload.configuration.externalTlsTermination` | Must be set to `true` if TLS termination is handled by a component [outside of the Helm Chart management](#external-tls-termination).  | `false`
 `neoload.configuration.sendUsageStatistics` | Can be set to `false` to avoid usage data collection | `true`
- |  | 
-`neoload.configuration.backend.mongo.host` | MongoDB host | 
+ |  |
+`neoload.configuration.backend.mongo.host` | MongoDB host |
 `neoload.configuration.backend.mongo.port` | MongoDB port | `27017`
 `neoload.configuration.backend.mongo.poolSize` | MongoDB pool size | `50`
 `neoload.configuration.backend.java.xmx` | Java JVM Max heap size for the backend | `2000m`
 `neoload.configuration.backend.misc.files.maxUploadSizeInBytes` | Max file upload size in bytes | `250000000`
 `neoload.configuration.backend.misc.files.maxUploadPerWeek` | Max file upload count per week | `250`
-`neoload.configuration.backend.licensingPlatformToken` | Token for enabling licensing features (such as VUHs) | 
+`neoload.configuration.backend.licensingPlatformToken` | Token for enabling licensing features (such as VUHs) |
 `neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
-| | 
+| |
 `neoload.configuration.frontend.java.xmx` | Java JVM Max heap size for the frontend | `1200m`
 `neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
-| | 
+| |
 `neoload.configuration.proxy.https` | Connection string for your https proxy. [Learn more.](#proxy)
 | |
 `neoload.configuration.ha.mode` | Pod discovery mecanism, can be `DNS` or `API`                                                                                         | `API`
@@ -354,9 +363,9 @@ Parameter | Description | Default
 `neoload.annotations.frontend` | Add annotations to frontend resources ex: `key: value`. | `{}`
 | |
 `mongodb.usePassword` | Set to false if your MongoDB connection doesn't require authentication | `true`
-`mongodb.mongodbUsername` | MongoDB Username | 
-`mongodb.mongodbPassword` | MongoDB Password | 
- |  | 
+`mongodb.mongodbUsername` | MongoDB Username |
+`mongodb.mongodbPassword` | MongoDB Password |
+ |  |
 `clusterRbac.enabled` | Specifies whether a ClusterRole and ClusterRoleBinding should be created | `true`
 `nodeSelector` | Node Selector | `{}`
 `tolerations` | Pod's tolerations | `[]`
@@ -398,6 +407,7 @@ neoload:
 You can define an https proxy that will be used by NeoLoad Web when using the following set of features. This set will be extended in future upgrades.
 
 *Features taking advantage of proxies in NeoLoad Web 2.11.0*
+
 - Licensing
 
 The proxy can be enabled by setting the following property :
@@ -405,9 +415,11 @@ The proxy can be enabled by setting the following property :
 `neoload.configuration.proxy.https=https://username:password@host:port`
 
 ## TLS
+
 If you want to secure NeoLoad Web through TLS, you should either:
- - configure [TLS at ingress level](#ingress-tls-termination)
- - handle [TLS termination on front of the Ingress controller](#external-tls-termination)
+
+- configure [TLS at ingress level](#ingress-tls-termination)
+- handle [TLS termination on front of the Ingress controller](#external-tls-termination)
 
 ### Ingress TLS termination
 
@@ -440,11 +452,11 @@ Set a name for your new TLS secret name into the `ingress.tls[0].secretName` par
 
 ### External TLS termination
 
->**Caution**: 
-> If you choose to handle TLS on front of the Ingress controller, we recommend, for security reason, to set the 
+>**Caution**:
+> If you choose to handle TLS on front of the Ingress controller, we recommend, for security reason, to set the
 > value of the property `neoload.configuration.externalTlsTermination` to `true`.
 >
-> It will enable the 'https://' protocol in NeoLoad Web URLs. 
+> It will enable the 'https://' protocol in NeoLoad Web URLs.
 > And it will ensure that NeoLoad Web flags the JSESSIONID cookie as `secure`.
 
 ## Usage data
@@ -461,10 +473,9 @@ NeoLoad Web gathers and sends data related to the usage of specific features and
 
 NeoLoad Web uses Google Analytics cookies to track navigation data.
 
-Any end user can prevent Google from collecting and processing their data by downloading and installing the browser plug-in available here: https://tools.google.com/dlpage/gaoptout?hl=en-GB.
+Any end user can prevent Google from collecting and processing their data by downloading and installing the browser plug-in available here: <https://tools.google.com/dlpage/gaoptout?hl=en-GB>.
 
 *For more information about Data privacy management by Google, see the links below:*
 
 - [Data privacy and security for Google Analytics](https://support.google.com/analytics/answer/6004245)
 - [How Google uses information from sites or applications that use their services](https://www.google.com/policies/privacy/partners/)
-
