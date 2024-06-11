@@ -1,0 +1,6 @@
+NeoLoad Web 2024.2.X Technical Release Notes
+
+[LOAD-31465] - Default workspace name was invalid in audit reports
+[LOAD-31439] - Dynamic infra providers were not displayed when the user who has created them was deleted
+[LOAD-31438] - Dynamic infra providers could not be visible in case of a wrong NLWEB_SECRET_KEY usage
+[LOAD-31716] - MongoDB Host informations could not be retrieved anymore
