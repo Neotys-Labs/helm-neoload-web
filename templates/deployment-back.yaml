@@ -107,13 +107,13 @@ spec:
               value: {{ .Release.Namespace | quote }}
             - name: KUB_HZ_PORT
               value: "6701"
+            - name: HAZELCAST_KUBERNETES_SERVICE_PORT
+              value: "6701"
+            - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
+              value: "true"
             {{- if eq (include "nlweb.ha.mode" .) "API" }}
             - name: KUB_SERVICE_NAME
               value: "{{ include "nlweb.service-hazelcast-name" . }}"
-            - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
-              value: "true"
-            - name: HAZELCAST_KUBERNETES_SERVICE_PORT
-              value: "6701"
             {{- end -}}
             {{- if eq (include "nlweb.ha.mode" .) "DNS" }}
             - name: KUB_SERVICE_DNS_NAME
