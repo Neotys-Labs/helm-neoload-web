@@ -1,5 +1,10 @@
-NeoLoad Web 2024.1 Technical Release Notes
+NeoLoad Web 2024.1.1 Technical Release Notes
+[LOAD-31865] - The total user load in NeoLoad web was not correctly calculated when using population sequences.
+[LOAD-31199] - The public link to the dashboards displayed empty content.
 
+--
+
+NeoLoad Web 2024.1 Technical Release Notes
 [CVE-2023-42503, CVE-2024-25710] bump commons-compress to 1.26.0
 [CVE-2024-1023, CVE-2024-1300] bump vertx to 4.5.3
 [CVE-2023-46749] bump shiro to 1.13.0
