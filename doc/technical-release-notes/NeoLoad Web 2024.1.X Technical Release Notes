@@ -1,3 +1,7 @@
+[LOAD-31056] - NeoLoad Web accepts protected projects created with NeoLoad 2024.1.1
+
+--
+
 NeoLoad Web 2024.1.1 Technical Release Notes
 [LOAD-31865] - The total user load in NeoLoad web was not correctly calculated when using population sequences.
 [LOAD-31199] - The public link to the dashboards displayed empty content.
