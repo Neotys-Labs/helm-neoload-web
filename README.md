@@ -65,6 +65,8 @@ Basic configuration options are detailled [here](https://kubernetes.github.io/in
 
 You can find your external MongoDB prerequisites [here](/doc/mongo-prerequisites.md).
 
+> **Caution**: You _CANNOT_ connect multiple NeoLoad Web instances (whether they are in the same namespace or not) to the same MongoDB instance.
+
 #### OpenShift
 
 You have a specific values-custom to ease the deployment of NeoLoad Web on OpenShift: values-custom-openshift.yaml.
