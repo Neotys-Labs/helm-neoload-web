@@ -19,7 +19,8 @@ This chart deploys NeoLoad Web on your Kubernetes cluster.
 
 NeoLoad is licensed under the following [License Agreement](https://www.neotys.com/documents/legal/eula/neoload/eula_en.html). You must agree to this license agreement to download and use the image.
 
-> **Note**: This license does not permit further distribution.
+> [!NOTE]
+> This license does not permit further distribution.
 
 ## Targeted audience
 
@@ -59,11 +60,15 @@ You can find documentation for OpenShift ingress controller [here](https://docs.
 
 Basic configuration options are detailled [here](https://kubernetes.github.io/ingress-nginx/deploy/) and you can find advanced configuration options [here](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/).
 
-> **Caution**: Using another ingress controller may require additional chart tuning from your part.
+> [!CAUTION]
+> Using another ingress controller may require additional chart tuning from your part.
 
 #### MongoDB Prerequisites
 
 You can find your external MongoDB prerequisites [here](/doc/mongo-prerequisites.md).
+
+> [!CAUTION]
+> You _CANNOT_ connect multiple NeoLoad Web instances (whether they are in the same namespace or not) to the same MongoDB instance.
 
 #### OpenShift
 
@@ -125,7 +130,8 @@ You can use the `helm upgrade` command when you want to :
 2. Benefit from a newer chart version.
 3. Change some values/environment variables in your deployment.
 
-> **Warning** : In that last case, keep in mind that when updating your repositories, you may fetch a new chart/application version that could change your whole deployment. To avoid that, you can add the `--version=x.x.x` to the `helm upgrade` command and force your chart version to remain the same as the one deployed.
+> [!WARNING]
+> In that last case, keep in mind that when updating your repositories, you may fetch a new chart/application version that could change your whole deployment. To avoid that, you can add the `--version=x.x.x` to the `helm upgrade` command and force your chart version to remain the same as the one deployed.
 
 ```bash		
 helm repo update
@@ -215,15 +221,20 @@ neoload:
 
 ```
 
->**Example:** For MongoDB requiring SSL connection, the `host` value must look like: `mongodb://mongo.mycompany.com:27017/admin?ssl=true`
+> [!TIP]
+> For MongoDB requiring SSL connection, the `host` value must look like: `mongodb://mongo.mycompany.com:27017/admin?ssl=true`
 
->**Example:** For MongoDB as a cluster of machines (replica set), the `host` value must look like: `mongodb://rs1.mongo.mycompany.com:27017,rs2.mongo.mycompany.com:27017,rs3.mongo.mycompany.com:27017/admin`
+> [!TIP]
+> For MongoDB as a cluster of machines (replica set), the `host` value must look like: `mongodb://rs1.mongo.mycompany.com:27017,rs2.mongo.mycompany.com:27017,rs3.mongo.mycompany.com:27017/admin`
 
->**Example:** For MongoDB connection with DNS Seedlist Connection Format, the `host` value must look like: `mongodb+srv://rs1.mongo.mycompany.com:27017,rs2.mongo.mycompany.com:27017,rs3.mongo.mycompany.com:27017/admin`
+> [!TIP]
+> For MongoDB connection with DNS Seedlist Connection Format, the `host` value must look like: `mongodb+srv://rs1.mongo.mycompany.com:27017,rs2.mongo.mycompany.com:27017,rs3.mongo.mycompany.com:27017/admin`
 
->**Note:** The compatibility with older configurations is kept. The `host` and `port` values can be set to your MongoDB server hostname and port according to your setup.
+> [!NOTE]
+> The compatibility with older configurations is kept. The `host` and `port` values can be set to your MongoDB server hostname and port according to your setup.
 
->**Note:** Other custom connection options are supported, see MongoDB connection string options official documentation [here](https://www.mongodb.com/docs/v4.4/reference/connection-string/).
+> [!NOTE]
+> Other custom connection options are supported, see MongoDB connection string options official documentation [here](https://www.mongodb.com/docs/v4.4/reference/connection-string/).
 
 ##### Authentication
 
@@ -253,7 +264,8 @@ If not set, NeoLoad Web will not start.
     secretKey: MySecretKeyForNeoLoadWeb
 ```
 
->**Warning:** Do not modify this key from one deployment to another, otherwise NeoLoad Web will not be able to read previously stored secrets from your database.
+> [!WARNING]
+> Do not modify this key from one deployment to another, otherwise NeoLoad Web will not be able to read previously stored secrets from your database.
 
 #### NeoLoad Web URLs
 
@@ -269,8 +281,11 @@ services:
     host: neoload-web-files.mycompany.com
 ```
 
->**Note:** You must configure your DNS records. These 3 hostnames must point to the Ingress controller endpoint.
->*Example:* If the nginx ingress controller is bound to the IP 10.0.0.0, your must define the following DNS records:
+> [!NOTE]
+> You must configure your DNS records. These 3 hostnames must point to the Ingress controller endpoint.
+
+> [!TIP]
+> If the nginx ingress controller is bound to the IP 10.0.0.0, your must define the following DNS records:
 >```
 >neoload-web.mycompany.com.        60 IN A	10.0.0.0
 >neoload-web-api.mycompany.com.    60 IN A	10.0.0.0
@@ -416,7 +431,8 @@ To enable TLS and access NeoLoad Web via https, the parameters :
 - `ingress.enabled` must be true
 - `ingress.tls` must contain at least one item with the tls secret data
 
-> **Caution**: Ingresses support multiple TLS mapped to respective hosts and paths. This feature is not supported for NeoLoad Web, i.e. exactly zero or one TLS configuration is expected.
+> [!CAUTION]
+> Ingresses support multiple TLS mapped to respective hosts and paths. This feature is not supported for NeoLoad Web, i.e. exactly zero or one TLS configuration is expected.
 
 #### Using an existing TLS secret
 
@@ -440,7 +456,7 @@ Set a name for your new TLS secret name into the `ingress.tls[0].secretName` par
 
 ### External TLS termination
 
->**Caution**: 
+> [!CAUTION]
 > If you choose to handle TLS on front of the Ingress controller, we recommend, for security reason, to set the 
 > value of the property `neoload.configuration.externalTlsTermination` to `true`.
 >
