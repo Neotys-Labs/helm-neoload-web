@@ -377,6 +377,10 @@ Parameter | Description | Default
 `tolerations` | Pod's tolerations | `[]`
 `replicaCount.frontend` | Number of frontend pods in your Deployment. [Learn more.](#high-availability) | 2
 `replicaCount.backend` | Number of backend pods in your Deployment. [Learn more.](#high-availability) | 2
+ |  | 
+`hostOverrides.webapp` | Overrides the app configuration if the hostname used to access NeoLoad Web Frontend is different than the value of `services.webapp.host`|
+`hostOverrides.api` | Overrides the app configuration if the hostname used to access NeoLoad Web API is different than the value of `services.api.host`|
+`hostOverrides.files` | Overrides the app configuration if the hostname used to access NeoLoad Web Files API is different than the value of `services.files.host`|
 
 We suggest you maintain your own *values-custom.yaml* and update it with your relevant parameters, but you can also specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

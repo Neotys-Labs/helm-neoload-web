@@ -177,3 +177,37 @@ High Availability (HA) Mode
 {{- define "nlweb.service-hazelcast-name" -}}
     {{ include "nlweb.fullname" . }}-svc-hazelcast-{{ include "nlweb.ha.mode" . | lower }}
 {{- end -}}
+
+
+{{/*
+Define webapp host, default to .Values.services.webapp.host but can be overrided by .Values.hostOverrides.webapp
+*/}}
+{{- define "nlweb.webapp.host" -}}
+    {{- if ((.Values.hostOverrides).webapp) -}}
+        {{- .Values.hostOverrides.webapp -}}
+    {{- else -}}
+        {{- .Values.services.webapp.host -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*
+Define api host, default to .Values.services.api.host but can be overrided by .Values.hostOverrides.api
+*/}}
+{{- define "nlweb.api.host" -}}
+    {{- if ((.Values.hostOverrides).api) -}}
+        {{- .Values.hostOverrides.api -}}
+    {{- else -}}
+        {{- .Values.services.api.host -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*
+Define files host, default to .Values.services.files.host but can be overrided by .Values.hostOverrides.files
+*/}}
+{{- define "nlweb.files.host" -}}
+    {{- if ((.Values.hostOverrides).files) -}}
+        {{- .Values.hostOverrides.files -}}
+    {{- else -}}
+        {{- .Values.services.files.host -}}
+    {{- end -}}
+{{- end -}}
