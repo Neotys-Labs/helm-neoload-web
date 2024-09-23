@@ -318,15 +318,15 @@ Parameter | Description | Default
 `services.webapp.host` | The hostname for the webapp/front deployment | 
 `services.webapp.type` | The service type for the webapp/front deployment | `ClusterIP`
 `services.webapp.port` | The service port for the webapp/front deployment | `80`
-`services.webapp.ingress.paths` | The path mapping for the webapp/front ingress | `[""]`
+`services.webapp.ingress.paths` | The path mapping for the webapp/front ingress. If value is null, ingress will not be created for this service. | `[""]`
 `services.api.host` | The hostname for the api deployment | 
 `services.api.type` | The service type for the api deployment | `ClusterIP`
 `services.api.port` | The service port for the api deployment | `80`
-`services.api.ingress.paths` | The path mapping for the api ingress | `[""]`
+`services.api.ingress.paths` | The path mapping for the api ingress. If value is null, ingress will not be created for this service. | `[""]`
 `services.files.host` | The hostname for the files deployment | 
 `services.files.type` | The service type for the files deployment | `ClusterIP`
 `services.files.port` | The service port for the files deployment | `80`
-`services.files.ingress.paths` | The path mapping for the files ingress | `[""]`
+`services.files.ingress.paths` | The path mapping for the files ingress. If value is null, ingress will not be created for this service. | `[""]`
  |  | 
 `ingress.enabled` | Enable ingresses | `true`
 `ingress.class` | Specifies which ingress controller class should listen to this ingress | `nginx`
