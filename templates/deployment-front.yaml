@@ -122,6 +122,9 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources.frontend | nindent 12 }}
+        {{- if ((.Values.extra).containers).frontend }}
+        {{- toYaml .Values.extra.containers.frontend | nindent 8 }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

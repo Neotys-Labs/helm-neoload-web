@@ -381,6 +381,8 @@ Parameter | Description | Default
 `hostOverrides.webapp` | Overrides the app configuration if the hostname used to access NeoLoad Web Frontend is different than the value of `services.webapp.host`|
 `hostOverrides.api` | Overrides the app configuration if the hostname used to access NeoLoad Web API is different than the value of `services.api.host`|
 `hostOverrides.files` | Overrides the app configuration if the hostname used to access NeoLoad Web Files API is different than the value of `services.files.host`|
+`extra.containers.backend` | *Useful to run side car containers.* Allows to specify a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). They will be appended to the list of Containers of the backend Deployment. |
+`extra.containers.frontend` | *Useful to run side car containers.* Allows to specify a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). They will be appended to the list of Containers of the frontend Deployment. |
 
 We suggest you maintain your own *values-custom.yaml* and update it with your relevant parameters, but you can also specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

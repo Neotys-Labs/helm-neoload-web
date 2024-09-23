@@ -154,6 +154,9 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources.backend | nindent 12 }}
+        {{- if ((.Values.extra).containers).backend }}
+        {{- toYaml .Values.extra.containers.backend | nindent 8 }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
