@@ -318,15 +318,15 @@ Parameter | Description | Default
 `services.webapp.host` | The hostname for the webapp/front deployment | 
 `services.webapp.type` | The service type for the webapp/front deployment | `ClusterIP`
 `services.webapp.port` | The service port for the webapp/front deployment | `80`
-`services.webapp.ingress.paths` | The path mapping for the webapp/front ingress. If value is null, ingress will not be created for this service. | `[""]`
+`services.webapp.ingress.paths` | The path mapping for the webapp/front ingress. If value is `null`, ingress will not be created for this service. | `[""]`
 `services.api.host` | The hostname for the api deployment | 
 `services.api.type` | The service type for the api deployment | `ClusterIP`
 `services.api.port` | The service port for the api deployment | `80`
-`services.api.ingress.paths` | The path mapping for the api ingress. If value is null, ingress will not be created for this service. | `[""]`
+`services.api.ingress.paths` | The path mapping for the api ingress. If value is `null`, ingress will not be created for this service. | `[""]`
 `services.files.host` | The hostname for the files deployment | 
 `services.files.type` | The service type for the files deployment | `ClusterIP`
 `services.files.port` | The service port for the files deployment | `80`
-`services.files.ingress.paths` | The path mapping for the files ingress. If value is null, ingress will not be created for this service. | `[""]`
+`services.files.ingress.paths` | The path mapping for the files ingress. If value is `null`, ingress will not be created for this service. | `[""]`
  |  | 
 `ingress.enabled` | Enable ingresses | `true`
 `ingress.class` | Specifies which ingress controller class should listen to this ingress | `nginx`
@@ -377,15 +377,6 @@ Parameter | Description | Default
 `tolerations` | Pod's tolerations | `[]`
 `replicaCount.frontend` | Number of frontend pods in your Deployment. [Learn more.](#high-availability) | 2
 `replicaCount.backend` | Number of backend pods in your Deployment. [Learn more.](#high-availability) | 2
- |  | 
-`hostOverrides.webapp` | Overrides the app configuration if the hostname used to access NeoLoad Web Frontend is different than the value of `services.webapp.host`|
-`hostOverrides.api` | Overrides the app configuration if the hostname used to access NeoLoad Web API is different than the value of `services.api.host`|
-`hostOverrides.files` | Overrides the app configuration if the hostname used to access NeoLoad Web Files API is different than the value of `services.files.host`|
-`extra.containers.backend` | *Useful to run side car containers.* Allows to specify a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). They will be appended to the list of Containers of the backend Deployment. |
-`extra.containers.frontend` | *Useful to run side car containers.* Allows to specify a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). They will be appended to the list of Containers of the frontend Deployment. |
-`extra.volumes.frontend` | *Useful to attache volumes to a side car container.* Allows to specify a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). They will be to the PodSpec of the frontend Deployment. |
-`extra.volumes.backend` | *Useful to attache volumes to a side car container.* Allows to specify a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). They will be to the PodSpec of the backend Deployment. |
-
 
 We suggest you maintain your own *values-custom.yaml* and update it with your relevant parameters, but you can also specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -394,6 +385,32 @@ $ helm install my-release \
     --set ingress.tls=[] \
     neotys/nlweb
 ```
+
+#### Side-car containers (experimental)
+
+> [!NOTE]
+> **This feature is experimental.**
+> It allows to deploy side-car containers on the frontend and backend Deployments.
+
+> [!CAUTION]
+> When using `services.<name>.*` values the `<name>` must map the name of a port declared in containers under `extra.containers.backend` or `extra.containers.frontend`.
+
+
+Parameter | Description | Default
+----- | ----------- | -------
+`hostOverrides.webapp` | Overrides the app configuration if the hostname used to access NeoLoad Web Frontend is different than the value of `services.webapp.host`|
+`hostOverrides.api` | Overrides the app configuration if the hostname used to access NeoLoad Web API is different than the value of `services.api.host`|
+`hostOverrides.files` | Overrides the app configuration if the hostname used to access NeoLoad Web Files API is different than the value of `services.files.host`|
+`extra.containers.backend` | Allows to specify a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). They will be appended to the list of Containers of the backend Deployment. |
+`extra.containers.frontend` | Allows to specify a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). They will be appended to the list of Containers of the frontend Deployment. |
+`extra.volumes.frontend` | Allows to specify a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). They will be to the PodSpec of the frontend Deployment. |
+`extra.volumes.backend` | Allows to specify a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). They will be to the PodSpec of the backend Deployment. |
+`services.<name>.component` | The Deployment to which this service attach it can be `frontend` or `backend` | 
+`services.<name>.host` | The hostname for the `<name>` service | 
+`services.<name>.type` | The type for the `<name>` service | `ClusterIP`
+`services.<name>.port` | The port for the `<name>` service | `80`
+`services.<name>.ingress.paths` | The path mapping for the service ingress. If value is `null`, ingress will not be created for this service. | `[""]`
+
 
 ## Custom environment variables
 
