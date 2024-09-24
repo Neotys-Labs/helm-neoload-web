@@ -137,3 +137,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+    {{- if ((.Values.extra).volumes).frontend }}
+      volumes:
+        {{- toYaml .Values.extra.volumes.frontend | nindent 8 }}
+    {{- end }}
