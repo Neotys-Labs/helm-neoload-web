@@ -8,7 +8,8 @@
 > It has been added starting with version 2.x.y //TODO define version.
 >
 > The following content is provided as a basis. 
-> It needs to be adapted by yourself to your specific use case.
+>
+> It must be adapted by yourself to your specific use case.
 
 ## Goals
 
