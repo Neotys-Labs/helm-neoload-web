@@ -1,6 +1,6 @@
 # How to inject side-cars?
 
-> [!WARNING] > **This feature is experimental.**
+> [!WARNING] **This feature is experimental.**
 > It allows to deploy side-car containers on the frontend and backend Deployments.
 > As it is experimental, this document may not be updated on each releases.
 > It has been added starting with version 2.x.y //TODO define version.
