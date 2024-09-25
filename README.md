@@ -395,6 +395,8 @@ $ helm install my-release \
 > [!CAUTION]
 > When using `services.<name>.*` values the `<name>` must map the name of a port declared in containers under `extra.containers.backend` or `extra.containers.frontend`.
 
+For a detailed example on how to use this feature take a look at [this example](./doc/sidecar-example/README.md).
+
 
 Parameter | Description | Default
 ----- | ----------- | -------
