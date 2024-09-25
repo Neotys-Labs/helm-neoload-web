@@ -2,11 +2,13 @@
 
 > [!WARNING] 
 > **This feature is experimental.**
+> 
 > It allows to deploy side-car containers on the frontend and backend Deployments.
 > As it is experimental, this document may not be updated on each releases.
 > It has been added starting with version 2.x.y //TODO define version.
 >
-> The following content is provided as a basis. It needs to be adapted by yourself to your specific use case.
+> The following content is provided as a basis. 
+> It needs to be adapted by yourself to your specific use case.
 
 ## Goals
 
