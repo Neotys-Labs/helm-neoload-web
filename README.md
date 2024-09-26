@@ -403,10 +403,10 @@ Parameter | Description | Default
 `hostOverrides.webapp` | Overrides the app configuration if the hostname used to access NeoLoad Web Frontend is different than the value of `services.webapp.host`|
 `hostOverrides.api` | Overrides the app configuration if the hostname used to access NeoLoad Web API is different than the value of `services.api.host`|
 `hostOverrides.files` | Overrides the app configuration if the hostname used to access NeoLoad Web Files API is different than the value of `services.files.host`|
-`extra.containers.backend` | Allows to specify a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). They will be appended to the list of Containers of the backend Deployment. |
-`extra.containers.frontend` | Allows to specify a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). They will be appended to the list of Containers of the frontend Deployment. |
-`extra.volumes.frontend` | Allows to specify a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). They will be to the PodSpec of the frontend Deployment. |
-`extra.volumes.backend` | Allows to specify a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). They will be to the PodSpec of the backend Deployment. |
+`extra.containers.backend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the backend Deployment. |
+`extra.containers.frontend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the frontend Deployment. |
+`extra.volumes.frontend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the frontend Deployment. |
+`extra.volumes.backend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the backend Deployment. |
 `services.<name>.component` | The Deployment to which this service attach it can be `frontend` or `backend` | 
 `services.<name>.host` | The hostname for the `<name>` service | 
 `services.<name>.type` | The type for the `<name>` service | `ClusterIP`
