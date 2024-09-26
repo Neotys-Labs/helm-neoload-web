@@ -407,7 +407,7 @@ Parameter | Description | Default
 `extra.containers.frontend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the frontend Deployment. |
 `extra.volumes.frontend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the frontend Deployment. |
 `extra.volumes.backend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the backend Deployment. |
-`services.<name>.component` | The Deployment to which this service attach it can be `frontend` or `backend` | 
+`services.<name>.component` | [GPT] The Deployment to which this service is attached can be either `frontend` or `backend`. | 
 `services.<name>.host` | The hostname for the `<name>` service | 
 `services.<name>.type` | The type for the `<name>` service | `ClusterIP`
 `services.<name>.port` | The port for the `<name>` service | `80`
