@@ -39,7 +39,7 @@ services:
 +    ingress: null
 ```
 
-##### Adding new services for side-cars
+##### Adding custom services for side-cars
 
 Now let's define services for our side-cars. This will allow to create Services & Ingresses.
 
