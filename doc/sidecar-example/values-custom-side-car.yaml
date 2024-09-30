@@ -1,0 +1,165 @@
+### ReplicaSet configuration
+replicaCount:
+  frontend: 2
+  backend: 2
+
+### NLWeb configuration
+neoload:
+  configuration:
+    # The secret key must be at least 8 characters long
+    secretKey: YOUR_CUSTOM_SECRET_KEY
+    backend:
+      mongo:
+        host: YOUR_MONGODB_HOST_URL
+        port: 27017
+      # Enable licensing features (VUHs) by setting this token, or leave it empty
+      licensingPlatformToken:
+securityContext:
+  runAsUser: 10000
+
+### MongoDB user configuration
+mongodb:
+  usePassword: true
+  mongodbUsername: YOUR_MONGODB_USER
+  mongodbPassword: YOUR_MONGODB_PASSWORD
+
+### Services host configuration
+services:
+  webapp:
+    ingress: null
+  api:
+    ingress: null
+  files:
+    ingress: null    
+  webapp-proxy:
+    component: frontend
+    host: neoload-web.mycompany.com
+    type: ClusterIP
+    port: 80
+    ingress:
+      paths: ["/"]
+  api-proxy:
+    component: backend
+    host: neoload-web-api.mycompany.com
+    type: ClusterIP
+    port: 80
+    ingress:
+      paths: ["/"]
+  files-proxy:
+    component: backend
+    host: neoload-web-files.mycompany.com
+    type: ClusterIP
+    port: 80
+    ingress:
+      paths: ["/"]
+
+domain: .mycompany.com
+
+### Ingress configuration
+### Choose your preferred ingress controller configuration
+ingress:
+  enabled: true
+  # Replace these annotations accordingly if you are not using the nginx ingress controller
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_ignore_client_abort "on";  
+    nginx.ingress.kubernetes.io/proxy-body-size: 0
+    # Enable sticky sessions for HA
+    # More parameters here : https://kubernetes.github.io/ingress-nginx/examples/affinity/cookie/
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/affinity-mode: persistent
+    nginx.ingress.kubernetes.io/session-cookie-max-age: 3600
+    nginx.ingress.kubernetes.io/session-cookie-change-on-failure: true
+
+  ### TLS configuration
+  ### Uncomment if you want to secure your app with https
+#  tls:
+#    - secretName: tls-secret
+#      secretCertificate: |-
+#        -----BEGIN CERTIFICATE-----
+#        YOUR_CERTIFICATE
+#        -----END CERTIFICATE-----
+#      secretKey: |-
+#        -----BEGIN PRIVATE KEY-----
+#        YOUR_PRIVATE_KEY
+#        -----END PRIVATE KEY-----
+
+extra:
+  hosts:
+    webapp: neoload-web.mycompany.com
+    api: neoload-web-api.mycompany.com
+    files: neoload-web-files.mycompany.com
+  containers:
+    backend:
+    - name: nginx-proxy
+      image: nginx:1.27.1-alpine
+      imagePullPolicy: Always
+      command: [ "/bin/sh", "-c", "nginx -g 'daemon off;'" ]
+      ports:
+      - name: api-proxy
+        containerPort: 1443
+      - name: files-proxy
+        containerPort: 1444
+      resources: 
+        requests:
+          cpu: 100m
+          memory: 10Mi
+        limits:
+          memory: 20Mi
+      volumeMounts:
+      - name: proxy-backend-conf-volume
+        mountPath: /etc/nginx/nginx.conf
+        subPath: nginx.conf
+      - name: proxy-backend-cache-volume
+        mountPath: /var/cache/nginx
+      - name: proxy-backend-run-volume
+        mountPath: /var/run
+    frontend:
+    - name: nginx-proxy
+      image: nginx:1.27.1-alpine
+      imagePullPolicy: Always
+      command: [ "/bin/sh", "-c", "nginx -g 'daemon off;'" ]
+      ports:
+      - name: webapp-proxy
+        containerPort: 1443
+      resources: 
+        requests:
+          cpu: 100m
+          memory: 10Mi
+        limits:
+          memory: 20Mi
+      volumeMounts:
+      - name: proxy-frontend-conf-volume
+        mountPath: /etc/nginx/nginx.conf
+        subPath: nginx.conf
+      - name: proxy-frontend-cache-volume
+        mountPath: /var/cache/nginx
+      - name: proxy-frontend-run-volume
+        mountPath: /var/run
+  volumes:
+    frontend:
+    - name: proxy-frontend-conf-volume
+      configMap:
+        name: nginx-conf
+        items:
+          - key: nginx-conf-frontend.conf
+            path: nginx.conf
+    - name: proxy-frontend-cache-volume
+      emptyDir: {}
+    - name: proxy-frontend-run-volume
+      emptyDir: {}
+    backend:
+    - name: proxy-backend-conf-volume
+      configMap:
+        name: nginx-conf
+        items:
+          - key: nginx-conf-backend.conf
+            path: nginx.conf
+    - name: proxy-backend-cache-volume
+      emptyDir: {}
+    - name: proxy-backend-run-volume
+      emptyDir: {}

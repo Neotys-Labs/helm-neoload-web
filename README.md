@@ -318,15 +318,15 @@ Parameter | Description | Default
 `services.webapp.host` | The hostname for the webapp/front deployment | 
 `services.webapp.type` | The service type for the webapp/front deployment | `ClusterIP`
 `services.webapp.port` | The service port for the webapp/front deployment | `80`
-`services.webapp.ingress.paths` | The path mapping for the webapp/front ingress | `[""]`
+`services.webapp.ingress.paths` | The path mapping for the webapp/front ingress. If value is `null`, ingress will not be created for this service. | `[""]`
 `services.api.host` | The hostname for the api deployment | 
 `services.api.type` | The service type for the api deployment | `ClusterIP`
 `services.api.port` | The service port for the api deployment | `80`
-`services.api.ingress.paths` | The path mapping for the api ingress | `[""]`
+`services.api.ingress.paths` | The path mapping for the api ingress. If value is `null`, ingress will not be created for this service. | `[""]`
 `services.files.host` | The hostname for the files deployment | 
 `services.files.type` | The service type for the files deployment | `ClusterIP`
 `services.files.port` | The service port for the files deployment | `80`
-`services.files.ingress.paths` | The path mapping for the files ingress | `[""]`
+`services.files.ingress.paths` | The path mapping for the files ingress. If value is `null`, ingress will not be created for this service. | `[""]`
  |  | 
 `ingress.enabled` | Enable ingresses | `true`
 `ingress.class` | Specifies which ingress controller class should listen to this ingress | `nginx`
@@ -385,6 +385,34 @@ $ helm install my-release \
     --set ingress.tls=[] \
     neotys/nlweb
 ```
+
+#### Side-car containers (experimental)
+
+> [!NOTE]
+> **This feature is experimental.**
+> It allows to deploy side-car containers on the frontend and backend Deployments.
+
+> [!CAUTION]
+> When using `services.<name>.*` values the `<name>` must map the name of a port declared in containers under `extra.containers.backend` or `extra.containers.frontend`.
+
+For a detailed example on how to use this feature take a look at [this example](./doc/sidecar-example/README.md).
+
+
+Parameter | Description | Default
+----- | ----------- | -------
+`extra.hosts.webapp` | Overrides the app configuration if the hostname used to access NeoLoad Web Frontend is different than the value of `services.webapp.host`|
+`extra.hosts.api` | Overrides the app configuration if the hostname used to access NeoLoad Web API is different than the value of `services.api.host`|
+`extra.hosts.files` | Overrides the app configuration if the hostname used to access NeoLoad Web Files API is different than the value of `services.files.host`|
+`extra.containers.backend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the backend Deployment. |
+`extra.containers.frontend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the frontend Deployment. |
+`extra.volumes.frontend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the frontend Deployment. |
+`extra.volumes.backend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the backend Deployment. |
+`services.<name>.component` | [GPT] The Deployment to which this service is attached can be either `frontend` or `backend`. | 
+`services.<name>.host` | The hostname for the `<name>` service | 
+`services.<name>.type` | The type for the `<name>` service | `ClusterIP`
+`services.<name>.port` | The port for the `<name>` service | `80`
+`services.<name>.ingress.paths` | The path mapping for the service ingress. If value is `null`, ingress will not be created for this service. | `[""]`
+
 
 ## Custom environment variables
 

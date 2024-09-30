@@ -1,7 +1,9 @@
 {{- if .Values.ingress.enabled }}
 1. Access the application with the following URL:
 {{- range $label, $service := .Values.services }}
-  {{ include "nlweb.helpers.getScheme" $ }}{{ $service.host }}
+  {{- if $service.ingress }}
+    {{ include "nlweb.helpers.getScheme" $ }}{{ $service.host }}
+  {{- end }}
 {{- end }}
 {{- else if contains "NodePort" .Values.services.webapp.type }}
 1. Get the application URL by running these commands:
