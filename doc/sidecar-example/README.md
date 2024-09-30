@@ -7,9 +7,7 @@
 > As it is experimental, this document may not be updated on each releases.
 > It has been added starting with version 2.x.y //TODO define version.
 >
-> The following content is provided as a basis. 
->
-> It must be adapted by yourself to your specific use case.
+> The following content is provided as an example and must be adapted to your specific use case.
 
 ## Goals
 
