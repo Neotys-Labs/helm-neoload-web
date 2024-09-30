@@ -1,8 +1,7 @@
-# How to inject side-cars?
+# How to handle traffic with custom nginx reverse proxy using side-cars
 
-> [!WARNING] 
-> **This feature is experimental.**
-> 
+> [!WARNING] > **This feature is experimental.**
+>
 > It allows to deploy side-car containers on the frontend and backend Deployments.
 > As it is experimental, this document may not be updated on each releases.
 > It has been added starting with version 2.x.y //TODO define version.
@@ -13,6 +12,7 @@
 
 This document demonstrates how to setup a simple (no SSL) nginx proxy as sidecar on the frontend and backend Pods.
 It uses the values defined in the section [Side-car containers (experimental)](../../README.md#side-car-containers-experimental).
+An [appendix](#appendix) at the end of this example is covering configuration of SSL at the nginx level.
 
 ### Updating values file
 
@@ -120,10 +120,73 @@ Configuring a reverse proxy for NeoLoad Web requires specific configuration. Her
 - [frontend configuration](./nginx-conf-frontend.conf)
 - [backend configuration](./nginx-conf-backend.conf)
 
+> [!WARNING]
+> Take care to change the `server_name` property accordingly to your configuration.
+
+```diff
+-    server_name neoload-web-api.mycompany.com;
++    server_name my-real-hostname.com;
+```
+
 #### Creating ConfigMap
 
 In the provided example the ConfigMap has been created with the following command.
 
 ```shell
 kubectl create configmap nginx-conf --from-file=nginx-conf-frontend.conf --from-file=nginx-conf-backend.conf
+```
+
+## Appendix
+
+> [!NOTE]
+> The goal of this example is not to cover nginx SSL configuration. It provides a high-level guide on how to configure it and must be adapted to your needs.
+
+### Steps
+
+Here is a list of steps to follow to configure SSL. We are not entering the details of each one as many of them are identical to operations previously covered in this example.
+
+- Create a ConfigMap object containing your certificates and keys
+- Declare new Volumes under `extra.volumes.frontend` and `extra.volumes.backend` that mount the certificates and keys from the ConfigMap
+- Add volume mounts to your frontend and backend side-cars
+- Adapt the nginx configuration files configure SSL and certificate and key location
+
+### nginx configuration
+
+Here are some indications on the modifications required on a nginx listener to configure SSL. Example is derived from [nginx-conf-backend.conf](./nginx-conf-backend.conf).
+
+
+```diff
+  server {
+-    listen 1443;
++    listen 1443 ssl;
+    server_name neoload-web-api.mycompany.com;
+
++    ssl on;
++    ssl_certificate /cert/nlweb.crt;
++    ssl_certificate_key /cert/nlweb.key;
++    ssl_session_timeout 5m;
++    ssl_protocols TLSv1.2 TLSv1.3;
++    ssl_ciphers HIGH:MEDIUM:!SSLv2:!PSK:!SRP:!ADH:!AECDH;
++    ssl_prefer_server_ciphers on;
++    error_page 497  https://$host:$server_port$request_uri;
+
+    location ~ .* {
+      gzip on;
++     proxy_set_header X-Forwarded-Ssl on;
+
+      client_max_body_size          50M;
+      proxy_set_header              Connection "";
+      proxy_set_header              Host $http_host;
+      proxy_set_header              X-Real-IP $remote_addr;
+      proxy_set_header              X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header              X-Forwarded-Proto $proxy_x_forwarded_proto;
+      proxy_set_header              X-Frame-Options SAMEORIGIN;
+      proxy_buffers                 256 16k;
+      proxy_buffer_size             16k;
+      proxy_read_timeout            600s;
+      proxy_ignore_client_abort     on;
+      proxy_pass                    http://localhost:1081;
+      proxy_redirect                off;
+    }
+  }
 ```
