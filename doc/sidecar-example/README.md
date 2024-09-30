@@ -23,7 +23,7 @@ It uses the values defined in the section [Side-car containers (experimental)](.
 
 ##### Prevent creation of Ingress for default services
 
-By defining `values.(webapp|api|files).ingress` to `null`, this will prevent the creation of Ingress for those services.
+Set `values.(webapp|api|files).ingress` to `null` to prevent the creation of Ingress for those services. `values.(webapp|api|files).host` can be removed as they will not be used in that scenario.
 
 ```diff
 ### Services host configuration
