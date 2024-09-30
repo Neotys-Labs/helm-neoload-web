@@ -84,10 +84,11 @@ services:
 Add the following section in the values file.
 
 ```diff
-+ hostOverrides:
-+   webapp: neoload-web.mycompany.com
-+   api: neoload-web-api.mycompany.com
-+   files: neoload-web-files.mycompany.com
++ extra:
++   hosts:
++     webapp: neoload-web.mycompany.com
++     api: neoload-web-api.mycompany.com
++     files: neoload-web-files.mycompany.com
 ```
 
 #### Defining side-car containers

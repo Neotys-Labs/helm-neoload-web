@@ -400,9 +400,9 @@ For a detailed example on how to use this feature take a look at [this example](
 
 Parameter | Description | Default
 ----- | ----------- | -------
-`hostOverrides.webapp` | Overrides the app configuration if the hostname used to access NeoLoad Web Frontend is different than the value of `services.webapp.host`|
-`hostOverrides.api` | Overrides the app configuration if the hostname used to access NeoLoad Web API is different than the value of `services.api.host`|
-`hostOverrides.files` | Overrides the app configuration if the hostname used to access NeoLoad Web Files API is different than the value of `services.files.host`|
+`extra.hosts.webapp` | Overrides the app configuration if the hostname used to access NeoLoad Web Frontend is different than the value of `services.webapp.host`|
+`extra.hosts.api` | Overrides the app configuration if the hostname used to access NeoLoad Web API is different than the value of `services.api.host`|
+`extra.hosts.files` | Overrides the app configuration if the hostname used to access NeoLoad Web Files API is different than the value of `services.files.host`|
 `extra.containers.backend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the backend Deployment. |
 `extra.containers.frontend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the frontend Deployment. |
 `extra.volumes.frontend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the frontend Deployment. |

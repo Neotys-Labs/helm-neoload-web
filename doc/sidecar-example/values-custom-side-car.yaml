@@ -88,12 +88,11 @@ ingress:
 #        YOUR_PRIVATE_KEY
 #        -----END PRIVATE KEY-----
 
-hostOverrides:
-  webapp: neoload-web.mycompany.com
-  api: neoload-web-api.mycompany.com
-  files: neoload-web-files.mycompany.com
-
 extra:
+  hosts:
+    webapp: neoload-web.mycompany.com
+    api: neoload-web-api.mycompany.com
+    files: neoload-web-files.mycompany.com
   containers:
     backend:
     - name: nginx-proxy

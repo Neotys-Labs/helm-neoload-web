@@ -180,33 +180,33 @@ High Availability (HA) Mode
 
 
 {{/*
-Define webapp host, default to .Values.services.webapp.host but can be overrided by .Values.hostOverrides.webapp
+Define webapp host, default to .Values.services.webapp.host but can be overrided by .Values.extra.hosts.webapp
 */}}
 {{- define "nlweb.webapp.host" -}}
-    {{- if ((.Values.hostOverrides).webapp) -}}
-        {{- .Values.hostOverrides.webapp -}}
+    {{- if ((.Values.extra.hosts).webapp) -}}
+        {{- .Values.extra.hosts.webapp -}}
     {{- else -}}
         {{- .Values.services.webapp.host -}}
     {{- end -}}
 {{- end -}}
 
 {{/*
-Define api host, default to .Values.services.api.host but can be overrided by .Values.hostOverrides.api
+Define api host, default to .Values.services.api.host but can be overrided by .Values.extra.hosts.api
 */}}
 {{- define "nlweb.api.host" -}}
-    {{- if ((.Values.hostOverrides).api) -}}
-        {{- .Values.hostOverrides.api -}}
+    {{- if ((.Values.extra.hosts).api) -}}
+        {{- .Values.extra.hosts.api -}}
     {{- else -}}
         {{- .Values.services.api.host -}}
     {{- end -}}
 {{- end -}}
 
 {{/*
-Define files host, default to .Values.services.files.host but can be overrided by .Values.hostOverrides.files
+Define files host, default to .Values.services.files.host but can be overrided by .Values.extra.hosts.files
 */}}
 {{- define "nlweb.files.host" -}}
-    {{- if ((.Values.hostOverrides).files) -}}
-        {{- .Values.hostOverrides.files -}}
+    {{- if ((.Values.extra.hosts).files) -}}
+        {{- .Values.extra.hosts.files -}}
     {{- else -}}
         {{- .Values.services.files.host -}}
     {{- end -}}
