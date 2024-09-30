@@ -28,7 +28,7 @@ spec:
       {{- else if eq $service.component "frontend" }}
       {{- include "nlweb.frontend.selectorLabels" $ | nindent 4 }}
       {{- else }}
-      {{ required "Custom services must have a 'component' property with value equals to 'frontend' or 'backend'" $service.component }}
+      {{ required "Custom services must have a 'component' property with value equal to 'frontend' or 'backend'" $service.component }}
       {{- end}}
     {{- end }}
 
