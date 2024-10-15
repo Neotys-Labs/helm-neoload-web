@@ -74,11 +74,11 @@ spec:
             - name: MONGODB_MAX_POOLSIZE
               value: {{ .Values.neoload.configuration.backend.mongo.poolSize | quote }}
             - name: NEOLOAD_WEB_PUBLIC_URL
-              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (.Values.services.webapp.host) | required "NeoLoad Web Public URL (.Values.services.webapp.host) value is required." | quote }}
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.webapp.host" .) | required "NeoLoad Web Public URL (.Values.services.webapp.host) value is required." | quote }}
             - name: NEOLOAD_WEB_API_PUBLIC_URL
-              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (.Values.services.api.host) | required "NeoLoad Web API URL (.Values.services.api.host) value is required." | quote }}
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.api.host" .) | required "NeoLoad Web API URL (.Values.services.api.host) value is required." | quote }}
             - name: FILE_STORAGE_ROUTER_BASE_URL
-              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (.Values.services.files.host) | required "NeoLoad Web Files API URL (.Values.services.files.host) value is required." | quote }}
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.files.host" .) | required "NeoLoad Web Files API URL (.Values.services.files.host) value is required." | quote }}
             - name: INTERNAL_FILE_STORAGE_ROUTER_BASE_URL
               value: "http://{{ include "nlweb.fullname" . }}-svc-files.{{ .Release.Namespace }}.svc.cluster.local"              
             - name: FILE_PROJECT_MAX_SIZE_IN_BYTES
@@ -154,6 +154,9 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources.backend | nindent 12 }}
+        {{- if ((.Values.extra).containers).backend }}
+        {{- toYaml .Values.extra.containers.backend | nindent 8 }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -165,4 +168,8 @@ spec:
     {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- if ((.Values.extra).volumes).backend }}
+      volumes:
+        {{- toYaml .Values.extra.volumes.backend | nindent 8 }}
     {{- end }}
