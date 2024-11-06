@@ -1,0 +1,3 @@
+NeoLoad Web 2024.3.X Technical Release Notes
+
+This version includes security fixes.
