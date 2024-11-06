@@ -183,7 +183,7 @@ High Availability (HA) Mode
 Define webapp host, default to .Values.services.webapp.host but can be overrided by .Values.extra.hosts.webapp
 */}}
 {{- define "nlweb.webapp.host" -}}
-    {{- if ((.Values.extra.hosts).webapp) -}}
+    {{- if (((.Values.extra).hosts).webapp) -}}
         {{- .Values.extra.hosts.webapp -}}
     {{- else -}}
         {{- .Values.services.webapp.host -}}
@@ -194,7 +194,7 @@ Define webapp host, default to .Values.services.webapp.host but can be overrided
 Define api host, default to .Values.services.api.host but can be overrided by .Values.extra.hosts.api
 */}}
 {{- define "nlweb.api.host" -}}
-    {{- if ((.Values.extra.hosts).api) -}}
+    {{- if (((.Values.extra).hosts).api) -}}
         {{- .Values.extra.hosts.api -}}
     {{- else -}}
         {{- .Values.services.api.host -}}
@@ -205,7 +205,7 @@ Define api host, default to .Values.services.api.host but can be overrided by .V
 Define files host, default to .Values.services.files.host but can be overrided by .Values.extra.hosts.files
 */}}
 {{- define "nlweb.files.host" -}}
-    {{- if ((.Values.extra.hosts).files) -}}
+    {{- if (((.Values.extra).hosts).files) -}}
         {{- .Values.extra.hosts.files -}}
     {{- else -}}
         {{- .Values.services.files.host -}}
