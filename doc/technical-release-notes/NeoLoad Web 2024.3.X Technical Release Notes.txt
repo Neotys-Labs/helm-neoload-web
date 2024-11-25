@@ -1,3 +1,5 @@
 NeoLoad Web 2024.3.X Technical Release Notes
 
+[LOAD-32217] - SAP VUs are not automatically accounted for when WEB VUs count was insufficient in auto reservation mode
+
 This version includes security fixes.
