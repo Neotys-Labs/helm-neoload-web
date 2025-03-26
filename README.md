@@ -43,7 +43,7 @@ Advanced | X Frontend Pods, Y Backend Pods | **X\*1 + Y\*1 CPU, X\*1500 + Y\*250
 
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) CLI
 - [Helm](https://helm.sh/docs/intro/install/) CLI  (^3.0.0)
-- A running [Kubernetes](https://kubernetes.io/) cluster (1.18.0 - 1.30.0)
+- A running [Kubernetes](https://kubernetes.io/) cluster (1.18.0 - 1.32.0)
   - The cluster [PodPidsLimit](https://kubernetes.io/docs/concepts/policy/pid-limiting/#pod-pid-limits) must be at least 2048
 - A running [mongodb](https://www.mongodb.com/) accessible from the Kubernetes cluster ([see supported versions](/doc/mongo-prerequisites.md))
 - A running ingress controller deployed on the Kubernetes cluster
