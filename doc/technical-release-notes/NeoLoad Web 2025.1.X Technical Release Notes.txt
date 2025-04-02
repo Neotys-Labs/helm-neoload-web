@@ -1,0 +1,10 @@
+NeoLoad Web 2025.1.X Technical Release Notes
+
+LOAD-32938 - Webhooks - The variable $(url_graph_overview) in payload had extra '\' in url
+LOAD-32865 - The test name update snackbar was duplicated
+LOAD-32802 - The Reservation page has been improved
+LOAD-32800 - Custom scenario value was not persisted after a test name update
+LOAD-32697 - Deletion policies test name was not updated when test was renamed
+LOAD-32438 - Dashboards containing symbols in their names have now sanitized filenames for pdf export
+
+This version includes security fixes.
