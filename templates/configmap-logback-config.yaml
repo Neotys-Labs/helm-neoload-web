@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logger-config
+data:
+  logback-prod.xml: |-
+    {{- tpl ($.Files.Get "logback-config.xml") . | nindent 4 }}
