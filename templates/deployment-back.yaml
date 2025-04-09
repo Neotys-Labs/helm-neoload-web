@@ -156,7 +156,7 @@ spec:
           resources:
             {{- toYaml .Values.resources.backend | nindent 12 }}
           volumeMounts:
-            - name: logger-config
+            - name: {{ .Release.Name }}-logger-config
               mountPath: /server/conf
         {{- if ((.Values.extra).containers).backend }}
         {{- toYaml .Values.extra.containers.backend | nindent 8 }}
@@ -174,9 +174,9 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes:
-        - name: logger-config
+        - name: {{ .Release.Name }}-logger-config
           configMap:
-            name: logger-config
+            name: {{ .Release.Name }}-logger-config
     {{- if ((.Values.extra).volumes).backend }}
         {{- toYaml .Values.extra.volumes.backend | nindent 8 }}
     {{- end }}
