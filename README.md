@@ -512,3 +512,6 @@ Any end user can prevent Google from collecting and processing their data by dow
 - [Data privacy and security for Google Analytics](https://support.google.com/analytics/answer/6004245)
 - [How Google uses information from sites or applications that use their services](https://www.google.com/policies/privacy/partners/)
 
+## Modify logging
+
+You can find how to modify logging configuration [here](/doc/logging-configuration.md).
