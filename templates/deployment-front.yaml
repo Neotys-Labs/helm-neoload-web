@@ -28,7 +28,6 @@ spec:
         {{- range $key, $value := .Values.neoload.annotations.frontend }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
-        checksum/config: {{ include (print $.Template.BasePath "/configmap-logback-config.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ include "nlweb.serviceAccountName" . }}
     {{- with .Values.imagePullSecrets }}
@@ -123,6 +122,9 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources.frontend | nindent 12 }}
+          volumeMounts:
+            - name: {{ .Release.Name }}-logger-config
+              mountPath: /server/conf
         {{- if ((.Values.extra).containers).frontend }}
         {{- toYaml .Values.extra.containers.frontend | nindent 8 }}
         {{- end }}
@@ -138,7 +140,10 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- if ((.Values.extra).volumes).frontend }}
       volumes:
+        - name: {{ .Release.Name }}-logger-config
+          configMap:
+            name: {{ .Release.Name }}-logger-config
+    {{- if ((.Values.extra).volumes).frontend }}
         {{- toYaml .Values.extra.volumes.frontend | nindent 8 }}
     {{- end }}

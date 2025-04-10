@@ -28,7 +28,6 @@ spec:
         {{- range $key, $value := .Values.neoload.annotations.backend }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
-        checksum/config: {{ include (print $.Template.BasePath "/configmap-logback-config.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ include "nlweb.serviceAccountName" . }}
     {{- with .Values.imagePullSecrets }}
