@@ -120,7 +120,7 @@ affinity: {}
 
 
 ### Logging configuration
-logback: |-
+loggerConfiguration: |-
   <configuration scan="true" scanPeriod="30 seconds">
     <shutdownHook />
     <appender name="STDOUT_PROD" class="ch.qos.logback.core.ConsoleAppender">

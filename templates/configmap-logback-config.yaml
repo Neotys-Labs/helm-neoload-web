@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: {{ .Release.Name }}-logger-config
 data:
-  logback-prod.xml:{{ .Values.logback | nindent 4 }}
+  logback-prod.xml:{{ .Values.loggerConfiguration | nindent 4 }}

@@ -1,15 +1,14 @@
-# Logging configuration
+# Logger configuration
 
 > [!CAUTION]
-> Do not modify thing unless you know what you are doing. This is a sensitive configuration, it may cause issues with the system.
+> This modification should be guided by Tricentis support. Modifying this could lead to performance issues.
 
 ## Override the default logging configuration
 
-You can override the default logging configuration by adding in [values-custom.yaml](..%2Fvalues-custom.yaml) the following section:
+You can override the default logging configuration by adding in [values-custom.yaml](../values-custom.yaml) the following section:
 
 ```yaml
-### Logging configuration
-logback: |-
+loggerConfiguration: |-
   <configuration scan="true" scanPeriod="30 seconds">
     <shutdownHook />
     <appender name="STDOUT_PROD" class="ch.qos.logback.core.ConsoleAppender">
@@ -33,6 +32,7 @@ logback: |-
   </configuration>
 ```
 
-You can then make the modifications you want.  
-Afterward, you will just need to perform an [upgrade](../README.md#upgrade) to apply the changes.  
-The changes will take effect on both the backend and the frontend in less than five minutes.
+## Deploy
+
+After adding or modifying the `loggerConfiguration` key in your `values-custom.yaml` file, you must perform an [upgrade](../README.md#upgrade) for the changes to be effective.
+Then wait for the new Pods to be deployed.
