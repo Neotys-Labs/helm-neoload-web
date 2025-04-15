@@ -112,13 +112,13 @@ spec:
             httpGet:
               path: /
               port: webapp
-            initialDelaySeconds: 60
+            initialDelaySeconds: {{ .Values.neoload.configuration.frontend.livenessProbe.initDelaySeconds }}
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /
               port: webapp
-            initialDelaySeconds: 20
+            initialDelaySeconds: {{ .Values.neoload.configuration.frontend.readinessProbe.initDelaySeconds }}
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources.frontend | nindent 12 }}

@@ -354,9 +354,13 @@ Parameter | Description | Default
 `neoload.configuration.backend.misc.files.maxUploadSizeInBytes` | Max file upload size in bytes | `250000000`
 `neoload.configuration.backend.misc.files.maxUploadPerWeek` | Max file upload count per week | `250`
 `neoload.configuration.backend.licensingPlatformToken` | Token for enabling licensing features (such as VUHs) | 
+`neoload.configuration.backend.livenessProbe.initDelaySeconds` | Backend Pods liveness probe initial delay in seconds | 60
+`neoload.configuration.backend.readinessProbe.initDelaySeconds` | Backend Pods readiness probe initial delay in seconds | 60
 `neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
 | | 
 `neoload.configuration.frontend.java.xmx` | Java JVM Max heap size for the frontend | `1200m`
+`neoload.configuration.frontend.livenessProbe.initDelaySeconds` | Frontend Pods liveness probe initial delay in seconds | 60
+`neoload.configuration.frontend.readinessProbe.initDelaySeconds` | Frontend Pods readiness probe initial delay in seconds | 20
 `neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
 | | 
 `neoload.configuration.proxy.https` | Connection string for your https proxy. [Learn more.](#proxy)
