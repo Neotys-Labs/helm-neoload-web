@@ -94,9 +94,17 @@ neoload:
           maxUploadSizeInBytes: "250000000"
           maxUploadPerWeek: "250"
       licensingPlatformToken: 
+      livenessProbe:
+        initDelaySeconds: 60
+      readinessProbe:
+        initDelaySeconds: 60
     frontend:
       java:
         xmx: 1200m
+      livenessProbe:
+        initDelaySeconds: 60
+      readinessProbe:
+        initDelaySeconds: 20
     ha:
       mode: "API"
     secretKey: 

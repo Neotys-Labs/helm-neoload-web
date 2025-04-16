@@ -144,13 +144,13 @@ spec:
             httpGet:
               path: /status
               port: api
-            initialDelaySeconds: 60
+            initialDelaySeconds: {{ .Values.neoload.configuration.backend.livenessProbe.initDelaySeconds }}
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /status
               port: api
-            initialDelaySeconds: 60
+            initialDelaySeconds: {{ .Values.neoload.configuration.backend.readinessProbe.initDelaySeconds }}
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources.backend | nindent 12 }}
