@@ -381,6 +381,7 @@ Parameter | Description | Default
 `tolerations` | Pod's tolerations | `[]`
 `replicaCount.frontend` | Number of frontend pods in your Deployment. [Learn more.](#high-availability) | 2
 `replicaCount.backend` | Number of backend pods in your Deployment. [Learn more.](#high-availability) | 2
+`loggerConfiguration` | Logger configuration. [Learn more.](./doc/logging-configuration.md) | [Default logger configuration as defined here](./values.yaml)
 
 We suggest you maintain your own *values-custom.yaml* and update it with your relevant parameters, but you can also specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -516,3 +517,6 @@ Any end user can prevent Google from collecting and processing their data by dow
 - [Data privacy and security for Google Analytics](https://support.google.com/analytics/answer/6004245)
 - [How Google uses information from sites or applications that use their services](https://www.google.com/policies/privacy/partners/)
 
+## Advanced configuration
+
+- [Logger configuration](./doc/logging-configuration.md).
