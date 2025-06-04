@@ -1,0 +1,4 @@
+NeoLoad Web 2025.2.X Technical Release Notes
+
+LOAD-33226 - Single sign-on in NeoLoad Web using Security Assertion Markup Language (SAML) 2.0
+
