@@ -139,7 +139,7 @@ spec:
               value: {{ $value | quote }}
             {{- end }}
             {{- end }}
-            {{- if not .Values.neoload.configuration.backend.others.CORS_ALLOWED_ORIGIN_PATTERN }}
+            {{- if or (not .Values.neoload.configuration.backend.others) (not .Values.neoload.configuration.backend.others.CORS_ALLOWED_ORIGIN_PATTERN) }}
             - name: CORS_ALLOWED_ORIGIN_PATTERN
               value: {{ (printf "%s.*%s" (include "nlweb.helpers.getScheme" .) (.Values.domain) | required "NeoLoad Web domain (.Values.domain) value is required." | quote) }}
             {{- end }}
