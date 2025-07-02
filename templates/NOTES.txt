@@ -1,3 +1,9 @@
+{{- if and .Values.neoload.annotations .Values.neoload.annotations.backend }}
+neoload.annotations.backend is deprecated, please use neoload.annotations.pod.backend or neoload.annotations.deployment.backend
+{{- end }}
+{{- if and .Values.neoload.annotations .Values.neoload.annotations.frontend }}
+neoload.annotations.frontend is deprecated, please use neoload.annotations.pod.frontend or neoload.annotations.deployment.frontend
+{{- end }}
 {{- if .Values.ingress.enabled }}
 1. Access the application with the following URL:
 {{- range $label, $service := .Values.services }}

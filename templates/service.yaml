@@ -20,7 +20,7 @@ spec:
   selector:
     {{- if eq $label "webapp" }}
     {{- include "nlweb.frontend.selectorLabels" $ | nindent 4 }}
-    {{- else if or (eq $label "files") (eq $label "api") }}
+    {{- else if or (eq $label "files") (eq $label "api") (eq $label "api-v4") }}
     {{- include "nlweb.backend.selectorLabels" $ | nindent 4 }}
     {{- else }}
       {{- if eq $service.component "backend" }}

@@ -95,7 +95,7 @@ neoload:
           maxUploadPerWeek: "250"
       licensingPlatformToken: 
       livenessProbe:
-        initDelaySeconds: 60
+        initDelaySeconds: 120
       readinessProbe:
         initDelaySeconds: 60
     frontend:
