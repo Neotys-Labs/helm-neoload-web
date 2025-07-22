@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nlweb.fullname" . }}-front-next-gen
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nlweb.labels" . | nindent 4 }}
+    {{- range $key, $value := .Values.neoload.labels.frontendNextGen }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  annotations:
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.frontendNextGen }}
+    {{- range $key, $value := .Values.neoload.annotations.frontendNextGen }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.deployment .Values.neoload.annotations.deployment.frontendNextGen }}
+    {{- range $key, $value := .Values.neoload.annotations.deployment.frontendNextGen }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount.frontendNextGen }}
+  selector:
+    matchLabels:
+      {{- include "nlweb.frontendNextGen.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "nlweb.frontendNextGen.selectorLabels" . | nindent 8 }}
+        {{- range $key, $value := .Values.neoload.labels.frontendNextGen }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      annotations:
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.frontendNextGen }}
+        {{- range $key, $value := .Values.neoload.annotations.frontendNextGen }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.pod .Values.neoload.annotations.pod.frontendNextGen }}
+        {{- range $key, $value := .Values.neoload.annotations.pod.frontendNextGen }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "nlweb.serviceAccountName" . }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-frontend-next-gen
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.frontendNextGen.repository }}:{{ include "nlweb.frontendNextGen.imageTag" . }}"
+          imagePullPolicy: {{ .Values.image.frontendNextGen.pullPolicy }}
+          env: 
+            - name: PORT
+              value: '3000'
+            - name: API_URL
+              value: '${API_URL}'
+            - name: API_FILE_URL
+              value: '${API_FILE_URL}'
+          ports:
+            - name: webapp-next-gen
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: webapp-next-gen
+            initialDelaySeconds: {{ .Values.neoload.configuration.frontendNextGen.livenessProbe.initDelaySeconds }}
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: webapp-next-gen
+            initialDelaySeconds: {{ .Values.neoload.configuration.frontendNextGen.readinessProbe.initDelaySeconds }}
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources.frontendNextGen | nindent 12 }}
+        {{- if ((.Values.extra).containers).frontendNextGen }}
+        {{- toYaml .Values.extra.containers.frontendNextGen | nindent 8 }}
+        {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      volumes: []
+    {{- if ((.Values.extra).volumes).frontendNextGen }}
+        {{- toYaml .Values.extra.volumes.frontendNextGen | nindent 8 }}
+    {{- end }} 
