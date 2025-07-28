@@ -382,6 +382,8 @@ Parameter | Description | Default
 `replicaCount.frontend` | Number of frontend pods in your Deployment. [Learn more.](#high-availability) | 2
 `replicaCount.backend` | Number of backend pods in your Deployment. [Learn more.](#high-availability) | 2
 `loggerConfiguration` | Logger configuration. [Learn more.](./doc/logging-configuration.md) | [Default logger configuration as defined here](./values.yaml)
+`extra.volumes.backend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the backend Deployment. |
+`extra.volumeMounts.backend` | Add custom volume mounts to the NeoLoad Web backend Container.  | 
 
 We suggest you maintain your own *values-custom.yaml* and update it with your relevant parameters, but you can also specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -411,8 +413,7 @@ Parameter | Description | Default
 `extra.containers.backend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the backend Deployment. |
 `extra.containers.frontend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the frontend Deployment. |
 `extra.volumes.frontend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the frontend Deployment. |
-`extra.volumes.backend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the backend Deployment. |
-`services.<name>.component` | [GPT] The Deployment to which this service is attached can be either `frontend` or `backend`. | 
+`services.<name>.component` | The Deployment to which this service is attached can be either `frontend` or `backend`. | 
 `services.<name>.host` | The hostname for the `<name>` service | 
 `services.<name>.type` | The type for the `<name>` service | `ClusterIP`
 `services.<name>.port` | The port for the `<name>` service | `80`
