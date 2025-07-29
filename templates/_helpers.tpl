@@ -70,9 +70,9 @@ app.kubernetes.io/component: frontend
 {{/*
 Frontend Next Gen Selector labels
 */}}
-{{- define "nlweb.frontendNextGen.selectorLabels" -}}
+{{- define "nlweb.frontendnextgen.selectorLabels" -}}
 {{ include "nlweb.selectorLabels" . }}
-app.kubernetes.io/component: frontendNextGen
+app.kubernetes.io/component: frontendnextgen
 {{- end -}}
 
 
@@ -165,8 +165,8 @@ Get frontend image tag
 {{/*
 Get frontend next gen image tag
 */}}
-{{- define "nlweb.frontendNextGen.imageTag" -}}
-    {{ default .Chart.AppVersion .Values.image.frontendNextGen.tag }}
+{{- define "nlweb.frontendnextgen.imageTag" -}}
+    {{ default .Chart.AppVersion .Values.image.frontendnextgen.tag }}
 {{- end -}}
 
 

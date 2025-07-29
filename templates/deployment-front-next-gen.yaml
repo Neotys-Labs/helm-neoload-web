@@ -1,4 +1,4 @@
-{{- if .Values.services.frontendNextGen -}}
+{{- if .Values.services.frontendnextgen -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,40 +6,40 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "nlweb.labels" . | nindent 4 }}
-    {{- range $key, $value := .Values.neoload.labels.frontendNextGen }}
+    {{- range $key, $value := .Values.neoload.labels.frontendnextgen }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
   annotations:
-    {{- if and .Values.neoload.annotations .Values.neoload.annotations.frontendNextGen }}
-    {{- range $key, $value := .Values.neoload.annotations.frontendNextGen }}
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.frontendnextgen }}
+    {{- range $key, $value := .Values.neoload.annotations.frontendnextgen }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
     {{- end }}
-    {{- if and .Values.neoload.annotations .Values.neoload.annotations.deployment .Values.neoload.annotations.deployment.frontendNextGen }}
-    {{- range $key, $value := .Values.neoload.annotations.deployment.frontendNextGen }}
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.deployment .Values.neoload.annotations.deployment.frontendnextgen }}
+    {{- range $key, $value := .Values.neoload.annotations.deployment.frontendnextgen }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
     {{- end }}
 spec:
-  replicas: {{ .Values.replicaCount.frontendNextGen }}
+  replicas: {{ .Values.replicaCount.frontendnextgen }}
   selector:
     matchLabels:
-      {{- include "nlweb.frontendNextGen.selectorLabels" . | nindent 6 }}
+      {{- include "nlweb.frontendnextgen.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "nlweb.frontendNextGen.selectorLabels" . | nindent 8 }}
-        {{- range $key, $value := .Values.neoload.labels.frontendNextGen }}
+        {{- include "nlweb.frontendnextgen.selectorLabels" . | nindent 8 }}
+        {{- range $key, $value := .Values.neoload.labels.frontendnextgen }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
       annotations:
-        {{- if and .Values.neoload.annotations .Values.neoload.annotations.frontendNextGen }}
-        {{- range $key, $value := .Values.neoload.annotations.frontendNextGen }}
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.frontendnextgen }}
+        {{- range $key, $value := .Values.neoload.annotations.frontendnextgen }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
         {{- end }}
-        {{- if and .Values.neoload.annotations .Values.neoload.annotations.pod .Values.neoload.annotations.pod.frontendNextGen }}
-        {{- range $key, $value := .Values.neoload.annotations.pod.frontendNextGen }}
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.pod .Values.neoload.annotations.pod.frontendnextgen }}
+        {{- range $key, $value := .Values.neoload.annotations.pod.frontendnextgen }}
         {{ $key }}: {{ $value | quote }}
         {{- end }}
         {{- end }}
@@ -55,8 +55,8 @@ spec:
         - name: {{ .Chart.Name }}-frontend-next-gen
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.frontendNextGen.repository }}:{{ include "nlweb.frontendNextGen.imageTag" . }}"
-          imagePullPolicy: {{ .Values.image.frontendNextGen.pullPolicy }}
+          image: "{{ .Values.image.frontendnextgen.repository }}:{{ include "nlweb.frontendnextgen.imageTag" . }}"
+          imagePullPolicy: {{ .Values.image.frontendnextgen.pullPolicy }}
           env: 
             - name: PORT
               value: '3000'
@@ -72,18 +72,18 @@ spec:
             httpGet:
               path: /
               port: webapp-next-gen
-            initialDelaySeconds: {{ .Values.neoload.configuration.frontendNextGen.livenessProbe.initDelaySeconds }}
+            initialDelaySeconds: {{ .Values.neoload.configuration.frontendnextgen.livenessProbe.initDelaySeconds }}
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /
               port: webapp-next-gen
-            initialDelaySeconds: {{ .Values.neoload.configuration.frontendNextGen.readinessProbe.initDelaySeconds }}
+            initialDelaySeconds: {{ .Values.neoload.configuration.frontendnextgen.readinessProbe.initDelaySeconds }}
             periodSeconds: 10
           resources:
-            {{- toYaml .Values.resources.frontendNextGen | nindent 12 }}
-        {{- if ((.Values.extra).containers).frontendNextGen }}
-        {{- toYaml .Values.extra.containers.frontendNextGen | nindent 8 }}
+            {{- toYaml .Values.resources.frontendnextgen | nindent 12 }}
+        {{- if ((.Values.extra).containers).frontendnextgen }}
+        {{- toYaml .Values.extra.containers.frontendnextgen | nindent 8 }}
         {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -98,7 +98,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       volumes: []
-    {{- if ((.Values.extra).volumes).frontendNextGen }}
-        {{- toYaml .Values.extra.volumes.frontendNextGen | nindent 8 }}
+    {{- if ((.Values.extra).volumes).frontendnextgen }}
+        {{- toYaml .Values.extra.volumes.frontendnextgen | nindent 8 }}
     {{- end }}
 {{- end }}
