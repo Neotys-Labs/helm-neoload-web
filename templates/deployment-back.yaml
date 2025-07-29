@@ -157,6 +157,9 @@ spec:
           volumeMounts:
             - name: {{ .Release.Name }}-logger-config
               mountPath: /server/conf
+        {{- if ((.Values.extra).volumeMounts).backend }}
+            {{- toYaml .Values.extra.volumeMounts.backend | nindent 12 }}
+        {{- end }}
         {{- if ((.Values.extra).containers).backend }}
         {{- toYaml .Values.extra.containers.backend | nindent 8 }}
         {{- end }}
