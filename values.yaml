@@ -13,9 +13,6 @@ image:
   frontend:
     repository: neotys/neoload-web-frontend
     pullPolicy: IfNotPresent
-  frontendNextGen:
-    repository: neotys/neoload-web-frontend-next-gen
-    pullPolicy: IfNotPresent
 
 imagePullSecrets: []
 nameOverride: ""
@@ -75,24 +72,15 @@ resources:
     limits:
       cpu: 2
       memory: 2Gi
-  frontendNextGen:
-    requests:
-      cpu: 1
-      memory: 1500Mi
-    limits:
-      cpu: 2
-      memory: 2Gi
 
 # NLWeb configuration
 neoload:
   labels:
     backend: {}
     frontend: {}
-    frontendNextGen: {}
   annotations:
     backend: {}
     frontend: {}
-    frontendNextGen: {}
   configuration:
     backend:
       mongo:
@@ -117,11 +105,6 @@ neoload:
         initDelaySeconds: 60
       readinessProbe:
         initDelaySeconds: 20
-    frontendNextGen:
-      livenessProbe:
-        initDelaySeconds: 5
-      readinessProbe:
-        initDelaySeconds: 5
     ha:
       mode: "API"
     secretKey: 

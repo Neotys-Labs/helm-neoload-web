@@ -31,8 +31,6 @@ services:
     host: neoload-web-api.mycompany.com
   files:
     host: neoload-web-files.mycompany.com
-  frontendNextGen:
-    host: neoload-web-frontend-next-gen.mycompany.com
 
 domain: .mycompany.com
 
