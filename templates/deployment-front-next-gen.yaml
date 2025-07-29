@@ -61,23 +61,33 @@ spec:
             - name: PORT
               value: '3000'
             - name: API_URL
-              value: '${API_URL}'
+              value: https://{{ index (index .Values.services "api-v4") "host" }}
             - name: API_FILE_URL
-              value: '${API_FILE_URL}'
+              value: https://{{ .Values.services.files.host }}
+            - name: FRONT_V1_URL
+              value: https://{{ .Values.services.webapp.host }}
+            - name: FRONT_PUBLIC_URL
+              value: https://{{ printf "https://%s/public" .Values.services.frontendnextgen.host }}
+            {{- if .Values.neoload.configuration.frontendnextgen.others }}
+            {{- range $name, $value := .Values.neoload.configuration.frontendnextgen.others }}
+            - name: {{ $name }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
           ports:
-            - name: webapp-next-gen
+            - name: frontendnextgen
               containerPort: 3000
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /
-              port: webapp-next-gen
+              port: frontendnextgen
             initialDelaySeconds: {{ .Values.neoload.configuration.frontendnextgen.livenessProbe.initDelaySeconds }}
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /
-              port: webapp-next-gen
+              port: frontendnextgen
             initialDelaySeconds: {{ .Values.neoload.configuration.frontendnextgen.readinessProbe.initDelaySeconds }}
             periodSeconds: 10
           resources:
