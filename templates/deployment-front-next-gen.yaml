@@ -61,13 +61,13 @@ spec:
             - name: PORT
               value: '3000'
             - name: API_URL
-              value: https://{{ index (index .Values.services "api-v4") "host" }}
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (index .Values.services "api-v4").host | required "API URL (.Values.services[\"api-v4\"].host) value is required." | quote }}
             - name: API_FILE_URL
-              value: https://{{ .Values.services.files.host }}
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.files.host" .) | required "NeoLoad Web Files API URL (.Values.services.files.host) value is required." | quote }}
             - name: FRONT_V1_URL
-              value: https://{{ .Values.services.webapp.host }}
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.webapp.host" .) | required "NeoLoad Web Public URL (.Values.services.webapp.host) value is required." | quote }}
             - name: FRONT_PUBLIC_URL
-              value: https://{{ printf "https://%s/public" .Values.services.frontendnextgen.host }}
+              value: {{ printf "%s%s/public" (include "nlweb.helpers.getScheme" .) .Values.services.frontendnextgen.host | required "NeoLoad Web Next Gen Public URL (.Values.services.frontendnextgen.host) value is required." | quote }}
             {{- if .Values.neoload.configuration.frontendnextgen.others }}
             {{- range $name, $value := .Values.neoload.configuration.frontendnextgen.others }}
             - name: {{ $name }}
