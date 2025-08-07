@@ -25,9 +25,13 @@ mongodb:
 
 ### Services host configuration
 services:
-  webapp:
+  frontendnextgen:
     host: neoload-web.mycompany.com
+  webapp:
+    host: neoload-web-vaadin.mycompany.com
   api:
+    host: neoload-web-api.mycompany.com
+  api-v4:
     host: neoload-web-api.mycompany.com
   files:
     host: neoload-web-files.mycompany.com

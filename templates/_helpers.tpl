@@ -208,13 +208,13 @@ Define webapp host, default to .Values.services.webapp.host but can be overrided
 {{- end -}}
 
 {{/*
-Define webappNextGen host, default to .Values.services.webappNextGen.host but can be overrided by .Values.extra.hosts.webappNextGen
+Define frontendnextgen host, default to .Values.services.frontendnextgen.host but can be overrided by .Values.extra.hosts.frontendnextgen
 */}}
-{{- define "nlweb.webappNextGen.host" -}}
-    {{- if (((.Values.extra).hosts).webappNextGen) -}}
-        {{- .Values.extra.hosts.webappNextGen -}}
+{{- define "nlweb.frontendnextgen.host" -}}
+    {{- if (((.Values.extra).hosts).frontendnextgen) -}}
+        {{- .Values.extra.hosts.frontendnextgen -}}
     {{- else -}}
-        {{- .Values.services.webappNextGen.host -}}
+        {{- .Values.services.frontendnextgen.host -}}
     {{- end -}}
 {{- end -}}
 
