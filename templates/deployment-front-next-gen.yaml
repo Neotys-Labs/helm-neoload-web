@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nlweb.fullname" . }}-front-next-gen
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nlweb.labels" . | nindent 4 }}
+    {{- range $key, $value := .Values.neoload.labels.frontendnextgen }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  annotations:
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.frontendnextgen }}
+    {{- range $key, $value := .Values.neoload.annotations.frontendnextgen }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.deployment .Values.neoload.annotations.deployment.frontendnextgen }}
+    {{- range $key, $value := .Values.neoload.annotations.deployment.frontendnextgen }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount.frontendnextgen }}
+  selector:
+    matchLabels:
+      {{- include "nlweb.frontendnextgen.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "nlweb.frontendnextgen.selectorLabels" . | nindent 8 }}
+        {{- range $key, $value := .Values.neoload.labels.frontendnextgen }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      annotations:
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.frontendnextgen }}
+        {{- range $key, $value := .Values.neoload.annotations.frontendnextgen }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.pod .Values.neoload.annotations.pod.frontendnextgen }}
+        {{- range $key, $value := .Values.neoload.annotations.pod.frontendnextgen }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "nlweb.serviceAccountName" . }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-frontend-next-gen
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.frontendnextgen.repository }}:{{ include "nlweb.frontendnextgen.imageTag" . }}"
+          imagePullPolicy: {{ .Values.image.frontendnextgen.pullPolicy }}
+          env: 
+            - name: PORT
+              value: '3000'
+            - name: API_URL
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (index .Values.services "api-v4").host | required "API URL (.Values.services[\"api-v4\"].host) value is required." | quote }}
+            - name: API_FILE_URL
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.files.host" .) | required "NeoLoad Web Files API URL (.Values.services.files.host) value is required." | quote }}
+            - name: FRONT_V1_URL
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.webapp.host" .) | required "NeoLoad Web Public URL (.Values.services.webapp.host) value is required." | quote }}
+            - name: FRONT_PUBLIC_URL
+              value: {{ printf "%s%s/public" (include "nlweb.helpers.getScheme" .) .Values.services.frontendnextgen.host | required "NeoLoad Web Next Gen Public URL (.Values.services.frontendnextgen.host) value is required." | quote }}
+            {{- if .Values.neoload.configuration.frontendnextgen.others }}
+            {{- range $name, $value := .Values.neoload.configuration.frontendnextgen.others }}
+            - name: {{ $name }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
+          ports:
+            - name: frontendnextgen
+              containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: frontendnextgen
+            initialDelaySeconds: {{ .Values.neoload.configuration.frontendnextgen.livenessProbe.initDelaySeconds }}
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: frontendnextgen
+            initialDelaySeconds: {{ .Values.neoload.configuration.frontendnextgen.readinessProbe.initDelaySeconds }}
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources.frontendnextgen | nindent 12 }}
+        {{- if ((.Values.extra).containers).frontendnextgen }}
+        {{- toYaml .Values.extra.containers.frontendnextgen | nindent 8 }}
+        {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with ((.Values.extra).volumes).frontendnextgen }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
