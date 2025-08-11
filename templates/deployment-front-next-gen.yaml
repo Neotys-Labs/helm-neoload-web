@@ -94,10 +94,10 @@ spec:
         {{- if ((.Values.extra).containers).frontendnextgen }}
         {{- toYaml .Values.extra.containers.frontendnextgen | nindent 8 }}
         {{- end }}
-      {{- with .Values.nodeSelector }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+    {{- end }}
     {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
@@ -106,7 +106,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      volumes: []
-    {{- if ((.Values.extra).volumes).frontendnextgen }}
-        {{- toYaml .Values.extra.volumes.frontendnextgen | nindent 8 }}
+    {{- with ((.Values.extra).volumes).frontendnextgen }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
     {{- end }}
