@@ -30,14 +30,14 @@ This chart is meant for experimented Kubernetes/Helm users as a successful insta
 
 ### Hardware
 
-NeoLoad Web will require your cluster to run a minimum of 2 pods, hosting the frontend and the backend separately.
-Here is a table to let you quickly estimate the resource requirements of your nodes, based on `resources.frontend.*` and `resources.backend.*` [(see Advanced Configuration)](#advanced-configuration).
+NeoLoad Web will require your cluster to run a minimum of 3 pods, hosting the frontend, the backend, and the backendUtilities separately.
+Here is a table to let you quickly estimate the resource requirements of your nodes, based on `resources.frontend.*`, `resources.backend.*` and `resources.backendUtilities.*` [(see Advanced Configuration)](#advanced-configuration).
 
-Deployment | Content | Requests | Limits
------ | ----------- | ----- | -----
-Minimal | 1 Frontend Pod, 1 Backend Pod | **2 CPU, 4Gi RAM** | **4 CPU, 5Gi RAM**
-Default | 2 Frontend Pods, 2 Backend Pods | **4 CPU, 8Gi RAM** | **8CPU, 10Gi RAM**
-Advanced | X Frontend Pods, Y Backend Pods | **X\*1 + Y\*1 CPU, X\*1500 + Y\*2500 Mi RAM** | **X\*2 + Y\*2 CPU, X\*2 + Y\*3 Gi RAM**
+Deployment | Content                                                  | Requests                                                      | Limits
+----- |----------------------------------------------------------|---------------------------------------------------------------| -----
+Minimal | 1 Frontend Pod, 1 Backend Pod, 1 BackendUtilities Pod    | **3 CPU, 5Gi RAM**                                            | **6 CPU, 7Gi RAM**
+Default | 2 Frontend Pods, 2 Backend Pods, 1 BackendUtilities Pods | **5 CPU, 10Gi RAM**                                           | **10 CPU, 14Gi RAM**
+Advanced | X Frontend Pods, Y Backend Pods, Z BackendUtilities Pods | **X\*1 + Y\*1 + Z\*1 CPU, X\*1500 + Y\*2500 + Z\*500 Mi RAM** | **X\*2 + Y\*2 + Z\*2 CPU, X\*2 + Y\*3 + Z\*2 Gi RAM**
 
 ### Software
 
@@ -293,6 +293,18 @@ services:
 >```
 >
 
+### BackendUtilities
+
+The `backendUtilities` component provides additional services for NeoLoad Web. NeoLoad Web will continue to function without this component, but certain features such as generating PDF reports from dashboards will not be available. 
+
+This component is **optional** and can be enabled or disabled based on your requirements. To enable or disable the deployment of the backendUtilities pod, use the `enableBackendUtilities` parameter in your values file:
+
+```yaml
+enableBackendUtilities: true  # Set to false to disable the backendUtilities deployment
+```
+
+Deploy this service if you need access to these additional features.
+
 ### Advanced configuration
 
 Here is a list of all parameters supported by this helm chart.
@@ -343,6 +355,10 @@ Parameter | Description | Default
 `resources.frontend.requests.memory` | Memory resource request for the frontend | `1500Mi`
 `resources.frontend.limits.cpu` | CPU resource limit for the frontend | `2`
 `resources.frontend.limits.memory` | Memory resource limit for the frontend | `2Gi`
+`backendUtilities.resources.requests.cpu` | CPU resource request for the backendUtilities | `1`
+`backendUtilities.resources.requests.memory` | Memory resource request for the backendUtilities | `2Gi`
+`backendUtilities.resources.limits.cpu` | CPU resource limit for the backendUtilities | `2`
+`backendUtilities.resources.limits.memory` | Memory resource limit for the backendUtilities | `2Gi`
  |  | 
 `neoload.configuration.externalTlsTermination` | Must be set to `true` if TLS termination is handled by a component [outside of the Helm Chart management](#external-tls-termination).  | `false`
 `neoload.configuration.sendUsageStatistics` | Can be set to `false` to avoid usage data collection | `true`
