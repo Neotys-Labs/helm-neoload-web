@@ -5,6 +5,7 @@
 replicaCount:
   frontend: 2
   backend: 2
+  frontendnextgen: 2
 
 image:
   backend:
@@ -12,6 +13,9 @@ image:
     pullPolicy: IfNotPresent
   frontend:
     repository: neotys/neoload-web-frontend
+    pullPolicy: IfNotPresent
+  frontendnextgen:
+    repository: neotys/neoload-web-frontend-next-gen
     pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -50,8 +54,21 @@ services:
     port: 80
     ingress:
       paths: ["/"]
+  api-v4:
+    host:
+    type: ClusterIP
+    port: 80
+    ingress:
+      paths:
+        - /v4
   files:
     host: 
+    type: ClusterIP
+    port: 80
+    ingress:
+      paths: ["/"]
+  frontendnextgen:
+    host:
     type: ClusterIP
     port: 80
     ingress:
@@ -72,15 +89,24 @@ resources:
     limits:
       cpu: 2
       memory: 2Gi
+  frontendnextgen:
+    requests:
+      cpu: 250m
+      memory: 250Mi
+    limits:
+      cpu: 500m
+      memory: 500Mi
 
 # NLWeb configuration
 neoload:
   labels:
     backend: {}
     frontend: {}
+    frontendnextgen: {}
   annotations:
     backend: {}
     frontend: {}
+    frontendnextgen: {}
   configuration:
     backend:
       mongo:
@@ -105,6 +131,11 @@ neoload:
         initDelaySeconds: 60
       readinessProbe:
         initDelaySeconds: 20
+    frontendnextgen:
+      livenessProbe:
+        initDelaySeconds: 10
+      readinessProbe:
+        initDelaySeconds: 10
     ha:
       mode: "API"
     secretKey: 
