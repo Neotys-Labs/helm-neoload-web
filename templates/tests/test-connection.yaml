@@ -8,8 +8,14 @@ metadata:
     "helm.sh/hook": test-success
 spec:
   containers:
-    - name: wget
+    - name: test-frontendnextgen
       image: busybox
       command: ['wget']
-      args:  ['{{ include "nlweb.fullname" . }}:{{ .Values.services.webapp.port }}']
+      args: ['{{ include "nlweb.fullname" . }}-svc-frontendnextgen:{{ .Values.services.frontendnextgen.port }}']
+{{- if .Values.services.webapp }}
+    - name: test-webapp
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "nlweb.fullname" . }}-svc-webapp:{{ .Values.services.webapp.port }}']
+{{- end }}
   restartPolicy: Never

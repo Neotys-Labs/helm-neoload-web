@@ -68,6 +68,15 @@ app.kubernetes.io/component: frontend
 {{- end -}}
 
 {{/*
+Frontend Next Gen Selector labels
+*/}}
+{{- define "nlweb.frontendnextgen.selectorLabels" -}}
+{{ include "nlweb.selectorLabels" . }}
+app.kubernetes.io/component: frontendnextgen
+{{- end -}}
+
+
+{{/*
 Backend Selector labels
 */}}
 {{- define "nlweb.backend.selectorLabels" -}}
@@ -154,6 +163,14 @@ Get frontend image tag
 {{- end -}}
 
 {{/*
+Get frontend next gen image tag
+*/}}
+{{- define "nlweb.frontendnextgen.imageTag" -}}
+    {{ default .Chart.AppVersion .Values.image.frontendnextgen.tag }}
+{{- end -}}
+
+
+{{/*
 Get backend image tag
 */}}
 {{- define "nlweb.backend.imageTag" -}}
@@ -187,6 +204,17 @@ Define webapp host, default to .Values.services.webapp.host but can be overrided
         {{- .Values.extra.hosts.webapp -}}
     {{- else -}}
         {{- .Values.services.webapp.host -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*
+Define frontendnextgen host, default to .Values.services.frontendnextgen.host but can be overrided by .Values.extra.hosts.frontendnextgen
+*/}}
+{{- define "nlweb.frontendnextgen.host" -}}
+    {{- if (((.Values.extra).hosts).frontendnextgen) -}}
+        {{- .Values.extra.hosts.frontendnextgen -}}
+    {{- else -}}
+        {{- .Values.services.frontendnextgen.host -}}
     {{- end -}}
 {{- end -}}
 
