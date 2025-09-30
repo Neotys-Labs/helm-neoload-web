@@ -7,3 +7,7 @@ LOAD-33226 - Single sign-on in NeoLoad Web using Security Assertion Markup Langu
 NeoLoad Web 2025.2.1 Technical Release Notes
 
 This version includes security fixes.
+
+NeoLoad Web 2025.2.2 Technical Release Notes
+
+This version includes security fixes.
