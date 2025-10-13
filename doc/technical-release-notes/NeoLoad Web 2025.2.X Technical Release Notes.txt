@@ -11,3 +11,7 @@ This version includes security fixes.
 NeoLoad Web 2025.2.2 Technical Release Notes
 
 This version includes security fixes.
+
+NeoLoad Web 2025.2.3 Technical Release Notes
+
+LOAD-35135 - Single sign-on fix related to MIME compliant encoding
