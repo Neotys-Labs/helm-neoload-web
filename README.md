@@ -347,10 +347,11 @@ Parameter | Description | Default
 `neoload.configuration.externalTlsTermination` | Must be set to `true` if TLS termination is handled by a component [outside of the Helm Chart management](#external-tls-termination).  | `false`
 `neoload.configuration.sendUsageStatistics` | Can be set to `false` to avoid usage data collection | `true`
  |  | 
-`neoload.configuration.backend.mongo.host` | MongoDB host | 
+`neoload.configuration.backend.mongo.host` | MongoDB host |
 `neoload.configuration.backend.mongo.port` | MongoDB port | `27017`
 `neoload.configuration.backend.mongo.poolSize` | MongoDB pool size | `50`
 `neoload.configuration.backend.java.xmx` | Java JVM Max heap size for the backend | `2000m`
+`neoload.configuration.backend.misc.maxFormAttributeSize` | Maximum size in bytes for HTTP form attributes (e.g., for SSO form parameters) | `32768`
 `neoload.configuration.backend.misc.files.maxUploadSizeInBytes` | Max file upload size in bytes | `250000000`
 `neoload.configuration.backend.misc.files.maxUploadPerWeek` | Max file upload count per week | `250`
 `neoload.configuration.backend.licensingPlatformToken` | Token for enabling licensing features (such as VUHs) | 
