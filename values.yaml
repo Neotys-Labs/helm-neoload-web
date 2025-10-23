@@ -89,6 +89,11 @@ neoload:
         poolSize: 50
       java:
         xmx: 2000m
+      cors:
+        # Optional additional CORS allowed origin regex to append to the default.
+        # For example for SSO, to allow access from Okta IDP: "https://.*.okta.com"
+        # If not set, defaults to scheme + ".*" + domain only (e.g., https://.*.mycompany.com)
+        additionalAllowedOriginPattern: 
       misc:
         maxFormAttributeSize: 32768
         files:
