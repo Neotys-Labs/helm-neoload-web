@@ -153,6 +153,10 @@ The following docs can help you when migrating chart version with breaking chang
 | 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
 | 4.2.x to 2023.1.x | [Upgrade Guide](/doc/upgrade-4.2.x-to-2023.1.x.md) |
 
+### Breaking change: CORS configuration for IdP/SSO on new frontend
+
+If you used SSO on the previous frontend and are migrating to use SSO with the new frontend, CORS configuration changes are required because the IdP now calls the API directly. Please review and apply the instructions in [CORS allowed origins (IDP/SSO)](#cors-allowed-origins-idpsso).
+
 ### Version compatibility
 
 Due to Helm Charts nature, there are two distinct version numbers to keep track of :
