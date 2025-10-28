@@ -85,7 +85,7 @@ app.kubernetes.io/component: backend
 {{- end -}}
 
 {{/*
-backendUtilities Selector labels
+Backend utilities Selector labels
 */}}
 {{- define "nlweb.backendUtilities.selectorLabels" -}}
 {{ include "nlweb.selectorLabels" . }}
@@ -93,7 +93,7 @@ app.kubernetes.io/component: backendUtilities
 {{- end -}}
 
 {{/*
-backendUtilities image tag
+Backend utilities image tag
 */}}
 {{- define "nlweb.webcrawler.imageTag" -}}
     {{ default .Chart.AppVersion .Values.image.backendUtilities.tag }}
