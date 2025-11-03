@@ -2,6 +2,7 @@
 replicaCount:
   frontend: 2
   backend: 2
+  backendUtilities: 1
 
 ### NLWeb configuration
 neoload:

@@ -85,6 +85,21 @@ app.kubernetes.io/component: backend
 {{- end -}}
 
 {{/*
+Backend utilities Selector labels
+*/}}
+{{- define "nlweb.backendUtilities.selectorLabels" -}}
+{{ include "nlweb.selectorLabels" . }}
+app.kubernetes.io/component: backendUtilities
+{{- end -}}
+
+{{/*
+Backend utilities image tag
+*/}}
+{{- define "nlweb.webcrawler.imageTag" -}}
+    {{ default .Chart.AppVersion .Values.image.backendUtilities.tag }}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "nlweb.serviceAccountName" -}}

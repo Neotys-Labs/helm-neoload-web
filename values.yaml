@@ -6,6 +6,7 @@ replicaCount:
   frontend: 2
   backend: 2
   frontendnextgen: 2
+  backendUtilities: 1
 
 image:
   backend:
@@ -16,6 +17,9 @@ image:
     pullPolicy: IfNotPresent
   frontendnextgen:
     repository: neotys/neoload-web-frontend-next-gen
+    pullPolicy: IfNotPresent
+  backendUtilities:
+    repository: neotys/neoload-web-crawler-onpremise
     pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -40,6 +44,8 @@ securityContext:
   runAsNonRoot: true
   # readOnlyRootFilesystem: true
   # runAsUser: 2000
+
+enableBackendUtilities: true
 
 services:
   webapp:
@@ -96,6 +102,12 @@ resources:
     limits:
       cpu: 500m
       memory: 500Mi
+  backendUtilities:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      memory: 2Gi
 
 # NLWeb configuration
 neoload:
@@ -103,10 +115,12 @@ neoload:
     backend: {}
     frontend: {}
     frontendnextgen: {}
+    backendUtilities: {}
   annotations:
     backend: {}
     frontend: {}
     frontendnextgen: {}
+    backendUtilities: {}
   configuration:
     backend:
       mongo:
@@ -136,6 +150,13 @@ neoload:
         initDelaySeconds: 10
       readinessProbe:
         initDelaySeconds: 10
+    backendUtilities:
+      java:
+        xmx: 300m
+      livenessProbe:
+        initDelaySeconds: 120
+      readinessProbe:
+        initDelaySeconds: 60
     ha:
       mode: "API"
     secretKey: 
