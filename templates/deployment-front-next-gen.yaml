@@ -1,3 +1,4 @@
+{{ if .Values.enableFrontendNextGen }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -110,3 +111,4 @@ spec:
       volumes:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+{{- end }}
