@@ -24,7 +24,10 @@ NeoLoad is licensed under the following [License Agreement](https://www.neotys.c
 
 ## Targeted audience
 
-This chart is meant for experimented Kubernetes/Helm users as a successful installation and exploitation of the application is very environment dependant.
+This chart is meant for experienced Kubernetes/Helm users as a successful installation and running of the application is very environment dependant.
+
+> [!IMPORTANT]
+> NeoLoad Web instances deployed with this Helm Chart will only be supported if overseen by NeoLoad services. Please speak to your NeoLoad Account Manager.
 
 ## Prerequisites
 
@@ -43,7 +46,8 @@ Advanced | X Frontend Pods, Y Backend Pods | **X\*1 + Y\*1 CPU, X\*1500 + Y\*250
 
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) CLI
 - [Helm](https://helm.sh/docs/intro/install/) CLI  (^3.0.0)
-- A running [Kubernetes](https://kubernetes.io/) cluster (1.18.0 - 1.32.0)
+- A running [Kubernetes](https://kubernetes.io/) cluster (1.18+)
+  - Actively supported versions are those that are currently maintained by Kubernetes ([see supported versions](https://kubernetes.io/releases/patch-releases/#detailed-release-history-for-active-branches))
   - The cluster [PodPidsLimit](https://kubernetes.io/docs/concepts/policy/pid-limiting/#pod-pid-limits) must be at least 2048
 - A running [mongodb](https://www.mongodb.com/) accessible from the Kubernetes cluster ([see supported versions](/doc/mongo-prerequisites.md))
 - A running ingress controller deployed on the Kubernetes cluster
