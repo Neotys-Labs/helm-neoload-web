@@ -38,31 +38,38 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-    {{- range $label, $service := .Values.services }}
-    {{- if $service.ingress }}
-    {{- $serviceName := printf "%s-%s-%s" (include "nlweb.fullname" $) "svc" $label }}
-    - host: {{ $service.host | quote }}
-      http:
-      {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.Version }}
-        paths:
-        {{- range $service.ingress.paths }}
-        - path: {{ . }}
+    {{- $hostMap := dict }}
+    {{- range $svcName, $svc := .Values.services }}
+    {{- $svcHost := $svc.host }}
+    {{- if not (hasKey $hostMap $svcHost) }}
+    {{- $_ := set $hostMap $svcHost (list) }}
+    {{- end }}
+    {{- $svcEntry := dict "name" $svcName "paths" ($svc.ingress.paths | default (list "/")) "port" $svc.port }}
+    {{- $_ := set $hostMap $svcHost (append (get $hostMap $svcHost) $svcEntry) }}
+    {{- end }}
+
+    {{- range $host, $svcList := $hostMap }}
+  - host: {{ $host | quote }}
+    http:
+      paths:
+        {{- range $svc := $svcList }}
+        {{- $serviceName := printf "%s-%s-%s" (include "nlweb.fullname" $) "svc" $svc.name }}
+        {{- range $path := $svc.paths }}
+        {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.Version }}
+        - path: {{ $path }}
           pathType: Prefix
           backend:
             service:
               name: {{ $serviceName }}
               port:
-                number: {{ $service.port }}
-        {{- end }}
-      {{- else }}
-        paths:
-        {{- range $service.ingress.paths }}
-        - path: {{ . }}
+                number: {{ $svc.port }}
+        {{- else }}
+        - path: {{ $path }}
           backend:
             serviceName: {{ $serviceName }}
-            servicePort: {{ $service.port }}
+            servicePort: {{ $svc.port }}
         {{- end }}
-      {{- end }}
-      {{- end }}
-    {{- end }}
-{{- end }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+  {{- end }}

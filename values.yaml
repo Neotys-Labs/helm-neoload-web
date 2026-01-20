@@ -50,6 +50,13 @@ services:
     port: 80
     ingress:
       paths: ["/"]
+  api-v4:
+    host:
+    type: ClusterIP
+    port: 80
+    ingress:
+      paths:
+        - /v4
   files:
     host: 
     type: ClusterIP
@@ -67,11 +74,10 @@ resources:
       memory: 3Gi
   frontend:
     requests:
-      cpu: 1
-      memory: 1500Mi
+      cpu: 50m
+      memory: 250Mi
     limits:
-      cpu: 2
-      memory: 2Gi
+      memory: 250Mi
 
 # NLWeb configuration
 neoload:
@@ -95,16 +101,14 @@ neoload:
           maxUploadPerWeek: "250"
       licensingPlatformToken: 
       livenessProbe:
-        initDelaySeconds: 60
+        initDelaySeconds: 120
       readinessProbe:
-        initDelaySeconds: 60
+        initDelaySeconds: 120
     frontend:
-      java:
-        xmx: 1200m
       livenessProbe:
-        initDelaySeconds: 60
+        initDelaySeconds: 10
       readinessProbe:
-        initDelaySeconds: 20
+        initDelaySeconds: 10
     ha:
       mode: "API"
     secretKey: 
