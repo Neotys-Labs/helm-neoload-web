@@ -60,11 +60,11 @@ spec:
             - name: PORT
               value: '3000'
             - name: API_URL
-              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (index .Values.services "api-v4").host | required "API URL (.Values.services[\"api-v4\"].host) value is required." | quote }}
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.api-v4.host" .) | required "API v4 URL (.Values.services[\"api-v4\"].host or .Values.services.api.host) value is required." | quote }}
             - name: API_FILE_URL
               value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.files.host" .) | required "NeoLoad Web Files API URL (.Values.services.files.host) value is required." | quote }}
             - name: FRONT_PUBLIC_URL
-              value: {{ printf "%s%s/public" (include "nlweb.helpers.getScheme" .) .Values.services.webapp.host | required "NeoLoad Web Next Gen Public URL (.Values.services.webapp.host) value is required." | quote }}
+              value: {{ printf "%s%s/public" (include "nlweb.helpers.getScheme" .) (include "nlweb.webapp.host" .) | required "NeoLoad Web Next Gen Public URL (.Values.services.webapp.host or .Values.extra.hosts.webapp) value is required." | quote }}
             {{- if .Values.neoload.configuration.frontend.others }}
             {{- range $name, $value := .Values.neoload.configuration.frontend.others }}
             - name: {{ $name }}

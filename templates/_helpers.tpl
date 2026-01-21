@@ -202,6 +202,24 @@ Define api host, default to .Values.services.api.host but can be overrided by .V
 {{- end -}}
 
 {{/*
+Define api-v4 host with fallback logic:
+- Prefer .Values.extra.hosts["api-v4"] when provided
+- Else use .Values.services["api-v4"].host when set
+- Else fallback to the api host (which itself can be overridden via .Values.extra.hosts.api)
+*/}}
+{{- define "nlweb.api-v4.host" -}}
+    {{- $extra := .Values.extra -}}
+    {{- $services := .Values.services -}}
+    {{- if and $extra $extra.hosts (hasKey $extra.hosts "api-v4") -}}
+        {{- index $extra.hosts "api-v4" -}}
+    {{- else if and $services (hasKey $services "api-v4") (index $services "api-v4").host -}}
+        {{- (index $services "api-v4").host -}}
+    {{- else -}}
+        {{- include "nlweb.api.host" . -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*
 Define files host, default to .Values.services.files.host but can be overrided by .Values.extra.hosts.files
 */}}
 {{- define "nlweb.files.host" -}}

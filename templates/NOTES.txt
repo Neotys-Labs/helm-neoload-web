@@ -6,7 +6,17 @@
     {{- if $service.ingress.paths -}}
       {{- $path = (index $service.ingress.paths 0 | default "/") -}}
     {{- end -}}
-    {{ include "nlweb.helpers.getScheme" $ }}{{ $service.host }}{{ $path }}
+    {{- $hostCtx := dict "val" $service.host -}}
+    {{- if eq $label "webapp" -}}
+      {{- $_ := set $hostCtx "val" (include "nlweb.webapp.host" $) -}}
+    {{- else if eq $label "api" -}}
+      {{- $_ := set $hostCtx "val" (include "nlweb.api.host" $) -}}
+    {{- else if eq $label "api-v4" -}}
+      {{- $_ := set $hostCtx "val" (include "nlweb.api-v4.host" $) -}}
+    {{- else if eq $label "files" -}}
+      {{- $_ := set $hostCtx "val" (include "nlweb.files.host" $) -}}
+    {{- end -}}
+    {{ include "nlweb.helpers.getScheme" $ }}{{ (get $hostCtx "val") }}{{ $path }}
    {{- end }}
  {{ end }}
 {{- else if contains "NodePort" .Values.services.webapp.type }}
