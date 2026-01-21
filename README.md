@@ -369,7 +369,6 @@ Parameter | Description | Default
 `neoload.configuration.backend.readinessProbe.initDelaySeconds` | Backend Pods readiness probe initial delay in seconds | 60
 `neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
 | | 
-`neoload.configuration.frontend.java.xmx` | Java JVM Max heap size for the frontend | `1200m`
 `neoload.configuration.frontend.livenessProbe.initDelaySeconds` | Frontend Pods liveness probe initial delay in seconds | 60
 `neoload.configuration.frontend.readinessProbe.initDelaySeconds` | Frontend Pods readiness probe initial delay in seconds | 20
 `neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
