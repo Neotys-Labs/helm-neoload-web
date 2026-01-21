@@ -281,9 +281,6 @@ services:
     host: neoload-web.mycompany.com
   api:
     host: neoload-web-api.mycompany.com
-  # Optional: api-v4 inherits api host if omitted
-  api-v4:
-    host: # defaults to services.api.host
   files:
     host: neoload-web-files.mycompany.com
 ```
