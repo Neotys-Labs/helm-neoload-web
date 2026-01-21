@@ -43,7 +43,6 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/configuration-snippet: |
       proxy_ignore_client_abort "on";  
     nginx.ingress.kubernetes.io/proxy-body-size: 0
