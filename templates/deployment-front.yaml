@@ -59,9 +59,6 @@ spec:
           env: 
             - name: PORT
               value: '3000'
-            #TODO remove FRONT_V1_URL when frontend v2 is default
-            - name: FRONT_V1_URL
-              value: "fake"
             - name: API_URL
               value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (index .Values.services "api-v4").host | required "API URL (.Values.services[\"api-v4\"].host) value is required." | quote }}
             - name: API_FILE_URL
