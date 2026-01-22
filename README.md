@@ -357,6 +357,10 @@ Parameter | Description | Default
 `services.api.type` | The service type for the api deployment | `ClusterIP`
 `services.api.port` | The service port for the api deployment | `80`
 `services.api.ingress.paths` | The path mapping for the api ingress. If value is `null`, ingress will not be created for this service. | `[""]`
+`services.api-v4.host` | The hostname for the API v4 endpoints. If unset, falls back to `services.api.host`. |
+`services.api-v4.type` | The service type for the API v4 service | `ClusterIP`
+`services.api-v4.port` | The service port for the API v4 service | `80`
+`services.api-v4.ingress.paths` | The path mapping for the API v4 ingress. | `["/v4"]`
 `services.files.host` | The hostname for the files deployment | 
 `services.files.type` | The service type for the files deployment | `ClusterIP`
 `services.files.port` | The service port for the files deployment | `80`
@@ -394,7 +398,6 @@ Parameter | Description | Default
 `neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
 `neoload.configuration.backend.cors.additionalAllowedOriginPattern` | Additional CORS origin regex appended to base `scheme + ".*" + domain`. Example: `https://.*.okta.com` | 
 | | 
-`neoload.configuration.frontend.java.xmx` | Java JVM Max heap size for the frontend | `1200m`
 `neoload.configuration.frontend.livenessProbe.initDelaySeconds` | Frontend Pods liveness probe initial delay in seconds | 60
 `neoload.configuration.frontend.readinessProbe.initDelaySeconds` | Frontend Pods readiness probe initial delay in seconds | 20
 `neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
@@ -445,6 +448,7 @@ Parameter | Description | Default
 ----- | ----------- | -------
 `extra.hosts.webapp` | Overrides the app configuration if the hostname used to access NeoLoad Web Frontend is different than the value of `services.webapp.host`|
 `extra.hosts.api` | Overrides the app configuration if the hostname used to access NeoLoad Web API is different than the value of `services.api.host`|
+`extra.hosts.api-v4` | Overrides the app configuration for API v4 host. Takes precedence over `services.api-v4.host` and the api fallback. |
 `extra.hosts.files` | Overrides the app configuration if the hostname used to access NeoLoad Web Files API is different than the value of `services.files.host`|
 `extra.containers.backend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the backend Deployment. |
 `extra.containers.frontend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the frontend Deployment. |

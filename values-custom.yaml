@@ -46,16 +46,10 @@ ingress:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/configuration-snippet: |
       proxy_ignore_client_abort "on";  
     nginx.ingress.kubernetes.io/proxy-body-size: 0
-    # Enable sticky sessions for HA
-    # More parameters here : https://kubernetes.github.io/ingress-nginx/examples/affinity/cookie/
-    nginx.ingress.kubernetes.io/affinity: cookie
-    nginx.ingress.kubernetes.io/affinity-mode: persistent
-    nginx.ingress.kubernetes.io/session-cookie-max-age: 3600
-    nginx.ingress.kubernetes.io/session-cookie-change-on-failure: true
+    
 
 
   ### TLS configuration

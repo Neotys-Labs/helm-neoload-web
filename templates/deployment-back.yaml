@@ -9,8 +9,15 @@ metadata:
     {{ $key }}: {{ $value | quote }}
     {{- end }}
   annotations:
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.backend }}
     {{- range $key, $value := .Values.neoload.annotations.backend }}
     {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.deployment .Values.neoload.annotations.deployment.backend }}
+    {{- range $key, $value := .Values.neoload.annotations.deployment.backend }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
     {{- end }}
 spec:
   replicas: {{ .Values.replicaCount.backend }}
@@ -25,8 +32,15 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
       annotations:
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.backend }}
         {{- range $key, $value := .Values.neoload.annotations.backend }}
         {{ $key }}: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.pod .Values.neoload.annotations.pod.backend }}
+        {{- range $key, $value := .Values.neoload.pod.annotations.backend }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
         {{- end }}
     spec:
       serviceAccountName: {{ include "nlweb.serviceAccountName" . }}
@@ -136,9 +150,16 @@ spec:
                 {{- else -}}
                 {{ $base }}
                 {{- end -}}
+            {{- if or (not .Values.neoload.configuration.backend.others) (not .Values.neoload.configuration.backend.others.COOKIE_DOMAIN) }}
+            - name: COOKIE_DOMAIN
+              value: {{ (.Values.domain | required "NeoLoad Web domain (.Values.domain) value is required." ) | quote }}
+            {{- end }}
           ports:
             - name: api
               containerPort: 1081
+              protocol: TCP
+            - name: api-v4
+              containerPort: 1084
               protocol: TCP
             - name: files
               containerPort: 1082
