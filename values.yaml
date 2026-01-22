@@ -96,6 +96,7 @@ neoload:
       java:
         xmx: 2000m
       misc:
+        maxFormAttributeSize: 32768
         files:
           maxUploadSizeInBytes: "250000000"
           maxUploadPerWeek: "250"

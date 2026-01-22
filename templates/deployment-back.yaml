@@ -97,6 +97,8 @@ spec:
               value: "http://{{ include "nlweb.fullname" . }}-svc-files.{{ .Release.Namespace }}.svc.cluster.local"              
             - name: FILE_PROJECT_MAX_SIZE_IN_BYTES
               value: {{ int .Values.neoload.configuration.backend.misc.files.maxUploadSizeInBytes | quote }}
+            - name: MAX_FORM_ATTRIBUTE_SIZE
+              value: {{ int .Values.neoload.configuration.backend.misc.maxFormAttributeSize | quote }}
             - name: NLPROJECT_MAX_UPLOADED_FILES_PER_WEEK
               value: {{ int .Values.neoload.configuration.backend.misc.files.maxUploadPerWeek | quote }}
             - name: SEND_USAGE_STATISTICS
@@ -141,7 +143,14 @@ spec:
             {{- end }}
             {{- if or (not .Values.neoload.configuration.backend.others) (not .Values.neoload.configuration.backend.others.CORS_ALLOWED_ORIGIN_PATTERN) }}
             - name: CORS_ALLOWED_ORIGIN_PATTERN
-              value: {{ (printf "%s.*%s" (include "nlweb.helpers.getScheme" .) (.Values.domain) | required "NeoLoad Web domain (.Values.domain) value is required." | quote) }}
+              value: >-
+                {{- $base := (printf "%s.*%s" (include "nlweb.helpers.getScheme" .) (.Values.domain) | required "NeoLoad Web domain (.Values.domain) value is required.") -}}
+                {{- $cors := (default dict .Values.neoload.configuration.backend.cors) -}}
+                {{- if $cors.additionalAllowedOriginPattern -}}
+                {{ $base }},{{ $cors.additionalAllowedOriginPattern }}
+                {{- else -}}
+                {{ $base }}
+                {{- end -}}
             {{- end }}
             {{- if or (not .Values.neoload.configuration.backend.others) (not .Values.neoload.configuration.backend.others.COOKIE_DOMAIN) }}
             - name: COOKIE_DOMAIN

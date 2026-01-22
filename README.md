@@ -157,6 +157,10 @@ The following docs can help you when migrating chart version with breaking chang
 | 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
 | 4.2.x to 2023.1.x | [Upgrade Guide](/doc/upgrade-4.2.x-to-2023.1.x.md) |
 
+### Breaking change: CORS configuration for IdP/SSO on new frontend
+
+If you used SSO on the previous frontend and are migrating to use SSO with the new frontend, CORS configuration changes are required because the IdP now calls the API directly. Please review and apply the instructions in [CORS allowed origins (IDP/SSO)](#cors-allowed-origins-idpsso).
+
 ### Version compatibility
 
 Due to Helm Charts nature, there are two distinct version numbers to keep track of :
@@ -297,6 +301,32 @@ services:
 >```
 >
 
+### CORS allowed origins (IDP/SSO)
+
+When using an external IdP (for example Okta) that calls the NeoLoad Web API, you may need to allow an additional origin for CORS.
+
+- The backend computes a base CORS pattern from your configured scheme and domain: `https://.*<domain>`.
+  - Example: with `domain: .mycompany.com`, the base is `https://.*.mycompany.com`.
+- You can append one extra allowed origin by setting `neoload.configuration.backend.cors.additionalAllowedOriginPattern`.
+- At runtime, the env `CORS_ALLOWED_ORIGIN_PATTERN` becomes either:
+  - `https://.*.<domain>` (default), or
+  - `https://.*.<domain>,<your-additional-pattern>` when configured.
+
+Example values override (Okta wildcard):
+
+```yaml
+neoload:
+  configuration:
+    backend:
+      cors:
+        additionalAllowedOriginPattern: "https://.*.okta.com"
+```
+
+Other examples:
+- Exact Okta tenant: `"https://my-tenant.okta.com"`
+- Keycloak single host: `"https://keycloak.example.com"`
+- Azure AD (example): `"https://login.microsoftonline.com"`
+
 ### Advanced configuration
 
 Here is a list of all parameters supported by this helm chart.
@@ -355,16 +385,18 @@ Parameter | Description | Default
 `neoload.configuration.externalTlsTermination` | Must be set to `true` if TLS termination is handled by a component [outside of the Helm Chart management](#external-tls-termination).  | `false`
 `neoload.configuration.sendUsageStatistics` | Can be set to `false` to avoid usage data collection | `true`
  |  | 
-`neoload.configuration.backend.mongo.host` | MongoDB host | 
+`neoload.configuration.backend.mongo.host` | MongoDB host |
 `neoload.configuration.backend.mongo.port` | MongoDB port | `27017`
 `neoload.configuration.backend.mongo.poolSize` | MongoDB pool size | `50`
 `neoload.configuration.backend.java.xmx` | Java JVM Max heap size for the backend | `2000m`
+`neoload.configuration.backend.misc.maxFormAttributeSize` | Maximum size in bytes for HTTP form attributes (e.g., for SSO form parameters) | `32768`
 `neoload.configuration.backend.misc.files.maxUploadSizeInBytes` | Max file upload size in bytes | `250000000`
 `neoload.configuration.backend.misc.files.maxUploadPerWeek` | Max file upload count per week | `250`
 `neoload.configuration.backend.licensingPlatformToken` | Token for enabling licensing features (such as VUHs) | 
 `neoload.configuration.backend.livenessProbe.initDelaySeconds` | Backend Pods liveness probe initial delay in seconds | 60
 `neoload.configuration.backend.readinessProbe.initDelaySeconds` | Backend Pods readiness probe initial delay in seconds | 60
 `neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
+`neoload.configuration.backend.cors.additionalAllowedOriginPattern` | Additional CORS origin regex appended to base `scheme + ".*" + domain`. Example: `https://.*.okta.com` | 
 | | 
 `neoload.configuration.frontend.livenessProbe.initDelaySeconds` | Frontend Pods liveness probe initial delay in seconds | 60
 `neoload.configuration.frontend.readinessProbe.initDelaySeconds` | Frontend Pods readiness probe initial delay in seconds | 20
@@ -529,3 +561,21 @@ Any end user can prevent Google from collecting and processing their data by dow
 ## Advanced configuration
 
 - [Logger configuration](./doc/logging-configuration.md).
+
+## Troubleshooting
+
+### SSO error: "Size exceed allowed maximum capacity"
+
+If, during SSO authentication, the browser shows the error "Size exceed allowed maximum capacity", it likely means the default maximum size for HTTP form attributes (32768 bytes) is too low for your IdP's payload.
+
+Increase the value using `neoload.configuration.backend.misc.maxFormAttributeSize` in your values file. For example:
+
+```yaml
+neoload:
+  configuration:
+    backend:
+      misc:
+        maxFormAttributeSize: 65536
+```
+
+Note: Set the value according to your IdP needs; larger SSO payloads may require higher limits.

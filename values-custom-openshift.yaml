@@ -14,6 +14,9 @@ neoload:
         port: 27017
       # Enable licensing features (VUHs) by setting this token, or leave it empty
       licensingPlatformToken:
+      # Optional: append an additional CORS origin regex for SSO usage to allow the IdP to call the backend.
+      # cors:
+        # additionalAllowedOriginPattern: "https://.*.okta.com"
 
 ### MongoDB user configuration
 mongodb:
