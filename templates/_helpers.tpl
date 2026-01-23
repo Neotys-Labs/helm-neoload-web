@@ -229,3 +229,17 @@ Define files host, default to .Values.services.files.host but can be overrided b
         {{- .Values.services.files.host -}}
     {{- end -}}
 {{- end -}}
+
+{{/*
+Helper - Build CORS allowed origin pattern string
+Returns a single-line string combining scheme+domain and optional additional pattern.
+*/}}
+{{- define "nlweb.helpers.corsAllowedOriginPattern" -}}
+    {{- $base := (printf "%s.*%s" (include "nlweb.helpers.getScheme" .) (.Values.domain) | required "NeoLoad Web domain (.Values.domain) value is required.") -}}
+    {{- $cors := (default dict .Values.neoload.configuration.backend.cors) -}}
+    {{- if $cors.additionalAllowedOriginPattern -}}
+        {{- printf "%s,%s" $base $cors.additionalAllowedOriginPattern -}}
+    {{- else -}}
+        {{- $base -}}
+    {{- end -}}
+{{- end -}}
