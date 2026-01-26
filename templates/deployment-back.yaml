@@ -89,6 +89,10 @@ spec:
               value: {{ .Values.neoload.configuration.backend.mongo.poolSize | quote }}
             - name: NEOLOAD_WEB_PUBLIC_URL
               value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.webapp.host" .) | required "NeoLoad Web Public URL (.Values.services.webapp.host) value is required." | quote }}
+            - name: NEOLOAD_WEB_URL_NEXT_GEN
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.webapp.host" .) | required "NeoLoad Web Public URL (.Values.services.webapp.host) value is required." | quote }}
+            - name: NEOLOAD_WEB_PUBLIC_URL_NEXT_GEN
+              value: {{ printf "%s%s/public" (include "nlweb.helpers.getScheme" .) (include "nlweb.webapp.host" .) | required "NeoLoad Web Public URL (.Values.services.webapp.host) value is required." | quote }}
             - name: NEOLOAD_WEB_API_PUBLIC_URL
               value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.api.host" .) | required "NeoLoad Web API URL (.Values.services.api.host) value is required." | quote }}
             - name: FILE_STORAGE_ROUTER_BASE_URL
