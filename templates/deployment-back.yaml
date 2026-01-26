@@ -128,14 +128,7 @@ spec:
             {{- end }}
             {{- end }}
             - name: CORS_ALLOWED_ORIGIN_PATTERN
-              value: >-
-                {{- $base := (printf "%s.*%s" (include "nlweb.helpers.getScheme" .) (.Values.domain) | required "NeoLoad Web domain (.Values.domain) value is required.") -}}
-                {{- $cors := (default dict .Values.neoload.configuration.backend.cors) -}}
-                {{- if $cors.additionalAllowedOriginPattern -}}
-                {{ $base }},{{ $cors.additionalAllowedOriginPattern }}
-                {{- else -}}
-                {{ $base }}
-                {{- end -}}
+              value: {{ include "nlweb.helpers.corsAllowedOriginPattern" . | quote }}
           ports:
             - name: api
               containerPort: 1081
