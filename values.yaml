@@ -5,6 +5,8 @@
 replicaCount:
   frontend: 2
   backend: 2
+  # TODO adjust number of replicas
+  backendUtilities: 1
 
 image:
   backend:
@@ -12,6 +14,10 @@ image:
     pullPolicy: IfNotPresent
   frontend:
     repository: neotys/neoload-web-frontend
+    pullPolicy: IfNotPresent
+  # TODO adjust repository
+  backendUtilities:
+    repository: neotys/neoload-web-backend-utilities
     pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -78,15 +84,26 @@ resources:
       memory: 250Mi
     limits:
       memory: 250Mi
+  backendUtilities:
+    requests:
+      # TODO adjust values
+      cpu: 100m
+      # TODO adjust values
+      memory: 500Mi
+    limits:
+      # TODO adjust values
+      memory: 1Gi
 
 # NLWeb configuration
 neoload:
   labels:
     backend: {}
     frontend: {}
+    backendUtilities: {}
   annotations:
     backend: {}
     frontend: {}
+    backendUtilities: {}
   configuration:
     backend:
       mongo:
@@ -110,6 +127,13 @@ neoload:
         initDelaySeconds: 10
       readinessProbe:
         initDelaySeconds: 10
+    backendUtilities:
+      livenessProbe:
+        initDelaySeconds: 20
+      readinessProbe:
+        initDelaySeconds: 20
+      java:
+        xmx: 300m
     ha:
       mode: "API"
     secretKey: 
