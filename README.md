@@ -408,8 +408,13 @@ Parameter | Description | Default
 | |
 `neoload.labels.backend` | Add labels to backend resources ex: `key: value`. | `{}`
 `neoload.labels.frontend` | Add labels to frontend resources ex: `key: value`. | `{}`
-`neoload.annotations.backend` | Add annotations to backend resources ex: `key: value`. | `{}`
-`neoload.annotations.frontend` | Add annotations to frontend resources ex: `key: value`. | `{}`
+`neoload.annotations.backend` | Add annotations to backend resources ex: `key: value`. Deprecated, please use `neoload.annotations.backendUtilities` | Add annotations to backend-utilities resources ex: `key: value`. Deprecated, please use `neoload.annotations.frontend` | Add annotations to frontend resources ex: `key: value`. Deprecated, please use `neoload.annotations.pod.backend` or `neoload.annotations.deployment.backend`. | `{}`
+`neoload.annotations.pod.backend` | Add annotations to backend pods ex: `key: value`. | `{}`
+`neoload.annotations.pod.backendUtilities` | Add annotations to backend-utilities pods ex: `key: value`. | `{}`
+`neoload.annotations.pod.frontend` | Add annotations to frontend pods ex: `key: value`. | `{}`
+`neoload.annotations.deployment.backend` | Add annotations to backend deployment ex: `key: value`. | `{}`
+`neoload.annotations.deployment.backendUtilities` | Add annotations to backend-utilities deployment ex: `key: value`. | `{}`
+`neoload.annotations.deployment.frontend` | Add annotations to frontend deployment ex: `key: value`. | `{}`
 | |
 `mongodb.usePassword` | Set to false if your MongoDB connection doesn't require authentication | `true`
 `mongodb.mongodbUsername` | MongoDB Username | 
