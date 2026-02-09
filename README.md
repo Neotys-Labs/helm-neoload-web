@@ -189,7 +189,7 @@ Chart Version >= 3.0.0 | **KO** | **KO** | OK
 
 ## Architecture
 
-This schema describe:
+This schema describes:
 * Components created inside the kubernetes cluster by this chart
 * How they interact between them
 * How they interact with components outside the cluster:
@@ -199,7 +199,71 @@ This schema describe:
   * Any integration based on NeoLoad Web API
   * MongoDB server
 
-![NeoLoad Web deployment schema](./doc/nlweb-architecture-schema.png)
+```mermaid
+flowchart TB
+    subgraph external ["External Clients"]
+        browser["🌐 Web Browser"]
+        controller["NeoLoad Controller"]
+        lg["NeoLoad Load Generators"]
+        apiclients["API Integrations"]
+    end
+
+    subgraph cluster ["Kubernetes Cluster"]
+        subgraph ingress ["Ingress Controller"]
+            webapp_ing["webapp (/)"]
+            api_ing["api (/)"]
+            apiv4_ing["api-v4 (/v4)"]
+            files_ing["files (/)"]
+        end
+
+        subgraph frontend ["Frontend Pod(s)"]
+            fe["Static UI Server\n(port 3000)"]
+        end
+
+        subgraph backend ["Backend Pod(s)"]
+            api["API v1-v3\n(port 1081)"]
+            apiv4["API v4\n(port 1084)"]
+            files["Files API\n(port 1082)"]
+            hz1["Hazelcast\n(port 6701)"]
+        end
+
+        subgraph backendutil ["Backend Utilities Pod(s)"]
+            hz2["Hazelcast\n(port 6701)"]
+            tasks["Background Tasks"]
+        end
+    end
+
+    subgraph external_services ["External Services"]
+        mongo[("MongoDB")]
+    end
+
+    %% Browser loads UI then calls APIs
+    browser -->|"1. Load UI"| webapp_ing
+    browser -->|"2. API calls"| api_ing
+    browser -->|"2. API calls"| apiv4_ing
+    browser -->|"2. File operations"| files_ing
+
+    %% Other clients
+    controller --> api_ing
+    controller --> files_ing
+    lg --> api_ing
+    lg --> files_ing
+    apiclients --> api_ing
+    apiclients --> apiv4_ing
+
+    %% Ingress to services
+    webapp_ing --> fe
+    api_ing --> api
+    apiv4_ing --> apiv4
+    files_ing --> files
+
+    %% Hazelcast cluster
+    hz1 <-->|"Hazelcast Cluster"| hz2
+
+    %% MongoDB connections
+    backend --> mongo
+    backendutil --> mongo
+```
 
 ## High Availability
 
