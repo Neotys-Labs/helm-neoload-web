@@ -1,0 +1,138 @@
+suite: test deployment
+templates:
+  - deployment-back.yaml
+tests:
+  - it: should not have annotations when not set
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+    asserts:
+      - isKind:
+          of: Deployment
+      - isNullOrEmpty:
+          path: metadata.annotations
+      - isNullOrEmpty:
+          path: spec.template.metadata.annotations
+  - it: should have annotations when set globally for backend
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.annotations.backend:
+        annotation1: value1
+        annotation2: value2
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.annotations.annotation1
+          value: value1
+      - equal:
+          path: metadata.annotations.annotation2
+          value: value2
+      - equal:
+          path: spec.template.metadata.annotations.annotation1
+          value: value1
+      - equal:
+          path: spec.template.metadata.annotations.annotation2
+          value: value2
+  - it: should have annotations when set only on Deployment for backend
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.annotations.deployment.backend:
+        annotation1: value1
+        annotation2: value2
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.annotations.annotation1
+          value: value1
+      - equal:
+          path: metadata.annotations.annotation2
+          value: value2
+      - isNullOrEmpty:
+          path: spec.template.metadata.annotations
+  - it: should have annotations when set only on Pod for backend
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.annotations.pod.backend:
+        annotation1: value1
+        annotation2: value2
+    asserts:
+      - isKind:
+          of: Deployment
+      - isNullOrEmpty:
+          path: metadata.annotations
+      - equal:
+          path: spec.template.metadata.annotations.annotation1
+          value: value1
+      - equal:
+          path: spec.template.metadata.annotations.annotation2
+          value: value2
+  - it: should merge global annotations and Pod or Deployment specific annotations
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.annotations.backend:
+        annotation1: value1
+        annotation2: value2
+      neoload.annotations.pod.backend:
+        pod-annotation1: value1
+        pod-annotation2: value2
+      neoload.annotations.deployment.backend:
+        deployment-annotation1: value1
+        deployment-annotation2: value2
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.annotations.annotation1
+          value: value1
+      - equal:
+          path: metadata.annotations.annotation2
+          value: value2
+      - equal:
+          path: metadata.annotations.deployment-annotation1
+          value: value1
+      - equal:
+          path: metadata.annotations.deployment-annotation2
+          value: value2
+      - equal:
+          path: spec.template.metadata.annotations.annotation1
+          value: value1
+      - equal:
+          path: spec.template.metadata.annotations.annotation2
+          value: value2
+      - equal:
+          path: spec.template.metadata.annotations.pod-annotation1
+          value: value1
+      - equal:
+          path: spec.template.metadata.annotations.pod-annotation2
+          value: value2

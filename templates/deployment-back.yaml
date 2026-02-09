@@ -10,14 +10,10 @@ metadata:
     {{- end }}
   annotations:
     {{- if and .Values.neoload.annotations .Values.neoload.annotations.backend }}
-    {{- range $key, $value := .Values.neoload.annotations.backend }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
+    {{- toYaml .Values.neoload.annotations.backend | nindent 4 }}
     {{- end }}
     {{- if and .Values.neoload.annotations .Values.neoload.annotations.deployment .Values.neoload.annotations.deployment.backend }}
-    {{- range $key, $value := .Values.neoload.annotations.deployment.backend }}
-    {{ $key }}: {{ $value | quote }}
-    {{- end }}
+    {{- toYaml .Values.neoload.annotations.deployment.backend | nindent 4 }}
     {{- end }}
 spec:
   replicas: {{ .Values.replicaCount.backend }}
@@ -33,14 +29,10 @@ spec:
         {{- end }}
       annotations:
         {{- if and .Values.neoload.annotations .Values.neoload.annotations.backend }}
-        {{- range $key, $value := .Values.neoload.annotations.backend }}
-        {{ $key }}: {{ $value | quote }}
-        {{- end }}
+        {{- toYaml .Values.neoload.annotations.backend | nindent 8 }}
         {{- end }}
         {{- if and .Values.neoload.annotations .Values.neoload.annotations.pod .Values.neoload.annotations.pod.backend }}
-        {{- range $key, $value := .Values.neoload.pod.annotations.backend }}
-        {{ $key }}: {{ $value | quote }}
-        {{- end }}
+        {{- toYaml .Values.neoload.annotations.pod.backend | nindent 8 }}
         {{- end }}
     spec:
       serviceAccountName: {{ include "nlweb.serviceAccountName" . }}
