@@ -47,14 +47,14 @@ This chart is meant for experienced Kubernetes/Helm users as a successful instal
 
 ### Hardware
 
-NeoLoad Web will require your cluster to run a minimum of 2 pods, hosting the frontend and the backend separately.
-Here is a table to let you quickly estimate the resource requirements of your nodes, based on `resources.frontend.*` and `resources.backend.*` [(see Advanced Configuration)](#advanced-configuration).
+NeoLoad Web will require your cluster to run a minimum of 3 pods, hosting the frontend, backend, and backend-utilities separately.
+Here is a table to let you quickly estimate the resource requirements of your nodes, based on `resources.frontend.*`, `resources.backend.*`, and `resources.backendUtilities.*` [(see Advanced Configuration)](#advanced-configuration).
 
 Deployment | Content | Requests | Limits
 ----- | ----------- | ----- | -----
-Minimal | 1 Frontend Pod, 1 Backend Pod | **2 CPU, 4Gi RAM** | **4 CPU, 5Gi RAM**
-Default | 2 Frontend Pods, 2 Backend Pods | **4 CPU, 8Gi RAM** | **8CPU, 10Gi RAM**
-Advanced | X Frontend Pods, Y Backend Pods | **X\*1 + Y\*1 CPU, X\*1500 + Y\*2500 Mi RAM** | **X\*2 + Y\*2 CPU, X\*2 + Y\*3 Gi RAM**
+Minimal | 1 Frontend Pod, 1 Backend Pod, 1 Backend-Utilities Pod | **1.15 CPU, 3.25Gi RAM** | **2 CPU, 4.25Gi RAM**
+Default | 2 Frontend Pods, 2 Backend Pods, 1 Backend-Utilities Pod | **2.2 CPU, 5.5Gi RAM** | **4 CPU, 7.25Gi RAM**
+Advanced | X Frontend Pods, Y Backend Pods, Z Backend-Utilities Pods | **X\*0.05 + Y\*1 + Z\*0.1 CPU, X\*250 + Y\*2500 + Z\*500 Mi RAM** | **Y\*2 CPU, X\*250Mi + Y\*3Gi + Z\*1Gi RAM**
 
 ### Software
 
@@ -168,7 +168,6 @@ The following docs can help you when migrating chart version with breaking chang
 | 1.x.x to 2.x.x | [Upgrade Guide](/doc/upgrade-1.x.x-to-2.x.x.md) |
 | 2.x.x to 2.3.x | [Upgrade Guide](/doc/upgrade-2.x.x-to-2.3.x.md) |
 | 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
-| 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
 | 4.2.x to 2023.1.x | [Upgrade Guide](/doc/upgrade-4.2.x-to-2023.1.x.md) |
 | 2025.3.x to 2026.1.x | [Upgrade Guide](/doc/upgrade-2025.3.x-to-2026.1.x.md) |
 
@@ -206,12 +205,11 @@ This schema describe:
 
 From versions 2.0.0 of this chart and 2.9.0 of NeoLoad Web, we include a mecanism for **High Availability**. This means you can easily scale your NeoLoad Web frontend/backend, and the application will be more failure tolerant.
 
-> Use `replicaCount.frontend` and `replicaCount.backend` values to arrange your Deployment the way you see fit. We set a default of 2 frontend instances and 2 backend instances so you get a resilient NeoLoad Web application out of the box.
+> Use `replicaCount.frontend`, `replicaCount.backend`, and `replicaCount.backendUtilities` values to arrange your Deployment the way you see fit. We set a default of 2 frontend instances and 2 backend instances so you get a resilient NeoLoad Web application out of the box.
 
 This change has a few impacts on your NeoLoad Web deployment.
 
-- From now on your cluster will need to be able to deploy at least 2 pods (one for frontend and one for backend) instead of 1. Some nodes can restrain the number of simultaneous pods, so you need to make sure it is allowed.
-- Your ingress controller needs to support **sticky sessions**, meaning that it can ensure a user is always dispatched to the same frontend instance throughout his session. We provide a basic configuration for nginx in our [values-custom.yaml](/values-custom.yaml) file.
+- From now on your cluster will need to be able to deploy at least 3 pods (one for frontend, one for backend, and one for backend-utilities). Some nodes can restrain the number of simultaneous pods, so you need to make sure it is allowed.
 - Some additional cluster roles are required. See [cluster-role.yaml](/templates/cluster-role.yaml).
 
 > Check out the [upgrade section](#upgrade) to learn more about upgrading your chart.
@@ -299,10 +297,13 @@ services:
     host: neoload-web-api.mycompany.com
   files:
     host: neoload-web-files.mycompany.com
+  # Optional: separate hostname for API v4 (defaults to api host if not set)
+  # api-v4:
+  #   host: neoload-web-api-v4.mycompany.com
 ```
 
 > [!NOTE]
-> You must configure your DNS records. These 3 hostnames must point to the Ingress controller endpoint.
+> You must configure your DNS records. These 3 hostnames (plus `api-v4` if configured separately) must point to the Ingress controller endpoint.
 
 > [!TIP]
 > If the nginx ingress controller is bound to the IP 10.0.0.0, your must define the following DNS records:
@@ -351,6 +352,9 @@ Parameter | Description | Default
 `image.frontend.repository` | The frontend image repository to pull from | `neotys/neoload-web-frontend`
 `image.frontend.pullPolicy` | The frontend image pull policy | `IfNotPresent`
 `image.frontend.tag` | The frontend image tag | See appVersion in [Chart.yaml](./Chart.yaml)
+`image.backendUtilities.repository` | The backend-utilities image repository to pull from | `neotys/neoload-web-backend-utilities`
+`image.backendUtilities.pullPolicy` | The backend-utilities image pull policy | `IfNotPresent`
+`image.backendUtilities.tag` | The backend-utilities image tag | See appVersion in [Chart.yaml](./Chart.yaml)
 `imagePullSecrets` | The image pull secrets | `[]`
  |  | 
 `serviceAccount.create` | Specifies whether a service account should be created | `true`
@@ -386,13 +390,15 @@ Parameter | Description | Default
 `ingress.tls[0].secretKey` | The content of your imported private key | 
  |  | 
 `resources.backend.requests.cpu` | CPU resource request for the backend | `1`
-`resources.backend.requests.memory` | Memory resource request for the backend | `2Gi`
+`resources.backend.requests.memory` | Memory resource request for the backend | `2500Mi`
 `resources.backend.limits.cpu` | CPU resource limit for the backend | `2`
 `resources.backend.limits.memory` | Memory resource limit for the backend | `3Gi`
-`resources.frontend.requests.cpu` | CPU resource request for the frontend | `1`
-`resources.frontend.requests.memory` | Memory resource request for the frontend | `1500Mi`
-`resources.frontend.limits.cpu` | CPU resource limit for the frontend | `2`
-`resources.frontend.limits.memory` | Memory resource limit for the frontend | `2Gi`
+`resources.frontend.requests.cpu` | CPU resource request for the frontend | `50m`
+`resources.frontend.requests.memory` | Memory resource request for the frontend | `250Mi`
+`resources.frontend.limits.memory` | Memory resource limit for the frontend | `250Mi`
+`resources.backendUtilities.requests.cpu` | CPU resource request for the backend-utilities | `100m`
+`resources.backendUtilities.requests.memory` | Memory resource request for the backend-utilities | `500Mi`
+`resources.backendUtilities.limits.memory` | Memory resource limit for the backend-utilities | `1Gi`
  |  | 
 `neoload.configuration.externalTlsTermination` | Must be set to `true` if TLS termination is handled by a component [outside of the Helm Chart management](#external-tls-termination).  | `false`
 `neoload.configuration.sendUsageStatistics` | Can be set to `false` to avoid usage data collection | `true`
@@ -420,7 +426,10 @@ Parameter | Description | Default
 | |
 `neoload.labels.backend` | Add labels to backend resources ex: `key: value`. | `{}`
 `neoload.labels.frontend` | Add labels to frontend resources ex: `key: value`. | `{}`
-`neoload.annotations.backend` | Add annotations to backend resources ex: `key: value`. Deprecated, please use `neoload.annotations.backendUtilities` | Add annotations to backend-utilities resources ex: `key: value`. Deprecated, please use `neoload.annotations.frontend` | Add annotations to frontend resources ex: `key: value`. Deprecated, please use `neoload.annotations.pod.backend` or `neoload.annotations.deployment.backend`. | `{}`
+`neoload.labels.backendUtilities` | Add labels to backend-utilities resources ex: `key: value`. | `{}`
+`neoload.annotations.backend` | Add annotations to backend resources. Deprecated, please use `neoload.annotations.pod.backend` or `neoload.annotations.deployment.backend`. | `{}`
+`neoload.annotations.frontend` | Add annotations to frontend resources. Deprecated, please use `neoload.annotations.pod.frontend` or `neoload.annotations.deployment.frontend`. | `{}`
+`neoload.annotations.backendUtilities` | Add annotations to backend-utilities resources. Deprecated, please use `neoload.annotations.pod.backendUtilities` or `neoload.annotations.deployment.backendUtilities`. | `{}`
 `neoload.annotations.pod.backend` | Add annotations to backend pods ex: `key: value`. | `{}`
 `neoload.annotations.pod.backendUtilities` | Add annotations to backend-utilities pods ex: `key: value`. | `{}`
 `neoload.annotations.pod.frontend` | Add annotations to frontend pods ex: `key: value`. | `{}`
@@ -437,6 +446,7 @@ Parameter | Description | Default
 `tolerations` | Pod's tolerations | `[]`
 `replicaCount.frontend` | Number of frontend pods in your Deployment. [Learn more.](#high-availability) | 2
 `replicaCount.backend` | Number of backend pods in your Deployment. [Learn more.](#high-availability) | 2
+`replicaCount.backendUtilities` | Number of backend-utilities pods in your Deployment. | 1
 `loggerConfiguration` | Logger configuration. [Learn more.](./doc/logging-configuration.md) | [Default logger configuration as defined here](./values.yaml)
 `extra.volumes.backend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the backend Deployment. |
 `extra.volumeMounts.backend` | Add custom volume mounts to the NeoLoad Web backend Container.  | 
@@ -503,7 +513,7 @@ neoload:
 
 You can define an https proxy that will be used by NeoLoad Web when using the following set of features. This set will be extended in future upgrades.
 
-*Features taking advantage of proxies in NeoLoad Web 2.11.0*
+*Features taking advantage of proxies:*
 - Licensing
 
 The proxy can be enabled by setting the following property :
