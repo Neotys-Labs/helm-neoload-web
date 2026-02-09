@@ -36,11 +36,9 @@ tests:
       domain: .example.com
       ingress.enabled: false
     asserts:
-      # Verify the total count of environment variables
       - lengthEqual:
           path: spec.template.spec.containers[0].env
           count: 28
-      # Verify fixed-value environment variables
       - contains:
           path: spec.template.spec.containers[0].env
           content:
@@ -179,7 +177,6 @@ tests:
             name: COOKIE_DOMAIN
             value: ".example.com"
           any: true
-      # Verify secret-based environment variables
       - contains:
           path: spec.template.spec.containers[0].env
           content:
