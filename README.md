@@ -236,7 +236,6 @@ flowchart TB
         end
 
         subgraph backendutil [Backend Utilities Pods]
-            tasks[Background Tasks]
             hz2[Hazelcast - port 6701]
         end
     end
