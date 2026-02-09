@@ -209,8 +209,21 @@ flowchart TB
     end
 
     subgraph k8s [Kubernetes Cluster]
-        ingress[Ingress Controller]
-        
+        subgraph ingresses [Ingresses]
+            ing_webapp[webapp-ingress]
+            ing_api[api-ingress]
+            ing_apiv4[api-v4-ingress]
+            ing_files[files-ingress]
+        end
+
+        subgraph services [Services]
+            svc_webapp[webapp-service]
+            svc_api[api-service]
+            svc_apiv4[api-v4-service]
+            svc_files[files-service]
+            svc_hazelcast[hazelcast-service]
+        end
+
         subgraph frontend [Frontend Pods]
             fe[Static UI - port 3000]
         end
@@ -230,17 +243,28 @@ flowchart TB
 
     mongo[(MongoDB)]
 
-    browser --> ingress
-    controller --> ingress
-    lg --> ingress
-    apiclients --> ingress
+    browser --> ing_webapp
+    browser --> ing_api
+    browser --> ing_apiv4
+    browser --> ing_files
+    controller --> ing_api
+    controller --> ing_files
+    lg --> ing_api
+    lg --> ing_files
+    apiclients --> ing_api
+    apiclients --> ing_apiv4
 
-    ingress -->|webapp /| fe
-    ingress -->|api /| api
-    ingress -->|api-v4 /v4| apiv4
-    ingress -->|files /| files
+    ing_webapp --> svc_webapp
+    ing_api --> svc_api
+    ing_apiv4 --> svc_apiv4
+    ing_files --> svc_files
 
-    hz1 <--> hz2
+    svc_webapp --> fe
+    svc_api --> api
+    svc_apiv4 --> apiv4
+    svc_files --> files
+    svc_hazelcast --> hz1
+    svc_hazelcast --> hz2
 
     backend --> mongo
     backendutil --> mongo
