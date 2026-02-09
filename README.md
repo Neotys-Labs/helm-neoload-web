@@ -11,9 +11,23 @@ SaaS version is available [here](https://neoload.saas.neotys.com/)
 - Get a closer look by diving into the details of a test
 - Test data is hosted in the NeoLoad Web Cloud: tests can be accessed even when the NeoLoad Controller which launched them is not available
 
+## What's New in Chart v3
+
+Chart version 3.x introduces major changes to NeoLoad Web:
+
+- **New Frontend**: The old Java-based frontend has been replaced by a new lightweight frontend with improved performance.
+- **API v4**: A new API version is introduced alongside the existing API.
+
+For detailed migration instructions, see the [2025.3.x to 2026.1.x Upgrade Guide](/doc/upgrade-2025.3.x-to-2026.1.x.md).
+
 ## Introduction
 
 This chart deploys NeoLoad Web on your Kubernetes cluster.
+
+> [!IMPORTANT]
+> **Chart version 3.x** is only compatible with **NeoLoad Web version 2026.1.0 and later**. This version introduces a new frontend and API v4.
+>
+> For NeoLoad Web versions prior to 2026.1.0, please use the Helm chart from the [`v2.x` branch](https://github.com/Neotys-Labs/helm-neoload-web/tree/v2.x).
 
 ## License
 
@@ -156,10 +170,7 @@ The following docs can help you when migrating chart version with breaking chang
 | 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
 | 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
 | 4.2.x to 2023.1.x | [Upgrade Guide](/doc/upgrade-4.2.x-to-2023.1.x.md) |
-
-### Breaking change: CORS configuration for IdP/SSO on new frontend
-
-If you used SSO on the previous frontend and are migrating to use SSO with the new frontend, CORS configuration changes are required because the IdP now calls the API directly. Please review and apply the instructions in [CORS allowed origins (IDP/SSO)](#cors-allowed-origins-idpsso).
+| 2025.3.x to 2026.1.x | [Upgrade Guide](/doc/upgrade-2025.3.x-to-2026.1.x.md) |
 
 ### Version compatibility
 
@@ -171,10 +182,11 @@ You should always upgrade ([see the upgrade section](#upgrade)) with the new cha
 
 However you should be aware of the following compatibility table to understand which combinations are supported.
 
-_ | NeoLoad Web Version < 2.9.X | NeoLoad Web Version >= 2.9.X
---|-----------------|-----------------
-Chart Version < 2.0.0 | OK | OK
-Chart Version >= 2.0.0 | **KO** | OK
+_ | NeoLoad Web Version < 2.9.X | NeoLoad Web Version >= 2.9.X and < 2026.1.0 | NeoLoad Web Version >= 2026.1.0
+--|-----------------|-----------------|------------------
+Chart Version < 2.0.0 | OK | OK | **KO**
+Chart Version >= 2.0.0 and < 3.0.0 | **KO** | OK | **KO**
+Chart Version >= 3.0.0 | **KO** | **KO** | OK
 
 ## Architecture
 
