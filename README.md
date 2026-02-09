@@ -201,66 +201,47 @@ This schema describes:
 
 ```mermaid
 flowchart TB
-    subgraph external ["External Clients"]
-        browser["🌐 Web Browser"]
-        controller["NeoLoad Controller"]
-        lg["NeoLoad Load Generators"]
-        apiclients["API Integrations"]
+    subgraph clients [External Clients]
+        browser[Web Browser]
+        controller[NeoLoad Controller]
+        lg[NeoLoad Load Generators]
+        apiclients[API Integrations]
     end
 
-    subgraph cluster ["Kubernetes Cluster"]
-        subgraph ingress ["Ingress Controller"]
-            webapp_ing["webapp (/)"]
-            api_ing["api (/)"]
-            apiv4_ing["api-v4 (/v4)"]
-            files_ing["files (/)"]
+    subgraph k8s [Kubernetes Cluster]
+        ingress[Ingress Controller]
+        
+        subgraph frontend [Frontend Pods]
+            fe[Static UI - port 3000]
         end
 
-        subgraph frontend ["Frontend Pod(s)"]
-            fe["Static UI Server\n(port 3000)"]
+        subgraph backend [Backend Pods]
+            api[API v1-v3 - port 1081]
+            apiv4[API v4 - port 1084]
+            files[Files API - port 1082]
+            hz1[Hazelcast - port 6701]
         end
 
-        subgraph backend ["Backend Pod(s)"]
-            api["API v1-v3\n(port 1081)"]
-            apiv4["API v4\n(port 1084)"]
-            files["Files API\n(port 1082)"]
-            hz1["Hazelcast\n(port 6701)"]
-        end
-
-        subgraph backendutil ["Backend Utilities Pod(s)"]
-            hz2["Hazelcast\n(port 6701)"]
-            tasks["Background Tasks"]
+        subgraph backendutil [Backend Utilities Pods]
+            hz2[Hazelcast - port 6701]
+            tasks[Background Tasks]
         end
     end
 
-    subgraph external_services ["External Services"]
-        mongo[("MongoDB")]
-    end
+    mongo[(MongoDB)]
 
-    %% Browser loads UI then calls APIs
-    browser -->|"1. Load UI"| webapp_ing
-    browser -->|"2. API calls"| api_ing
-    browser -->|"2. API calls"| apiv4_ing
-    browser -->|"2. File operations"| files_ing
+    browser --> ingress
+    controller --> ingress
+    lg --> ingress
+    apiclients --> ingress
 
-    %% Other clients
-    controller --> api_ing
-    controller --> files_ing
-    lg --> api_ing
-    lg --> files_ing
-    apiclients --> api_ing
-    apiclients --> apiv4_ing
+    ingress -->|webapp /| fe
+    ingress -->|api /| api
+    ingress -->|api-v4 /v4| apiv4
+    ingress -->|files /| files
 
-    %% Ingress to services
-    webapp_ing --> fe
-    api_ing --> api
-    apiv4_ing --> apiv4
-    files_ing --> files
+    hz1 <--> hz2
 
-    %% Hazelcast cluster
-    hz1 <-->|"Hazelcast Cluster"| hz2
-
-    %% MongoDB connections
     backend --> mongo
     backendutil --> mongo
 ```
