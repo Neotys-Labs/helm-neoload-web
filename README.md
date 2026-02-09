@@ -267,7 +267,6 @@ flowchart TB
     svc_hazelcast --> hz2
 
     backend --> mongo
-    backendutil --> mongo
 ```
 
 ## High Availability
