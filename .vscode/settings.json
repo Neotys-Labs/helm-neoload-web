@@ -1,6 +1,6 @@
 {
   "yaml.schemas": {
-    "https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json": ["**/tests/*-test.yaml"]
+    "https://raw.githubusercontent.com/helm-unittest/helm-unittest/main/schema/helm-testsuite.json": ["**/tests/*_test.yaml"]
   },
   "helm-intellisense.customValueFileNames": [
     "values-custom.yaml",
