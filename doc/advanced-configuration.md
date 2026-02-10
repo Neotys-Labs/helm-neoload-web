@@ -193,4 +193,4 @@ neoload:
 
 ## Logger configuration
 
-See the dedicated [page](./doc/logging-configuration.md).
+See the dedicated [page](./logging-configuration.md).
