@@ -667,20 +667,8 @@ NeoLoad Web collects and sends anonymized usage and navigation data to our serve
 
 You can disable this option by setting the `neoload.configuration.sendUsageStatistics` key to `false`.
 
-### Service data
-
 NeoLoad Web gathers and sends data related to the usage of specific features and services.
 
-### Navigation data
-
-NeoLoad Web uses Google Analytics cookies to track navigation data.
-
-Any end user can prevent Google from collecting and processing their data by downloading and installing the browser plug-in available here: https://tools.google.com/dlpage/gaoptout?hl=en-GB.
-
-*For more information about Data privacy management by Google, see the links below:*
-
-- [Data privacy and security for Google Analytics](https://support.google.com/analytics/answer/6004245)
-- [How Google uses information from sites or applications that use their services](https://www.google.com/policies/privacy/partners/)
 
 ## Advanced configuration
 
