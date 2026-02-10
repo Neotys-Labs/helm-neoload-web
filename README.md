@@ -18,7 +18,7 @@ Chart version 3.x introduces major changes to NeoLoad Web:
 - **New Frontend**: The old Java-based frontend has been replaced by a new lightweight frontend with improved performance.
 - **API v4**: A new API version is introduced alongside the existing API.
 
-For detailed migration instructions, see the [2025.3.x to 2026.1.x Upgrade Guide](/doc/upgrade-2025.3.x-to-2026.1.x.md).
+For detailed migration instructions, see the [2025.3.x to 2026.1.x Upgrade Guide](./doc/upgrade-2025.3.x-to-2026.1.x.md).
 
 ## Introduction
 
@@ -142,6 +142,9 @@ $ helm uninstall my-release -n my-namespace
 ```
 
 ## Upgrade
+
+> [!WARNING]
+> **This documentation is for Chart v3.** Migrating from Chart v2 to v3 includes breaking changes. Please review the [2025.3.x to 2026.1.x Upgrade Guide](./doc/upgrade-2025.3.x-to-2026.1.x.md) before upgrading.
 
 You can use the `helm upgrade` command when you want to :
 1. Upgrade your NeoLoad Web installation.
@@ -402,7 +405,7 @@ services:
 >```
 >
 
-### CORS allowed origins (IDP/SSO)
+### CORS allowed origins (IdP/SSO)
 
 [CORS (Cross-Origin Resource Sharing)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a browser security mechanism that controls which external domains can make requests to your NeoLoad Web API.
 
@@ -586,8 +589,8 @@ Parameter | Description | Default
 
 ## Custom environment variables
 
-`neoload.configuration.backend.others` and `neoload.configuration.frontend.others` sections of *values-custom.yaml* allow to define custom environement variables.
-These environement variables will be applied either on the backend or the frontend depending on the used property.
+`neoload.configuration.backend.others`, `neoload.configuration.backendUtilities.others` and `neoload.configuration.frontend.others` values allow to define custom environement variables.
+These environement variables will be applied on the corresponding Depolyment.
 
 ### Example
 
@@ -618,6 +621,7 @@ The proxy can be enabled by setting the following property :
 `neoload.configuration.proxy.https=https://username:password@host:port`
 
 ## TLS
+
 If you want to secure NeoLoad Web through TLS, you should either:
  - configure [TLS at ingress level](#ingress-tls-termination)
  - handle [TLS termination on front of the Ingress controller](#external-tls-termination)
@@ -658,8 +662,7 @@ Set a name for your new TLS secret name into the `ingress.tls[0].secretName` par
 > If you choose to handle TLS on front of the Ingress controller, we recommend, for security reason, to set the 
 > value of the property `neoload.configuration.externalTlsTermination` to `true`.
 >
-> It will enable the 'https://' protocol in NeoLoad Web URLs. 
-> And it will ensure that NeoLoad Web flags the JSESSIONID cookie as `secure`.
+> It will enable the 'https://' protocol in NeoLoad Web URLs and configuration. 
 
 ## Usage data
 
