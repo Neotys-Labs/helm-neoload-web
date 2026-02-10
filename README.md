@@ -268,6 +268,15 @@ flowchart TB
     backend --> mongo
 ```
 
+### Backend-Utilities Component
+
+The **backend-utilities** component handles resource-intensive tasks such as PDF report generation. It uses a separate technical stack optimized for these workloads, which isolates them from the main backend to avoid impacting API performance.
+
+This component may be extended to support additional features in future releases.
+
+> [!NOTE]
+> Deploying backend-utilities is optional. Setting `replicaCount.backendUtilities: 0` disables the component, but PDF generation will not be available.
+
 ## High Availability
 
 From versions 2.0.0 of this chart and 2.9.0 of NeoLoad Web, we include a mecanism for **High Availability**. This means you can easily scale your NeoLoad Web frontend/backend, and the application will be more failure tolerant.
@@ -352,9 +361,21 @@ If not set, NeoLoad Web will not start.
 > [!WARNING]
 > Do not modify this key from one deployment to another, otherwise NeoLoad Web will not be able to read previously stored secrets from your database.
 
-#### NeoLoad Web URLs
+#### NeoLoad Web URLs and Domain
 
-NeoLoad Web needs to know the set of hostnames it will be available under. You need to carefully configure them.
+NeoLoad Web needs to know the set of hostnames it will be available under, as well as the domain for cookie management. You need to carefully configure them.
+
+##### Domain
+
+The `domain` parameter is **required**. It configures the cookie domain, allowing authentication cookies to work across all NeoLoad Web subdomains (webapp, api, files). It is also used to compute the base CORS allowed origin pattern.
+
+If your frontend and API URLs are `neoload-web.mycompany.com` and `neoload-web-api.mycompany.com`, then the domain must be `.mycompany.com` (note the leading dot).
+
+```yaml
+domain: .mycompany.com
+```
+
+##### Service Hostnames
 
 ```yaml
 services:
@@ -383,7 +404,16 @@ services:
 
 ### CORS allowed origins (IDP/SSO)
 
-When using an external IdP (for example Okta) that calls the NeoLoad Web API, you may need to allow an additional origin for CORS.
+[CORS (Cross-Origin Resource Sharing)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is a browser security mechanism that controls which external domains can make requests to your NeoLoad Web API.
+
+**When do you need to configure CORS?**
+
+- **SSO/IdP integration** (most common): When using external Identity Providers like Okta, Keycloak, or Azure AD for Single Sign-On, these services need permission to interact with NeoLoad Web.
+- **External web applications**: When another web application hosted on a different domain needs to consume the NeoLoad Web API.
+
+By default, NeoLoad Web allows requests from any subdomain matching your configured `domain`. If your IdP or external application is hosted outside this domain, you must explicitly allow it.
+
+#### Configuration
 
 - The backend computes a base CORS pattern from your configured scheme and domain: `https://.*<domain>`.
   - Example: with `domain: .mycompany.com`, the base is `https://.*.mycompany.com`.
@@ -430,7 +460,7 @@ Parameter | Description | Default
 `podSecurityContext`| The pod security context | `{ fsGroup: 2000 }`
 `securityContext` | The security context | `{ runAsUser: 2000 }`
  |  |
-`domain` | Domain name used to configure cookies. If your frontend and api URLs are `web.mycompany.com` & `api.mycompany.com`, then the value of domain must be `.mycompany.com` |
+`domain` | **(Required)** Domain name used to configure cookies and compute the base CORS allowed origin pattern. If your frontend and api URLs are `web.mycompany.com` & `api.mycompany.com`, then the value of domain must be `.mycompany.com` |
 |  |
 `services.webapp.host` | The hostname for the webapp/front deployment | 
 `services.webapp.type` | The service type for the webapp/front deployment | `ClusterIP`
