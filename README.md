@@ -430,17 +430,6 @@ Here are some of the addressed subjects:
 - [Logger configuration](/doc/advanced-configuration.md#logger-configuration)
 
 
-## Proxy
-
-You can define an https proxy that will be used by NeoLoad Web when using the following set of features. This set will be extended in future upgrades.
-
-*Features taking advantage of proxies:*
-- Licensing
-
-The proxy can be enabled by setting the following property :
-
-`neoload.configuration.proxy.https=https://username:password@host:port`
-
 ## TLS
 
 If you want to secure NeoLoad Web through TLS, you should either:

@@ -80,7 +80,7 @@ Parameter | Description | Default
 `neoload.configuration.frontend.readinessProbe.initDelaySeconds` | Frontend Pods readiness probe initial delay in seconds | 20
 `neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
 | | 
-`neoload.configuration.proxy.https` | Connection string for your https proxy. [Learn more.](#proxy)
+`neoload.configuration.proxy.https` | Connection string for your https proxy. Configuring proxy should be done through the application, using this value is only here as a workaround. 
 | |
 `neoload.configuration.ha.mode` | Pod discovery mecanism, can be `DNS` or `API`                                                                                         | `API`
 | |
