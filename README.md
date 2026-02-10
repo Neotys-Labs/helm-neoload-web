@@ -494,9 +494,9 @@ Parameter | Description | Default
 `neoload.labels.backend` | Add labels to backend resources ex: `key: value`. | `{}`
 `neoload.labels.frontend` | Add labels to frontend resources ex: `key: value`. | `{}`
 `neoload.labels.backendUtilities` | Add labels to backend-utilities resources ex: `key: value`. | `{}`
-`neoload.annotations.backend` | Add annotations to backend resources. Deprecated, please use `neoload.annotations.pod.backend` or `neoload.annotations.deployment.backend`. | `{}`
-`neoload.annotations.frontend` | Add annotations to frontend resources. Deprecated, please use `neoload.annotations.pod.frontend` or `neoload.annotations.deployment.frontend`. | `{}`
-`neoload.annotations.backendUtilities` | Add annotations to backend-utilities resources. Deprecated, please use `neoload.annotations.pod.backendUtilities` or `neoload.annotations.deployment.backendUtilities`. | `{}`
+`neoload.annotations.backend` | Add annotations to backend resources. It will be applied to both `Deployment` and `Pod`; if you want a specific annotation applied to `Pod` or `Deployment`, please use `neoload.annotations.pod.backend` or `neoload.annotations.deployment.backend`. | `{}`
+`neoload.annotations.frontend` | Add annotations to frontend resources. It will be applied to both `Deployment` and `Pod`; if you want a specific annotation applied to `Pod` or `Deployment`, please use `neoload.annotations.pod.frontend` or `neoload.annotations.deployment.frontend`. | `{}`
+`neoload.annotations.backendUtilities` | Add annotations to backend-utilities resources. It will be applied to both `Deployment` and `Pod`; if you want a specific annotation applied to `Pod` or `Deployment`, please use `neoload.annotations.pod.backendUtilities` or `neoload.annotations.deployment.backendUtilities`. | `{}`
 `neoload.annotations.pod.backend` | Add annotations to backend pods ex: `key: value`. | `{}`
 `neoload.annotations.pod.backendUtilities` | Add annotations to backend-utilities pods ex: `key: value`. | `{}`
 `neoload.annotations.pod.frontend` | Add annotations to frontend pods ex: `key: value`. | `{}`
