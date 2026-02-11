@@ -1,4 +1,18 @@
 {{- if .Values.ingress.enabled -}}
+{{- if not ((.Values.migration).skipBreakingChangesChecks) -}}
+{{- if hasKey (.Values.ingress.annotations | default dict) "haproxy.router.openshift.io/rewrite-target" -}}
+{{- fail "Breaking change: The annotation 'haproxy.router.openshift.io/rewrite-target' is not supported. See doc/upgrade-2025.2.x-to-2026.1.x.md for details. Set 'migration.skipBreakingChangesChecks: true' to bypass this check." -}}
+{{- end -}}
+{{- if hasKey (.Values.ingress.annotations | default dict) "nginx.ingress.kubernetes.io/rewrite-target" -}}
+{{- fail "Breaking change: The annotation 'nginx.ingress.kubernetes.io/rewrite-target' is not supported. See doc/upgrade-2025.2.x-to-2026.1.x.md for details. Set 'migration.skipBreakingChangesChecks: true' to bypass this check." -}}
+{{- end -}}
+{{- if hasKey (.Values.ingress.annotations | default dict) "haproxy-ingress.github.io/rewrite-target" -}}
+{{- fail "Breaking change: The annotation 'haproxy-ingress.github.io/rewrite-target' is not supported. See doc/upgrade-2025.2.x-to-2026.1.x.md for details. Set 'migration.skipBreakingChangesChecks: true' to bypass this check." -}}
+{{- end -}}
+{{- if hasKey (.Values.ingress.annotations | default dict) "traefik.ingress.kubernetes.io/rewrite-target" -}}
+{{- fail "Breaking change: The annotation 'traefik.ingress.kubernetes.io/rewrite-target' is not supported. See doc/upgrade-2025.2.x-to-2026.1.x.md for details. Set 'migration.skipBreakingChangesChecks: true' to bypass this check." -}}
+{{- end -}}
+{{- end -}}
 {{- $fullName := include "nlweb.fullname" . -}}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
