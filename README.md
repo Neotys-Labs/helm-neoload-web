@@ -15,6 +15,11 @@ SaaS version is available [here](https://neoload.saas.neotys.com/)
 
 This chart deploys NeoLoad Web on your Kubernetes cluster.
 
+> [!WARNING]
+> **Chart version 3.x** is only compatible with **NeoLoad Web version 2026.1.0 and later**.
+>
+> For NeoLoad Web versions prior to 2026.1.0, please use the Helm chart from the [`v2.x` branch](https://github.com/Neotys-Labs/helm-neoload-web/tree/v2.x).
+
 ## License
 
 NeoLoad is licensed under the following [License Agreement](https://www.neotys.com/documents/legal/eula/neoload/eula_en.html). You must agree to this license agreement to download and use the image.
@@ -33,14 +38,14 @@ This chart is meant for experienced Kubernetes/Helm users as a successful instal
 
 ### Hardware
 
-NeoLoad Web will require your cluster to run a minimum of 2 pods, hosting the frontend and the backend separately.
-Here is a table to let you quickly estimate the resource requirements of your nodes, based on `resources.frontend.*` and `resources.backend.*` [(see Advanced Configuration)](#advanced-configuration).
+NeoLoad Web will require your cluster to run a minimum of 3 pods, hosting the frontend, backend, and backend-utilities separately.
+Here is a table to let you quickly estimate the resource requirements of your nodes, based on `resources.frontend.*`, `resources.backend.*`, and `resources.backendUtilities.*` [(see Advanced Configuration)](#advanced-configuration).
 
 Deployment | Content | Requests | Limits
 ----- | ----------- | ----- | -----
-Minimal | 1 Frontend Pod, 1 Backend Pod | **2 CPU, 4Gi RAM** | **4 CPU, 5Gi RAM**
-Default | 2 Frontend Pods, 2 Backend Pods | **4 CPU, 8Gi RAM** | **8CPU, 10Gi RAM**
-Advanced | X Frontend Pods, Y Backend Pods | **X\*1 + Y\*1 CPU, X\*1500 + Y\*2500 Mi RAM** | **X\*2 + Y\*2 CPU, X\*2 + Y\*3 Gi RAM**
+Minimal | 1 Frontend Pod, 1 Backend Pod, 1 Backend-Utilities Pod | **1.15 CPU, 3.25Gi RAM** | **2 CPU, 4.25Gi RAM**
+Default | 2 Frontend Pods, 2 Backend Pods, 1 Backend-Utilities Pod | **2.2 CPU, 5.5Gi RAM** | **4 CPU, 7.25Gi RAM**
+Advanced | X Frontend Pods, Y Backend Pods, Z Backend-Utilities Pods | **X\*0.05 + Y\*1 + Z\*0.1 CPU, X\*250 + Y\*2500 + Z\*500 Mi RAM** | **Y\*2 CPU, X\*250Mi + Y\*3Gi + Z\*1Gi RAM**
 
 ### Software
 
@@ -129,6 +134,9 @@ $ helm uninstall my-release -n my-namespace
 
 ## Upgrade
 
+> [!WARNING]
+> **This documentation is for Chart v3.** Migrating from Chart v2 to v3 includes breaking changes. Please review the [2025.2.x to 2026.1.x Upgrade Guide](./doc/upgrade-2025.2.x-to-2026.1.x.md) before upgrading.
+
 You can use the `helm upgrade` command when you want to :
 1. Upgrade your NeoLoad Web installation.
 2. Benefit from a newer chart version.
@@ -154,12 +162,8 @@ The following docs can help you when migrating chart version with breaking chang
 | 1.x.x to 2.x.x | [Upgrade Guide](/doc/upgrade-1.x.x-to-2.x.x.md) |
 | 2.x.x to 2.3.x | [Upgrade Guide](/doc/upgrade-2.x.x-to-2.3.x.md) |
 | 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
-| 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
 | 4.2.x to 2023.1.x | [Upgrade Guide](/doc/upgrade-4.2.x-to-2023.1.x.md) |
-
-### Breaking change: CORS configuration for IdP/SSO on new frontend
-
-If you used SSO on the previous frontend and are migrating to use SSO with the new frontend, CORS configuration changes are required because the IdP now calls the API directly. Please review and apply the instructions in [CORS allowed origins (IDP/SSO)](#cors-allowed-origins-idpsso).
+| 2025.2.x to 2026.1.x | [Upgrade Guide](/doc/upgrade-2025.2.x-to-2026.1.x.md) |
 
 ### Version compatibility
 
@@ -171,14 +175,15 @@ You should always upgrade ([see the upgrade section](#upgrade)) with the new cha
 
 However you should be aware of the following compatibility table to understand which combinations are supported.
 
-_ | NeoLoad Web Version < 2.9.X | NeoLoad Web Version >= 2.9.X
---|-----------------|-----------------
-Chart Version < 2.0.0 | OK | OK
-Chart Version >= 2.0.0 | **KO** | OK
+_ | NeoLoad Web Version < 2.9.X | NeoLoad Web Version >= 2.9.X and < 2026.1.0 | NeoLoad Web Version >= 2026.1.0
+--|-----------------|-----------------|------------------
+Chart Version < 2.0.0 | OK | OK | **KO**
+Chart Version >= 2.0.0 and < 3.0.0 | **KO** | OK | **KO**
+Chart Version >= 3.0.0 | **KO** | **KO** | OK
 
 ## Architecture
 
-This schema describe:
+This schema describes:
 * Components created inside the kubernetes cluster by this chart
 * How they interact between them
 * How they interact with components outside the cluster:
@@ -188,18 +193,93 @@ This schema describe:
   * Any integration based on NeoLoad Web API
   * MongoDB server
 
-![NeoLoad Web deployment schema](./doc/nlweb-architecture-schema.png)
+```mermaid
+flowchart TB
+    subgraph clients [External Clients]
+        browser[Web Browser]
+        controller[NeoLoad Controller]
+        lg[NeoLoad Load Generators]
+        apiclients[API Integrations]
+    end
+
+    subgraph k8s [Kubernetes Cluster]
+        subgraph ingresses [Ingresses]
+            ing_webapp[webapp-ingress]
+            ing_api[api-ingress]
+            ing_apiv4[api-v4-ingress]
+            ing_files[files-ingress]
+        end
+
+        subgraph services [Services]
+            svc_webapp[webapp-service]
+            svc_api[api-service]
+            svc_apiv4[api-v4-service]
+            svc_files[files-service]
+            svc_hazelcast[hazelcast-service]
+        end
+
+        subgraph frontend [Frontend Pods]
+            fe[Static UI - port 3000]
+        end
+
+        subgraph backend [Backend Pods]
+            hz1[Hazelcast - port 6701]
+            api[API v1-v3 - port 1081]
+            apiv4[API v4 - port 1084]
+            files[Files API - port 1082]
+        end
+
+        subgraph backendutil [Backend Utilities Pods]
+            hz2[Hazelcast - port 6701]
+        end
+    end
+
+    mongo[(MongoDB)]
+
+    browser --> ing_webapp
+    browser --> ing_api
+    browser --> ing_apiv4
+    browser --> ing_files
+    controller --> ing_api
+    controller --> ing_files
+    lg --> ing_api
+    lg --> ing_files
+    apiclients --> ing_api
+    apiclients --> ing_apiv4
+
+    ing_webapp --> svc_webapp
+    ing_api --> svc_api
+    ing_apiv4 --> svc_apiv4
+    ing_files --> svc_files
+
+    svc_webapp --> fe
+    svc_api --> api
+    svc_apiv4 --> apiv4
+    svc_files --> files
+    svc_hazelcast --> hz1
+    svc_hazelcast --> hz2
+
+    backend --> mongo
+```
+
+### Backend-Utilities Component
+
+The **backend-utilities** component handles resource-intensive tasks such as PDF report generation. It uses a separate technical stack optimized for these workloads, which isolates them from the main backend to avoid impacting API performance.
+
+This component may be extended to support additional features in future releases.
+
+> [!NOTE]
+> Deploying backend-utilities is optional. Setting `replicaCount.backendUtilities: 0` disables the component, but PDF generation will not be available.
 
 ## High Availability
 
 From versions 2.0.0 of this chart and 2.9.0 of NeoLoad Web, we include a mecanism for **High Availability**. This means you can easily scale your NeoLoad Web frontend/backend, and the application will be more failure tolerant.
 
-> Use `replicaCount.frontend` and `replicaCount.backend` values to arrange your Deployment the way you see fit. We set a default of 2 frontend instances and 2 backend instances so you get a resilient NeoLoad Web application out of the box.
+> Use `replicaCount.frontend`, `replicaCount.backend`, and `replicaCount.backendUtilities` values to arrange your Deployment the way you see fit. We set a default of 2 frontend instances and 2 backend instances so you get a resilient NeoLoad Web application out of the box.
 
 This change has a few impacts on your NeoLoad Web deployment.
 
-- From now on your cluster will need to be able to deploy at least 2 pods (one for frontend and one for backend) instead of 1. Some nodes can restrain the number of simultaneous pods, so you need to make sure it is allowed.
-- Your ingress controller needs to support **sticky sessions**, meaning that it can ensure a user is always dispatched to the same frontend instance throughout his session. We provide a basic configuration for nginx in our [values-custom.yaml](/values-custom.yaml) file.
+- From now on your cluster will need to be able to deploy at least 3 pods (one for frontend, one for backend, and one for backend-utilities). Some nodes can restrain the number of simultaneous pods, so you need to make sure it is allowed.
 - Some additional cluster roles are required. See [cluster-role.yaml](/templates/cluster-role.yaml).
 
 > Check out the [upgrade section](#upgrade) to learn more about upgrading your chart.
@@ -209,6 +289,16 @@ This change has a few impacts on your NeoLoad Web deployment.
 ### Getting started
 
 Here is a guide for a quick setup of your `values-custom.yaml` file.
+
+> [!NOTE]
+> We suggest you maintain your own *values-custom.yaml* and update it with your relevant parameters, > but you can also specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+> 
+> ```bash
+> $ helm install my-release \
+>     --set ingress.tls=[] \
+>     neotys/nlweb
+> ```
+
 
 #### MongoDB configuration
 
@@ -275,9 +365,21 @@ If not set, NeoLoad Web will not start.
 > [!WARNING]
 > Do not modify this key from one deployment to another, otherwise NeoLoad Web will not be able to read previously stored secrets from your database.
 
-#### NeoLoad Web URLs
+#### NeoLoad Web URLs and Domain
 
-NeoLoad Web needs to know the set of hostnames it will be available under. You need to carefully configure them.
+NeoLoad Web needs to know the set of hostnames it will be available under, as well as the domain for cookie management. You need to carefully configure them.
+
+##### Domain
+
+The `domain` parameter is **required**. It configures the cookie domain, allowing authentication cookies to work across all NeoLoad Web subdomains (webapp, api, files). It is also used to compute the base CORS allowed origin pattern.
+
+If your frontend and API URLs are `neoload-web.mycompany.com` and `neoload-web-api.mycompany.com`, then the domain must be `.mycompany.com` (note the leading dot).
+
+```yaml
+domain: .mycompany.com
+```
+
+##### Service Hostnames
 
 ```yaml
 services:
@@ -287,13 +389,16 @@ services:
     host: neoload-web-api.mycompany.com
   files:
     host: neoload-web-files.mycompany.com
+  # Optional: separate hostname for API v4 (defaults to api host if not set)
+  # api-v4:
+  #   host: neoload-web-api-v4.mycompany.com
 ```
 
 > [!NOTE]
-> You must configure your DNS records. These 3 hostnames must point to the Ingress controller endpoint.
+> You must configure your DNS records. These 3 hostnames (plus `api-v4` if configured separately) must point to the Ingress controller endpoint.
 
 > [!TIP]
-> If the nginx ingress controller is bound to the IP 10.0.0.0, your must define the following DNS records:
+> If the ingress controller is bound to the IP 10.0.0.0, your must define the following DNS records:
 >```
 >neoload-web.mycompany.com.        60 IN A	10.0.0.0
 >neoload-web-api.mycompany.com.    60 IN A	10.0.0.0
@@ -301,204 +406,23 @@ services:
 >```
 >
 
-### CORS allowed origins (IDP/SSO)
-
-When using an external IdP (for example Okta) that calls the NeoLoad Web API, you may need to allow an additional origin for CORS.
-
-- The backend computes a base CORS pattern from your configured scheme and domain: `https://.*<domain>`.
-  - Example: with `domain: .mycompany.com`, the base is `https://.*.mycompany.com`.
-- You can append one extra allowed origin by setting `neoload.configuration.backend.cors.additionalAllowedOriginPattern`.
-- At runtime, the env `CORS_ALLOWED_ORIGIN_PATTERN` becomes either:
-  - `https://.*.<domain>` (default), or
-  - `https://.*.<domain>,<your-additional-pattern>` when configured.
-
-Example values override (Okta wildcard):
-
-```yaml
-neoload:
-  configuration:
-    backend:
-      cors:
-        additionalAllowedOriginPattern: "https://.*.okta.com"
-```
-
-Other examples:
-- Exact Okta tenant: `"https://my-tenant.okta.com"`
-- Keycloak single host: `"https://keycloak.example.com"`
-- Azure AD (example): `"https://login.microsoftonline.com"`
 
 ### Advanced configuration
 
-Here is a list of all parameters supported by this helm chart.
+For more advanced configuration options you can refer to the [Advanced configuration page](/doc/advanced-configuration.md)
 
-Parameter | Description | Default
------ | ----------- | -------
-`image.backend.repository` | The backend image repository to pull from | `neotys/neoload-web-backend`
-`image.backend.pullPolicy` | The backend image pull policy | `IfNotPresent`
-`image.backend.tag` | The backend image tag | See appVersion in [Chart.yaml](./Chart.yaml)
-`image.frontend.repository` | The frontend image repository to pull from | `neotys/neoload-web-frontend`
-`image.frontend.pullPolicy` | The frontend image pull policy | `IfNotPresent`
-`image.frontend.tag` | The frontend image tag | See appVersion in [Chart.yaml](./Chart.yaml)
-`imagePullSecrets` | The image pull secrets | `[]`
- |  | 
-`serviceAccount.create` | Specifies whether a service account should be created | `true`
-`serviceAccount.name` | The name of the service account to use | 
- |  | 
-`podSecurityContext`| The pod security context | `{ fsGroup: 2000 }`
-`securityContext` | The security context | `{ runAsUser: 2000 }`
- |  |
-`domain` | Domain name used to configure cookies. If your frontend and api URLs are `web.mycompany.com` & `api.mycompany.com`, then the value of domain must be `.mycompany.com` |
-|  |
-`services.webapp.host` | The hostname for the webapp/front deployment | 
-`services.webapp.type` | The service type for the webapp/front deployment | `ClusterIP`
-`services.webapp.port` | The service port for the webapp/front deployment | `80`
-`services.webapp.ingress.paths` | The path mapping for the webapp/front ingress. If value is `null`, ingress will not be created for this service. | `[""]`
-`services.api.host` | The hostname for the api deployment | 
-`services.api.type` | The service type for the api deployment | `ClusterIP`
-`services.api.port` | The service port for the api deployment | `80`
-`services.api.ingress.paths` | The path mapping for the api ingress. If value is `null`, ingress will not be created for this service. | `[""]`
-`services.api-v4.host` | The hostname for the API v4 endpoints. If unset, falls back to `services.api.host`. |
-`services.api-v4.type` | The service type for the API v4 service | `ClusterIP`
-`services.api-v4.port` | The service port for the API v4 service | `80`
-`services.api-v4.ingress.paths` | The path mapping for the API v4 ingress. | `["/v4"]`
-`services.files.host` | The hostname for the files deployment | 
-`services.files.type` | The service type for the files deployment | `ClusterIP`
-`services.files.port` | The service port for the files deployment | `80`
-`services.files.ingress.paths` | The path mapping for the files ingress. If value is `null`, ingress will not be created for this service. | `[""]`
- |  | 
-`ingress.enabled` | Enable ingresses | `true`
-`ingress.class` | Specifies which ingress controller class should listen to this ingress | `nginx`
-`ingress.annotations` | Annotations for configuring the ingress | 
-`ingress.tls[0].secretName` | The name of your TLS secret | 
-`ingress.tls[0].secretCertificate` | The content of your imported certificate | `{}`
-`ingress.tls[0].secretKey` | The content of your imported private key | 
- |  | 
-`resources.backend.requests.cpu` | CPU resource request for the backend | `1`
-`resources.backend.requests.memory` | Memory resource request for the backend | `2Gi`
-`resources.backend.limits.cpu` | CPU resource limit for the backend | `2`
-`resources.backend.limits.memory` | Memory resource limit for the backend | `3Gi`
-`resources.frontend.requests.cpu` | CPU resource request for the frontend | `1`
-`resources.frontend.requests.memory` | Memory resource request for the frontend | `1500Mi`
-`resources.frontend.limits.cpu` | CPU resource limit for the frontend | `2`
-`resources.frontend.limits.memory` | Memory resource limit for the frontend | `2Gi`
- |  | 
-`neoload.configuration.externalTlsTermination` | Must be set to `true` if TLS termination is handled by a component [outside of the Helm Chart management](#external-tls-termination).  | `false`
-`neoload.configuration.sendUsageStatistics` | Can be set to `false` to avoid usage data collection | `true`
- |  | 
-`neoload.configuration.backend.mongo.host` | MongoDB host |
-`neoload.configuration.backend.mongo.port` | MongoDB port | `27017`
-`neoload.configuration.backend.mongo.poolSize` | MongoDB pool size | `50`
-`neoload.configuration.backend.java.xmx` | Java JVM Max heap size for the backend | `2000m`
-`neoload.configuration.backend.misc.maxFormAttributeSize` | Maximum size in bytes for HTTP form attributes (e.g., for SSO form parameters) | `32768`
-`neoload.configuration.backend.misc.files.maxUploadSizeInBytes` | Max file upload size in bytes | `250000000`
-`neoload.configuration.backend.misc.files.maxUploadPerWeek` | Max file upload count per week | `250`
-`neoload.configuration.backend.licensingPlatformToken` | Token for enabling licensing features (such as VUHs) | 
-`neoload.configuration.backend.livenessProbe.initDelaySeconds` | Backend Pods liveness probe initial delay in seconds | 60
-`neoload.configuration.backend.readinessProbe.initDelaySeconds` | Backend Pods readiness probe initial delay in seconds | 60
-`neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
-`neoload.configuration.backend.cors.additionalAllowedOriginPattern` | Additional CORS origin regex appended to base `scheme + ".*" + domain`. Example: `https://.*.okta.com` | 
-| | 
-`neoload.configuration.frontend.livenessProbe.initDelaySeconds` | Frontend Pods liveness probe initial delay in seconds | 60
-`neoload.configuration.frontend.readinessProbe.initDelaySeconds` | Frontend Pods readiness probe initial delay in seconds | 20
-`neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
-| | 
-`neoload.configuration.proxy.https` | Connection string for your https proxy. [Learn more.](#proxy)
-| |
-`neoload.configuration.ha.mode` | Pod discovery mecanism, can be `DNS` or `API`                                                                                         | `API`
-| |
-`neoload.labels.backend` | Add labels to backend resources ex: `key: value`. | `{}`
-`neoload.labels.frontend` | Add labels to frontend resources ex: `key: value`. | `{}`
-`neoload.annotations.backend` | Add annotations to backend resources ex: `key: value`. Deprecated, please use `neoload.annotations.backendUtilities` | Add annotations to backend-utilities resources ex: `key: value`. Deprecated, please use `neoload.annotations.frontend` | Add annotations to frontend resources ex: `key: value`. Deprecated, please use `neoload.annotations.pod.backend` or `neoload.annotations.deployment.backend`. | `{}`
-`neoload.annotations.pod.backend` | Add annotations to backend pods ex: `key: value`. | `{}`
-`neoload.annotations.pod.backendUtilities` | Add annotations to backend-utilities pods ex: `key: value`. | `{}`
-`neoload.annotations.pod.frontend` | Add annotations to frontend pods ex: `key: value`. | `{}`
-`neoload.annotations.deployment.backend` | Add annotations to backend deployment ex: `key: value`. | `{}`
-`neoload.annotations.deployment.backendUtilities` | Add annotations to backend-utilities deployment ex: `key: value`. | `{}`
-`neoload.annotations.deployment.frontend` | Add annotations to frontend deployment ex: `key: value`. | `{}`
-| |
-`mongodb.usePassword` | Set to false if your MongoDB connection doesn't require authentication | `true`
-`mongodb.mongodbUsername` | MongoDB Username | 
-`mongodb.mongodbPassword` | MongoDB Password | 
- |  | 
-`clusterRbac.enabled` | Specifies whether a ClusterRole and ClusterRoleBinding should be created | `true`
-`nodeSelector` | Node Selector | `{}`
-`tolerations` | Pod's tolerations | `[]`
-`replicaCount.frontend` | Number of frontend pods in your Deployment. [Learn more.](#high-availability) | 2
-`replicaCount.backend` | Number of backend pods in your Deployment. [Learn more.](#high-availability) | 2
-`loggerConfiguration` | Logger configuration. [Learn more.](./doc/logging-configuration.md) | [Default logger configuration as defined here](./values.yaml)
-`extra.volumes.backend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the backend Deployment. |
-`extra.volumeMounts.backend` | Add custom volume mounts to the NeoLoad Web backend Container.  | 
+Here are some of the addressed subjects:
 
-We suggest you maintain your own *values-custom.yaml* and update it with your relevant parameters, but you can also specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+- [Values references](/doc/advanced-configuration.md#values-reference)
+- [CORS allowed origins](/doc/advanced-configuration.md#cors-allowed-origins)
+- [Side-car containers](/doc/advanced-configuration.md#side-car-containers
+)
+- [Custom environment variables](/doc/advanced-configuration.md#custom-environment-variables)
+- [Logger configuration](/doc/advanced-configuration.md#logger-configuration)
 
-```bash
-$ helm install my-release \
-    --set ingress.tls=[] \
-    neotys/nlweb
-```
-
-#### Side-car containers (experimental)
-
-> [!NOTE]
-> **This feature is experimental.**
-> It allows to deploy side-car containers on the frontend and backend Deployments.
-
-> [!CAUTION]
-> When using `services.<name>.*` values the `<name>` must map the name of a port declared in containers under `extra.containers.backend` or `extra.containers.frontend`.
-
-For a detailed example on how to use this feature take a look at [this example](./doc/sidecar-example/README.md).
-
-
-Parameter | Description | Default
------ | ----------- | -------
-`extra.hosts.webapp` | Overrides the app configuration if the hostname used to access NeoLoad Web Frontend is different than the value of `services.webapp.host`|
-`extra.hosts.api` | Overrides the app configuration if the hostname used to access NeoLoad Web API is different than the value of `services.api.host`|
-`extra.hosts.api-v4` | Overrides the app configuration for API v4 host. Takes precedence over `services.api-v4.host` and the api fallback. |
-`extra.hosts.files` | Overrides the app configuration if the hostname used to access NeoLoad Web Files API is different than the value of `services.files.host`|
-`extra.containers.backend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the backend Deployment. |
-`extra.containers.frontend` | Allows specifying a list of valid [Containers](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#container-v1-core). These will be added to the list of Containers of the frontend Deployment. |
-`extra.volumes.frontend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the frontend Deployment. |
-`services.<name>.component` | The Deployment to which this service is attached can be either `frontend` or `backend`. | 
-`services.<name>.host` | The hostname for the `<name>` service | 
-`services.<name>.type` | The type for the `<name>` service | `ClusterIP`
-`services.<name>.port` | The port for the `<name>` service | `80`
-`services.<name>.ingress.paths` | The path mapping for the service ingress. If value is `null`, ingress will not be created for this service. | `[""]`
-
-
-## Custom environment variables
-
-`neoload.configuration.backend.others` and `neoload.configuration.frontend.others` sections of *values-custom.yaml* allow to define custom environement variables.
-These environement variables will be applied either on the backend or the frontend depending on the used property.
-
-### Example
-
-The following example will define `ENV_VAR_1` and `ENV_VAR_2` as environement variables for the backend deployment.
-
-```yaml
-neoload:
-  configuration:
-    backend:
-      mongo:
-        host: YOUR_MONGODB_HOST_URL
-        port: 27017
-      others:
-        ENV_VAR_1: variable1 
-        ENV_VAR_2: variable2
-
-```
-
-## Proxy
-
-You can define an https proxy that will be used by NeoLoad Web when using the following set of features. This set will be extended in future upgrades.
-
-*Features taking advantage of proxies in NeoLoad Web 2.11.0*
-- Licensing
-
-The proxy can be enabled by setting the following property :
-
-`neoload.configuration.proxy.https=https://username:password@host:port`
 
 ## TLS
+
 If you want to secure NeoLoad Web through TLS, you should either:
  - configure [TLS at ingress level](#ingress-tls-termination)
  - handle [TLS termination on front of the Ingress controller](#external-tls-termination)
@@ -539,8 +463,7 @@ Set a name for your new TLS secret name into the `ingress.tls[0].secretName` par
 > If you choose to handle TLS on front of the Ingress controller, we recommend, for security reason, to set the 
 > value of the property `neoload.configuration.externalTlsTermination` to `true`.
 >
-> It will enable the 'https://' protocol in NeoLoad Web URLs. 
-> And it will ensure that NeoLoad Web flags the JSESSIONID cookie as `secure`.
+> It will enable the 'https://' protocol in NeoLoad Web URLs and configuration. 
 
 ## Usage data
 
@@ -548,24 +471,8 @@ NeoLoad Web collects and sends anonymized usage and navigation data to our serve
 
 You can disable this option by setting the `neoload.configuration.sendUsageStatistics` key to `false`.
 
-### Service data
-
 NeoLoad Web gathers and sends data related to the usage of specific features and services.
 
-### Navigation data
-
-NeoLoad Web uses Google Analytics cookies to track navigation data.
-
-Any end user can prevent Google from collecting and processing their data by downloading and installing the browser plug-in available here: https://tools.google.com/dlpage/gaoptout?hl=en-GB.
-
-*For more information about Data privacy management by Google, see the links below:*
-
-- [Data privacy and security for Google Analytics](https://support.google.com/analytics/answer/6004245)
-- [How Google uses information from sites or applications that use their services](https://www.google.com/policies/privacy/partners/)
-
-## Advanced configuration
-
-- [Logger configuration](./doc/logging-configuration.md).
 
 ## Troubleshooting
 
