@@ -110,6 +110,8 @@ Parameter | Description | Default
 `loggerConfiguration` | Logger configuration. [Learn more.](./doc/logging-configuration.md) | [Default logger configuration as defined here](./values.yaml)
 `extra.volumes.backend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the backend Deployment. |
 `extra.volumeMounts.backend` | Add custom volume mounts to the NeoLoad Web backend Container.  | 
+ |  | 
+`migration.skipBreakingChangesChecks` | Skip breaking changes validation checks during helm template rendering. Use with caution, only if you understand the implications. | `false`
 
 ## CORS allowed origins
 

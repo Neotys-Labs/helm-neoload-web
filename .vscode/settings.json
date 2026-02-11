@@ -6,5 +6,8 @@
     "values-custom.yaml",
     "values-custom-openshift.yaml",
     "values.yaml"
-]
+],
+"chat.tools.terminal.autoApprove": {
+  "helm": true
+}
 }
