@@ -5,7 +5,6 @@
 replicaCount:
   frontend: 2
   backend: 2
-  # TODO adjust number of replicas
   backendUtilities: 1
 
 image:
@@ -15,7 +14,6 @@ image:
   frontend:
     repository: neotys/neoload-web-frontend
     pullPolicy: IfNotPresent
-  # TODO adjust repository
   backendUtilities:
     repository: neotys/neoload-web-backend-utilities
     pullPolicy: IfNotPresent
@@ -86,13 +84,10 @@ resources:
       memory: 250Mi
   backendUtilities:
     requests:
-      # TODO adjust values
-      cpu: 100m
-      # TODO adjust values
-      memory: 500Mi
+      cpu: 500m
+      memory: 2Gi
     limits:
-      # TODO adjust values
-      memory: 1Gi
+      memory: 2Gi
 
 # NLWeb configuration
 neoload:
