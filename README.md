@@ -11,21 +11,12 @@ SaaS version is available [here](https://neoload.saas.neotys.com/)
 - Get a closer look by diving into the details of a test
 - Test data is hosted in the NeoLoad Web Cloud: tests can be accessed even when the NeoLoad Controller which launched them is not available
 
-## What's New in Chart v3
-
-Chart version 3.x introduces major changes to NeoLoad Web:
-
-- **New Frontend**: The old Java-based frontend has been replaced by a new lightweight frontend with improved performance.
-- **API v4**: A new API version is introduced alongside the existing API.
-
-For detailed migration instructions, see the [2025.2.x to 2026.1.x Upgrade Guide](./doc/upgrade-2025.2.x-to-2026.1.x.md).
-
 ## Introduction
 
 This chart deploys NeoLoad Web on your Kubernetes cluster.
 
-> [!IMPORTANT]
-> **Chart version 3.x** is only compatible with **NeoLoad Web version 2026.1.0 and later**. This version introduces a new frontend and API v4.
+> [!WARNING]
+> **Chart version 3.x** is only compatible with **NeoLoad Web version 2026.1.0 and later**.
 >
 > For NeoLoad Web versions prior to 2026.1.0, please use the Helm chart from the [`v2.x` branch](https://github.com/Neotys-Labs/helm-neoload-web/tree/v2.x).
 
