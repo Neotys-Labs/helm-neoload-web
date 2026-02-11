@@ -17,6 +17,10 @@ Only changes that affect the values file schema/keys are listed.
 
 - Remove ingress rewrite annotations from your values: `haproxy.router.openshift.io/rewrite-target`, `nginx.ingress.kubernetes.io/rewrite-target`. If you use another ingress (e.g., Traefik, HAProxy Ingress, AWS ALB, Istio), remove any equivalent rewrite settings. Keeping them may cause routing issues with this chart.
 
+#### Troubleshooting
+
+- If unable to load the app after migration, try clearing your browser cache or use a different browser than usual.
+
 ### Optional changes
 
 - Remove `neoload.configuration.frontend.java.xmx` (and the `neoload.frontend.java` block). The new frontend ignores these values.
