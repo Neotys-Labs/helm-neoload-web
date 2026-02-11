@@ -18,7 +18,7 @@ Chart version 3.x introduces major changes to NeoLoad Web:
 - **New Frontend**: The old Java-based frontend has been replaced by a new lightweight frontend with improved performance.
 - **API v4**: A new API version is introduced alongside the existing API.
 
-For detailed migration instructions, see the [2025.3.x to 2026.1.x Upgrade Guide](./doc/upgrade-2025.3.x-to-2026.1.x.md).
+For detailed migration instructions, see the [2025.2.x to 2026.1.x Upgrade Guide](./doc/upgrade-2025.2.x-to-2026.1.x.md).
 
 ## Introduction
 
@@ -144,7 +144,7 @@ $ helm uninstall my-release -n my-namespace
 ## Upgrade
 
 > [!WARNING]
-> **This documentation is for Chart v3.** Migrating from Chart v2 to v3 includes breaking changes. Please review the [2025.3.x to 2026.1.x Upgrade Guide](./doc/upgrade-2025.3.x-to-2026.1.x.md) before upgrading.
+> **This documentation is for Chart v3.** Migrating from Chart v2 to v3 includes breaking changes. Please review the [2025.2.x to 2026.1.x Upgrade Guide](./doc/upgrade-2025.2.x-to-2026.1.x.md) before upgrading.
 
 You can use the `helm upgrade` command when you want to :
 1. Upgrade your NeoLoad Web installation.
@@ -172,7 +172,7 @@ The following docs can help you when migrating chart version with breaking chang
 | 2.x.x to 2.3.x | [Upgrade Guide](/doc/upgrade-2.x.x-to-2.3.x.md) |
 | 2.3.x to 2.4.x | [Upgrade Guide](/doc/upgrade-2.3.x-to-2.4.x.md) |
 | 4.2.x to 2023.1.x | [Upgrade Guide](/doc/upgrade-4.2.x-to-2023.1.x.md) |
-| 2025.3.x to 2026.1.x | [Upgrade Guide](/doc/upgrade-2025.3.x-to-2026.1.x.md) |
+| 2025.2.x to 2026.1.x | [Upgrade Guide](/doc/upgrade-2025.2.x-to-2026.1.x.md) |
 
 ### Version compatibility
 

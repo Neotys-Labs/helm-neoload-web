@@ -1,4 +1,4 @@
-# Upgrading from nlweb-helm chart 2025.3.x to 2026.1.x
+# Upgrading from nlweb-helm chart 2025.2.x to 2026.1.x
 
 *Before you proceed, make sure you've read on our general [Upgrade](../README.md#Upgrade) section.*
 
