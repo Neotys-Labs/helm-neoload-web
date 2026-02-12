@@ -39,13 +39,20 @@ This chart is meant for experienced Kubernetes/Helm users as a successful instal
 ### Hardware
 
 NeoLoad Web will require your cluster to run a minimum of 3 pods, hosting the frontend, backend, and backend-utilities separately.
-Here is a table to let you quickly estimate the resource requirements of your nodes, based on `resources.frontend.*`, `resources.backend.*`, and `resources.backendUtilities.*` [(see Advanced Configuration)](#advanced-configuration).
+Here is a table to help you estimate the resource requirements of your nodes based on the default `resources.*` values.
 
-Deployment | Content | Requests | Limits
------ | ----------- | ----- | -----
-Minimal | 1 Frontend Pod, 1 Backend Pod, 1 Backend-Utilities Pod | **1.15 CPU, 3.25Gi RAM** | **2 CPU, 4.25Gi RAM**
-Default | 2 Frontend Pods, 2 Backend Pods, 1 Backend-Utilities Pod | **2.2 CPU, 5.5Gi RAM** | **4 CPU, 7.25Gi RAM**
-Advanced | X Frontend Pods, Y Backend Pods, Z Backend-Utilities Pods | **X\*0.05 + Y\*1 + Z\*0.1 CPU, X\*250 + Y\*2500 + Z\*500 Mi RAM** | **Y\*2 CPU, X\*250Mi + Y\*3Gi + Z\*1Gi RAM**
+Deployment | Content | Requirements
+----- | ----------- | -----
+Minimal | 1 Frontend Pod, 1 Backend Pod, 1 Backend-Utilities Pod | **1.55 CPU, 5.1Gi RAM**
+Recommended | 2 Frontend Pods, 2 Backend Pods, 1 Backend-Utilities Pod | **2.6 CPU, 8.2Gi RAM**
+
+For custom deployments, multiply each pod count by its default resource requirements and sum the totals [(see Advanced Configuration)](#advanced-configuration):
+- **Frontend**: 50m CPU, 0.1Gi RAM
+- **Backend**: 1 CPU, 3Gi RAM
+- **Backend-Utilities**: 0.5 CPU, 2Gi RAM
+
+> [!NOTE]
+> If you modify the default resource values via `resources.frontend.*`, `resources.backend.*`, or `resources.backendUtilities.*`, you must recompute the total resources required accordingly.
 
 ### Software
 
