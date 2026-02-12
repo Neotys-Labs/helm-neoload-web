@@ -223,14 +223,14 @@ flowchart TB
         end
 
         subgraph backend [Backend Pods]
-            hz1[Hazelcast - port 6701]
+            hz1[Hazelcast - port 6801]
             api[API v1-v3 - port 1081]
             apiv4[API v4 - port 1084]
             files[Files API - port 1082]
         end
 
         subgraph backendutil [Backend Utilities Pods]
-            hz2[Hazelcast - port 6701]
+            hz2[Hazelcast - port 6801]
         end
     end
 

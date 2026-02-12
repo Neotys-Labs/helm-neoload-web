@@ -118,9 +118,9 @@ spec:
             - name: KUB_NAMESPACE
               value: {{ .Release.Namespace | quote }}
             - name: KUB_HZ_PORT
-              value: "6701"
+              value: "6801"
             - name: HAZELCAST_KUBERNETES_SERVICE_PORT
-              value: "6701"
+              value: "6801"
             - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
               value: "true"
             {{- if eq (include "nlweb.ha.mode" .) "API" }}
@@ -157,7 +157,7 @@ spec:
               containerPort: 9092
               protocol: TCP
             - name: hazelcast
-              containerPort: 6701
+              containerPort: 6801
               protocol: TCP
           livenessProbe:
             httpGet:

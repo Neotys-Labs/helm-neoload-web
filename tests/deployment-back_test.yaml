@@ -145,13 +145,13 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: KUB_HZ_PORT
-            value: "6701"
+            value: "6801"
           any: true
       - contains:
           path: spec.template.spec.containers[0].env
           content:
             name: HAZELCAST_KUBERNETES_SERVICE_PORT
-            value: "6701"
+            value: "6801"
           any: true
       - contains:
           path: spec.template.spec.containers[0].env

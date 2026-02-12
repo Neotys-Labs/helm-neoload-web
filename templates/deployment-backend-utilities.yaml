@@ -62,9 +62,9 @@ spec:
             - name: KUB_NAMESPACE
               value: {{ .Release.Namespace | quote }}
             - name: KUB_HZ_PORT
-              value: "6701"
+              value: "6801"
             - name: HAZELCAST_KUBERNETES_SERVICE_PORT
-              value: "6701"
+              value: "6801"
             - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
               value: "true"
             {{- if eq (include "nlweb.ha.mode" .) "API" }}
@@ -83,7 +83,7 @@ spec:
             {{- end }}
           ports:
             - name: hazelcast
-              containerPort: 6701
+              containerPort: 6801
               protocol: TCP
           livenessProbe:
             failureThreshold: 30
@@ -91,7 +91,7 @@ spec:
             periodSeconds: 5
             successThreshold: 1
             tcpSocket:
-              port: 6701
+              port: 6801
             timeoutSeconds: 1
           readinessProbe:
             failureThreshold: 30
@@ -99,7 +99,7 @@ spec:
             periodSeconds: 5
             successThreshold: 1
             tcpSocket:
-              port: 6701
+              port: 6801
             timeoutSeconds: 1
           resources:
             {{- toYaml .Values.resources.backendUtilities | nindent 12 }}
