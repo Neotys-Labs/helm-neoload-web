@@ -101,7 +101,7 @@ Parameter | Description | Default
 `mongodb.mongodbUsername` | MongoDB Username | 
 `mongodb.mongodbPassword` | MongoDB Password | 
  |  | 
-`clusterRbac.enabled` | Specifies whether a ClusterRole and ClusterRoleBinding should be created | `true`
+`clusterRbac.enabled` | Specifies whether a ClusterRole and ClusterRoleBinding should be created. Only applies when `neoload.configuration.ha.mode` is `API`. | `true`
 `nodeSelector` | Node Selector | `{}`
 `tolerations` | Pod's tolerations | `[]`
 `replicaCount.frontend` | Number of frontend pods in your Deployment. [Learn more.](#high-availability) | 2

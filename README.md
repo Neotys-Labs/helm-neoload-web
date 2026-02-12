@@ -280,16 +280,37 @@ This component may be extended to support additional features in future releases
 
 ## High Availability
 
-From versions 2.0.0 of this chart and 2.9.0 of NeoLoad Web, we include a mecanism for **High Availability**. This means you can easily scale your NeoLoad Web frontend/backend, and the application will be more failure tolerant.
+NeoLoad Web supports **High Availability**, allowing you to scale your frontend and backend pods for improved resilience and failure tolerance.
 
-> Use `replicaCount.frontend`, `replicaCount.backend`, and `replicaCount.backendUtilities` values to arrange your Deployment the way you see fit. We set a default of 2 frontend instances and 2 backend instances so you get a resilient NeoLoad Web application out of the box.
+> Use `replicaCount.frontend`, `replicaCount.backend`, and `replicaCount.backendUtilities` values to arrange your deployment the way you see fit. By default, 2 frontend instances, 2 backend instances, and 1 backend-utilities instance are deployed for a resilient NeoLoad Web application out of the box.
 
-This change has a few impacts on your NeoLoad Web deployment.
+Your cluster must be able to deploy at least 5 pods by default (2 frontend, 2 backend, and 1 backend-utilities). For a minimal deployment, you can run with 2 pods (1 frontend and 1 backend), accepting the lack of features related to backend-utilities (see [Backend-Utilities Component](#backend-utilities-component)). Some nodes may restrict the number of simultaneous pods, so ensure this is allowed.
 
-- From now on your cluster will need to be able to deploy at least 3 pods (one for frontend, one for backend, and one for backend-utilities). Some nodes can restrain the number of simultaneous pods, so you need to make sure it is allowed.
-- Some additional cluster roles are required. See [cluster-role.yaml](/templates/cluster-role.yaml).
+### Discovery Modes
 
-> Check out the [upgrade section](#upgrade) to learn more about upgrading your chart.
+High Availability relies on pod discovery to form a cluster. The discovery mechanism is configured via `neoload.configuration.ha.mode`.
+
+#### API Mode (default)
+
+API mode uses the Kubernetes API for pod discovery. This requires a ClusterRole and ClusterRoleBinding to be deployed, granting the service account permission to query pods and endpoints. These resources are created automatically by the chart.
+
+See [cluster-role.yaml](/templates/cluster-role.yaml) for details on the required permissions.
+
+> [!NOTE]
+> If you prefer to manage ClusterRole and ClusterRoleBinding resources externally (e.g., through your own infrastructure tooling), you can disable their automatic creation by setting `clusterRbac.enabled: false`.
+
+#### DNS Mode
+
+DNS mode uses DNS-based discovery and does not require a ClusterRole. This makes it suitable for restricted environments where granting Kubernetes API access to pods is not allowed.
+
+To enable DNS mode, add the following to your values file:
+
+```yaml
+neoload:
+  configuration:
+    ha:
+      mode: "DNS"
+```
 
 ## Configuration
 
