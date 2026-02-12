@@ -271,7 +271,7 @@ List of features requiring backend-utilities to be deployed:
 
 By default, only a single replica of this Pod is deployed to reduce resource consumption.
 You can increase this by changing the value of `replicaCount.backendUtilities` to a higher number.
-You can also disable it by setting `replicaCount.backendUtilities: 0` if you don't plan to use this feature and prefer to save resources.
+You can also disable it by setting `replicaCount.backendUtilities: 0` if you don't plan to use these features and prefer to save resources.
 
 This component may be extended to support additional features in future releases.
 
