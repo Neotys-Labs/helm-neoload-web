@@ -264,7 +264,14 @@ flowchart TB
 
 ### Backend-Utilities Component
 
-The **backend-utilities** component handles resource-intensive tasks such as PDF report generation. It uses a separate technical stack optimized for these workloads, which isolates them from the main backend to avoid impacting API performance.
+The **backend-utilities** component handles resource-intensive tasks such as PDF report generation. It uses a separate technical stack optimized for these workloads, isolating them from the main backend to avoid impacting API performance.
+
+List of features requiring backend-utilities to be deployed:
+- Dashboard PDF export
+
+By default, only a single replica of this Pod is deployed to reduce resource consumption.
+You can increase this by changing the value of `replicaCount.backendUtilities` to a higher number.
+You can also disable it by setting `replicaCount.backendUtilities: 0` if you don't plan to use these features and prefer to save resources.
 
 This component may be extended to support additional features in future releases.
 
