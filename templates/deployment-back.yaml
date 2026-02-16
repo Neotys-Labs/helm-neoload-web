@@ -46,29 +46,33 @@ spec:
             - name: MEMORY_MAX
               value: {{ .Values.neoload.configuration.backend.java.xmx }}
             - name: MONGODB_HOST
+            {{- if .Values.mongodb.existingSecret }}
+              value: {{ .Values.neoload.configuration.backend.mongo.host | required "MongoDb host (--set neoload.configuration.backend.mongo.host=YOUR_MONGODB_HOST) value is required." | quote }}
+            {{- else }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "nlweb.fullname" . }}-mongo-secret
+                  name: {{ include "nlweb.secrets.mongodb.name" . }}
                   key: host
+            {{- end }}
             - name: MONGODB_PORT
               value: {{ default "27017" (.Values.neoload.configuration.backend.mongo.port | quote) }}
-            {{- if .Values.mongodb.usePassword }}
+            {{- if or .Values.mongodb.usePassword .Values.mongodb.existingSecret }}
             - name: MONGODB_LOGIN
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "nlweb.fullname" . }}-mongo-secret
+                  name: {{ .Values.mongodb.existingSecret | default (include "nlweb.secrets.mongodb.name" .) }}
                   key: username
             - name: MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "nlweb.fullname" . }}-mongo-secret
+                  name: {{ .Values.mongodb.existingSecret | default (include "nlweb.secrets.mongodb.name" .) }}
                   key: password
             {{- end }}
-            {{- if .Values.neoload.configuration.backend.licensingPlatformToken }}
+            {{- if or .Values.neoload.configuration.backend.licensingPlatformToken .Values.neoload.configuration.backend.licensingPlatformTokenExistingSecret }}
             - name: LICENSING_PLATFORM_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "nlweb.fullname" . }}-licensing-secret
+                  name: {{ .Values.neoload.configuration.backend.licensingPlatformTokenExistingSecret | default (include "nlweb.secrets.licensing.name" .) }}
                   key: licensingPlatformToken
             {{- end }}
             - name: MONGODB_MAX_POOLSIZE
@@ -92,12 +96,12 @@ spec:
             - name: NLWEB_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "nlweb.secrets.key.name" . }}
+                  name: {{ .Values.neoload.configuration.secretKeyExistingSecret | default (include "nlweb.secrets.key.name" .) }}
                   key: nlwSecretKey
             - name: INTERNAL_TOKEN_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "nlweb.secrets.key.name" . }}
+                  name: {{ .Values.neoload.configuration.secretKeyExistingSecret | default (include "nlweb.secrets.key.name" .) }}
                   key: internalTokenSecret
             - name: DEPLOYMENT_TYPE
               value: "helm/kubernetes"

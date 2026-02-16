@@ -246,10 +246,10 @@ neoload:
 
 ##### Authentication
 
-Depending on your mongoDB setup you must specify if an authentication is required or not. There are two options:
+Depending on your mongoDB setup you must specify if an authentication is required or not. There are three options:
 
-- Either set user info directly in the URI (see above section "Host and port")
-- Or set `usePassword` to `true` and replace the `YOUR_MONGODB_USER` and `YOUR_MONGODB_PASSWORD` placeholders accordingly in below example.
+- Set user info directly in the URI (see above section "Host and port")
+- Set `mongodb.usePassword` to `true` and replace the `YOUR_MONGODB_USER` and `YOUR_MONGODB_PASSWORD` placeholders accordingly in below example.
 
 ```yaml
 ### MongoDB user configuration
@@ -259,6 +259,7 @@ mongodb:
   mongodbPassword: YOUR_MONGODB_PASSWORD
 ```
 
+- Use an existing Secret by specifying its name in `mongodb.existingSecret`. The existing secret must have the keys `username` and `password`. This takes precedence over the two previous options.
 
 
 #### NeoLoad Web secret key
@@ -267,10 +268,18 @@ The NeoLoad Web secret key is used to encrypt and decrypt the passwords that are
 It must be 8 characters minimum.
 If not set, NeoLoad Web will not start.
 
+The secret key can be specified in two ways:
+
+- Set the key in `neoload.configuration.secretKey`
+
 ```yaml
+neoload:
+  configuration:
     # The secret key must be at least 8 characters long
     secretKey: MySecretKeyForNeoLoadWeb
 ```
+
+- Use an existing secret specifying its name in `neoload.configuration.secretKeyExistingSecret`. The existing Secret must contain the keys `nlwSecretKey` and `internalTokenSecret`. This takes precedence over `secretKey`.
 
 > [!WARNING]
 > Do not modify this key from one deployment to another, otherwise NeoLoad Web will not be able to read previously stored secrets from your database.
