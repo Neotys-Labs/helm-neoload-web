@@ -76,7 +76,7 @@ spec:
             - name: INTERNAL_TOKEN_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.neoload.configuration.secretKeyExistingSecret | default (include "nlweb.secrets.key.name" .) }}
+                  name: {{ include "nlweb.secrets.key.name" . }}
                   key: internalTokenSecret
             - name: JSESSIONID_SECURE_FLAG
             {{- if eq ((include "nlweb.helpers.getScheme" .) | toString) "https://" }}

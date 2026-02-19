@@ -1,3 +1,6 @@
+{{- if not (or .Values.neoload.configuration.backend.mongo.host .Values.mongodb.existingSecret) }}
+  {{- fail "You must set either neoload.configuration.backend.mongo.host or mongodb.existingSecret" }}
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -46,12 +49,12 @@ spec:
             - name: MEMORY_MAX
               value: {{ .Values.neoload.configuration.backend.java.xmx }}
             - name: MONGODB_HOST
-            {{- if .Values.mongodb.existingSecret }}
-              value: {{ .Values.neoload.configuration.backend.mongo.host | required "MongoDb host (--set neoload.configuration.backend.mongo.host=YOUR_MONGODB_HOST) value is required." | quote }}
+            {{- if .Values.neoload.configuration.backend.mongo.host }}
+              value: {{ .Values.neoload.configuration.backend.mongo.host | quote }}
             {{- else }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "nlweb.secrets.mongodb.name" . }}
+                  name: {{ .Values.mongodb.existingSecret | default (include "nlweb.secrets.mongodb.name" .) }}
                   key: host
             {{- end }}
             - name: MONGODB_PORT
@@ -101,7 +104,7 @@ spec:
             - name: INTERNAL_TOKEN_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.neoload.configuration.secretKeyExistingSecret | default (include "nlweb.secrets.key.name" .) }}
+                  name: {{ include "nlweb.secrets.key.name" . }}
                   key: internalTokenSecret
             - name: DEPLOYMENT_TYPE
               value: "helm/kubernetes"
