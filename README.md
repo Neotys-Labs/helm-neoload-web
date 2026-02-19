@@ -259,7 +259,7 @@ mongodb:
   mongodbPassword: YOUR_MONGODB_PASSWORD
 ```
 
-- Use an existing Secret by specifying its name in `mongodb.existingSecret`. The existing secret must have the keys `username` and `password`. This takes precedence over the two previous options.
+- Use an existing secret by specifying its name in `mongodb.existingSecret`. This takes precedence over the two previous options. The existing secret must have the keys `username` and `password` if `mongodb.usePassword` is true. If not, the secret must contain the key `host`, which should be a URI with credentials.
 
 
 #### NeoLoad Web secret key
