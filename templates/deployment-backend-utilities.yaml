@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nlweb.fullname" . }}-backend-utilities
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nlweb.labels" . | nindent 4 }}
+      {{- range $key, $value := .Values.neoload.labels.backendUtilities }}
+      {{ $key }}: {{ $value | quote }}
+      {{- end }}
+  annotations:
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.backendUtilities }}
+    {{- toYaml .Values.neoload.annotations.backendUtilities | nindent 4 }}
+    {{- end }}
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.deployment .Values.neoload.annotations.deployment.backendUtilities }}
+    {{- toYaml .Values.neoload.annotations.deployment.backendUtilities | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount.backendUtilities }}
+  selector:
+    matchLabels:
+      {{- include "nlweb.backendUtilities.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "nlweb.backendUtilities.selectorLabels" . | nindent 8 }}
+          {{- range $key, $value := .Values.neoload.labels.backendUtilities }}
+          {{ $key }}: {{ $value | quote }}
+          {{- end }}
+      annotations:
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.backendUtilities }}
+        {{- toYaml .Values.neoload.annotations.backendUtilities | nindent 8 }}
+        {{- end }}
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.pod .Values.neoload.annotations.pod.backendUtilities }}
+        {{- toYaml .Values.neoload.annotations.pod.backendUtilities | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "nlweb.serviceAccountName" . }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
+      securityContext:
+      {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-backend-utilities
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.backendUtilities.repository }}:{{ include "nlweb.backendUtilities.imageTag" . }}"
+          imagePullPolicy: {{ .Values.image.backendUtilities.pullPolicy }}
+          env:
+            - name: MEMORY_MAX
+              value: {{ .Values.neoload.configuration.backendUtilities.java.xmx }}
+            - name: WEB_CRAWLER_API_POOL_MAX_SIZE
+              value: '2'
+            - name: DEPLOYMENT_TYPE
+              value: "helm/kubernetes"
+            - name: HA
+              value: "true"
+            - name: START_MODE
+              value: "CLUSTER_KUB"
+            - name: KUB_NAMESPACE
+              value: {{ .Release.Namespace | quote }}
+            - name: KUB_HZ_PORT
+              value: "6801"
+            - name: HAZELCAST_KUBERNETES_SERVICE_PORT
+              value: "6801"
+            - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
+              value: "true"
+            {{- if eq (include "nlweb.ha.mode" .) "API" }}
+            - name: KUB_SERVICE_NAME
+              value: "{{ include "nlweb.service-hazelcast-name" . }}"
+            {{- end -}}
+            {{- if eq (include "nlweb.ha.mode" .) "DNS" }}
+            - name: KUB_SERVICE_DNS_NAME
+              value: "{{ include "nlweb.service-hazelcast-name" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+            {{- end -}}
+            {{- if .Values.neoload.configuration.backendUtilities.others }}
+            {{- range $name, $value := .Values.neoload.configuration.backendUtilities.others }}
+            - name: {{ $name }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
+          ports:
+            - name: hazelcast
+              containerPort: 6801
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 30
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            tcpSocket:
+              port: 6801
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 30
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            tcpSocket:
+              port: 6801
+            timeoutSeconds: 1
+          resources:
+            {{- toYaml .Values.resources.backendUtilities | nindent 12 }}
+          volumeMounts:
+            - name: {{ .Release.Name }}-logger-config
+              mountPath: /server/conf
+      {{- if ((.Values.extra).containers).backendUtilities }}
+      {{- toYaml .Values.extra.containers.backendUtilities | nindent 8 }}
+      {{- end }}
+      {{- if ((.Values.extra).volumeMounts).backendUtilities }}
+      {{- toYaml .Values.extra.volumeMounts.backendUtilities | nindent 12 }}
+      {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+        - name: {{ .Release.Name }}-logger-config
+          configMap:
+            name: {{ .Release.Name }}-logger-config
+      {{- if ((.Values.extra).volumes).backendUtilities }}
+          {{- toYaml .Values.extra.volumes.backendUtilities | nindent 8 }}
+      {{- end }}

@@ -41,7 +41,6 @@ ingress:
   enabled: true
   # Replace these annotations accordingly if you are not using the openshift ingress controller
   annotations:
-    haproxy.router.openshift.io/rewrite-target: "/"
     route.openshift.io/termination: "edge"
 
   ### TLS configuration
@@ -56,3 +55,7 @@ ingress:
 #        -----BEGIN PRIVATE KEY-----
 #        YOUR_PRIVATE_KEY
 #        -----END PRIVATE KEY-----
+
+
+
+

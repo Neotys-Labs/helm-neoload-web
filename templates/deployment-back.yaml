@@ -12,8 +12,11 @@ metadata:
     {{ $key }}: {{ $value | quote }}
     {{- end }}
   annotations:
-    {{- range $key, $value := .Values.neoload.annotations.backend }}
-    {{ $key }}: {{ $value | quote }}
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.backend }}
+    {{- toYaml .Values.neoload.annotations.backend | nindent 4 }}
+    {{- end }}
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.deployment .Values.neoload.annotations.deployment.backend }}
+    {{- toYaml .Values.neoload.annotations.deployment.backend | nindent 4 }}
     {{- end }}
 spec:
   replicas: {{ .Values.replicaCount.backend }}
@@ -28,8 +31,11 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
       annotations:
-        {{- range $key, $value := .Values.neoload.annotations.backend }}
-        {{ $key }}: {{ $value | quote }}
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.backend }}
+        {{- toYaml .Values.neoload.annotations.backend | nindent 8 }}
+        {{- end }}
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.pod .Values.neoload.annotations.pod.backend }}
+        {{- toYaml .Values.neoload.annotations.pod.backend | nindent 8 }}
         {{- end }}
     spec:
       serviceAccountName: {{ include "nlweb.serviceAccountName" . }}
@@ -82,6 +88,10 @@ spec:
               value: {{ .Values.neoload.configuration.backend.mongo.poolSize | quote }}
             - name: NEOLOAD_WEB_PUBLIC_URL
               value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.webapp.host" .) | required "NeoLoad Web Public URL (.Values.services.webapp.host) value is required." | quote }}
+            - name: NEOLOAD_WEB_URL_NEXT_GEN
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.webapp.host" .) | required "NeoLoad Web Public URL (.Values.services.webapp.host) value is required." | quote }}
+            - name: NEOLOAD_WEB_PUBLIC_URL_NEXT_GEN
+              value: {{ printf "%s%s/public" (include "nlweb.helpers.getScheme" .) (include "nlweb.webapp.host" .) | required "NeoLoad Web Public URL (.Values.services.webapp.host) value is required." | quote }}
             - name: NEOLOAD_WEB_API_PUBLIC_URL
               value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.api.host" .) | required "NeoLoad Web API URL (.Values.services.api.host) value is required." | quote }}
             - name: FILE_STORAGE_ROUTER_BASE_URL
@@ -115,9 +125,9 @@ spec:
             - name: KUB_NAMESPACE
               value: {{ .Release.Namespace | quote }}
             - name: KUB_HZ_PORT
-              value: "6701"
+              value: "6801"
             - name: HAZELCAST_KUBERNETES_SERVICE_PORT
-              value: "6701"
+              value: "6801"
             - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
               value: "true"
             {{- if eq (include "nlweb.ha.mode" .) "API" }}
@@ -136,9 +146,16 @@ spec:
             {{- end }}
             - name: CORS_ALLOWED_ORIGIN_PATTERN
               value: {{ include "nlweb.helpers.corsAllowedOriginPattern" . | quote }}
+            {{- if or (not .Values.neoload.configuration.backend.others) (not .Values.neoload.configuration.backend.others.COOKIE_DOMAIN) }}
+            - name: COOKIE_DOMAIN
+              value: {{ (.Values.domain | required "NeoLoad Web domain (.Values.domain) value is required." ) | quote }}
+            {{- end }}
           ports:
             - name: api
               containerPort: 1081
+              protocol: TCP
+            - name: api-v4
+              containerPort: 1084
               protocol: TCP
             - name: files
               containerPort: 1082
@@ -147,7 +164,7 @@ spec:
               containerPort: 9092
               protocol: TCP
             - name: hazelcast
-              containerPort: 6701
+              containerPort: 6801
               protocol: TCP
           livenessProbe:
             httpGet:

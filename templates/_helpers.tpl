@@ -90,6 +90,14 @@ app.kubernetes.io/component: backend
 {{- end -}}
 
 {{/*
+Backend utilities Selector labels
+*/}}
+{{- define "nlweb.backendUtilities.selectorLabels" -}}
+{{ include "nlweb.selectorLabels" . }}
+app.kubernetes.io/component: backend-utilities
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "nlweb.serviceAccountName" -}}
@@ -175,6 +183,13 @@ Get backend image tag
 {{- end -}}
 
 {{/*
+Backend utilities image tag
+*/}}
+{{- define "nlweb.backendUtilities.imageTag" -}}
+    {{ default .Chart.AppVersion .Values.image.backendUtilities.tag }}
+{{- end -}}
+
+{{/*
 High Availability (HA) Mode
 */}}
 {{- define "nlweb.ha.mode" -}}
@@ -212,6 +227,24 @@ Define api host, default to .Values.services.api.host but can be overrided by .V
         {{- .Values.extra.hosts.api -}}
     {{- else -}}
         {{- .Values.services.api.host -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*
+Define api-v4 host with fallback logic:
+- Prefer .Values.extra.hosts["api-v4"] when provided
+- Else use .Values.services["api-v4"].host when set
+- Else fallback to the api host (which itself can be overridden via .Values.extra.hosts.api)
+*/}}
+{{- define "nlweb.api-v4.host" -}}
+    {{- $extra := .Values.extra -}}
+    {{- $services := .Values.services -}}
+    {{- if and $extra $extra.hosts (hasKey $extra.hosts "api-v4") -}}
+        {{- index $extra.hosts "api-v4" -}}
+    {{- else if and $services (hasKey $services "api-v4") (index $services "api-v4").host -}}
+        {{- (index $services "api-v4").host -}}
+    {{- else -}}
+        {{- include "nlweb.api.host" . -}}
     {{- end -}}
 {{- end -}}
 

@@ -1,4 +1,18 @@
 {{- if .Values.ingress.enabled -}}
+{{- if not ((.Values.migration).skipBreakingChangesChecks) -}}
+{{- if hasKey (.Values.ingress.annotations | default dict) "haproxy.router.openshift.io/rewrite-target" -}}
+{{- fail "Breaking change: The annotation 'haproxy.router.openshift.io/rewrite-target' is not supported. See https://github.com/Neotys-Labs/helm-neoload-web/blob/master/doc/upgrade-2025.2.x-to-2026.1.x.md for details. Set 'migration.skipBreakingChangesChecks: true' to bypass this check." -}}
+{{- end -}}
+{{- if hasKey (.Values.ingress.annotations | default dict) "nginx.ingress.kubernetes.io/rewrite-target" -}}
+{{- fail "Breaking change: The annotation 'nginx.ingress.kubernetes.io/rewrite-target' is not supported. See https://github.com/Neotys-Labs/helm-neoload-web/blob/master/doc/upgrade-2025.2.x-to-2026.1.x.md for details. Set 'migration.skipBreakingChangesChecks: true' to bypass this check." -}}
+{{- end -}}
+{{- if hasKey (.Values.ingress.annotations | default dict) "haproxy-ingress.github.io/rewrite-target" -}}
+{{- fail "Breaking change: The annotation 'haproxy-ingress.github.io/rewrite-target' is not supported. See https://github.com/Neotys-Labs/helm-neoload-web/blob/master/doc/upgrade-2025.2.x-to-2026.1.x.md for details. Set 'migration.skipBreakingChangesChecks: true' to bypass this check." -}}
+{{- end -}}
+{{- if hasKey (.Values.ingress.annotations | default dict) "traefik.ingress.kubernetes.io/rewrite-target" -}}
+{{- fail "Breaking change: The annotation 'traefik.ingress.kubernetes.io/rewrite-target' is not supported. See https://github.com/Neotys-Labs/helm-neoload-web/blob/master/doc/upgrade-2025.2.x-to-2026.1.x.md for details. Set 'migration.skipBreakingChangesChecks: true' to bypass this check." -}}
+{{- end -}}
+{{- end -}}
 {{- $fullName := include "nlweb.fullname" . -}}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1
@@ -32,37 +46,66 @@ spec:
       {{- end }}
       {{- else -}}
       {{- range $label, $service := $.Values.services }}
-        - {{ $service.host | required (printf "The %s service host is required. (--set services.%s.host=YOUR_HOST)" $label $label) | quote }}
+        {{- /* Compute host with helpers for known services, keep value for customs */ -}}
+        {{- $hostCtx := dict "val" $service.host -}}
+        {{- if eq $label "webapp" -}}
+          {{- $_ := set $hostCtx "val" (include "nlweb.webapp.host" $) -}}
+        {{- else if eq $label "api" -}}
+          {{- $_ := set $hostCtx "val" (include "nlweb.api.host" $) -}}
+        {{- else if eq $label "api-v4" -}}
+          {{- $_ := set $hostCtx "val" (include "nlweb.api-v4.host" $) -}}
+        {{- else if eq $label "files" -}}
+          {{- $_ := set $hostCtx "val" (include "nlweb.files.host" $) -}}
+        {{- end -}}
+        - {{ (get $hostCtx "val") | required (printf "The %s service host is required. (--set services.%s.host=YOUR_HOST)" $label $label) | quote }}
       {{- end }}
       {{- end -}}
   {{- end }}
 {{- end }}
   rules:
-    {{- range $label, $service := .Values.services }}
-    {{- if $service.ingress }}
-    {{- $serviceName := printf "%s-%s-%s" (include "nlweb.fullname" $) "svc" $label }}
-    - host: {{ $service.host | quote }}
-      http:
-      {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.Version }}
-        paths:
-        {{- range $service.ingress.paths }}
-        - path: {{ . }}
+    {{- $hostMap := dict }}
+    {{- range $svcName, $svc := .Values.services }}
+    {{- /* Resolve host with helpers for known services */ -}}
+    {{- $hostCtx := dict "val" $svc.host -}}
+    {{- if eq $svcName "webapp" -}}
+      {{- $_ := set $hostCtx "val" (include "nlweb.webapp.host" $) -}}
+    {{- else if eq $svcName "api" -}}
+      {{- $_ := set $hostCtx "val" (include "nlweb.api.host" $) -}}
+    {{- else if eq $svcName "api-v4" -}}
+      {{- $_ := set $hostCtx "val" (include "nlweb.api-v4.host" $) -}}
+    {{- else if eq $svcName "files" -}}
+      {{- $_ := set $hostCtx "val" (include "nlweb.files.host" $) -}}
+    {{- end }}
+    {{- $svcHost := (get $hostCtx "val") -}}
+    {{- if not (hasKey $hostMap $svcHost) }}
+    {{- $_ := set $hostMap $svcHost (list) }}
+    {{- end }}
+    {{- $svcEntry := dict "name" $svcName "paths" ($svc.ingress.paths | default (list "/")) "port" $svc.port }}
+    {{- $_ := set $hostMap $svcHost (append (get $hostMap $svcHost) $svcEntry) }}
+    {{- end }}
+
+    {{- range $host, $svcList := $hostMap }}
+  - host: {{ $host | quote }}
+    http:
+      paths:
+        {{- range $svc := $svcList }}
+        {{- $serviceName := printf "%s-%s-%s" (include "nlweb.fullname" $) "svc" $svc.name }}
+        {{- range $path := $svc.paths }}
+        {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.Version }}
+        - path: {{ $path }}
           pathType: Prefix
           backend:
             service:
               name: {{ $serviceName }}
               port:
-                number: {{ $service.port }}
-        {{- end }}
-      {{- else }}
-        paths:
-        {{- range $service.ingress.paths }}
-        - path: {{ . }}
+                number: {{ $svc.port }}
+        {{- else }}
+        - path: {{ $path }}
           backend:
             serviceName: {{ $serviceName }}
-            servicePort: {{ $service.port }}
+            servicePort: {{ $svc.port }}
         {{- end }}
-      {{- end }}
-      {{- end }}
-    {{- end }}
-{{- end }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+  {{- end }}

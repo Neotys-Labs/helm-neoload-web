@@ -1,0 +1,119 @@
+suite: test ingress annotations validation
+templates:
+  - ingress.yaml
+tests:
+  - it: should fail when haproxy.router.openshift.io/rewrite-target annotation is used
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: true
+      ingress.annotations:
+        haproxy.router.openshift.io/rewrite-target: /
+    asserts:
+      - failedTemplate:
+          errorMessage: "Breaking change: The annotation 'haproxy.router.openshift.io/rewrite-target' is not supported. See https://github.com/Neotys-Labs/helm-neoload-web/blob/master/doc/upgrade-2025.2.x-to-2026.1.x.md for details. Set 'migration.skipBreakingChangesChecks: true' to bypass this check."
+
+  - it: should fail when nginx.ingress.kubernetes.io/rewrite-target annotation is used
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: true
+      ingress.annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /
+    asserts:
+      - failedTemplate:
+          errorMessage: "Breaking change: The annotation 'nginx.ingress.kubernetes.io/rewrite-target' is not supported. See https://github.com/Neotys-Labs/helm-neoload-web/blob/master/doc/upgrade-2025.2.x-to-2026.1.x.md for details. Set 'migration.skipBreakingChangesChecks: true' to bypass this check."
+
+  - it: should fail when haproxy-ingress.github.io/rewrite-target annotation is used
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: true
+      ingress.annotations:
+        haproxy-ingress.github.io/rewrite-target: /
+    asserts:
+      - failedTemplate:
+          errorMessage: "Breaking change: The annotation 'haproxy-ingress.github.io/rewrite-target' is not supported. See https://github.com/Neotys-Labs/helm-neoload-web/blob/master/doc/upgrade-2025.2.x-to-2026.1.x.md for details. Set 'migration.skipBreakingChangesChecks: true' to bypass this check."
+
+  - it: should fail when traefik.ingress.kubernetes.io/rewrite-target annotation is used
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: true
+      ingress.annotations:
+        traefik.ingress.kubernetes.io/rewrite-target: /
+    asserts:
+      - failedTemplate:
+          errorMessage: "Breaking change: The annotation 'traefik.ingress.kubernetes.io/rewrite-target' is not supported. See https://github.com/Neotys-Labs/helm-neoload-web/blob/master/doc/upgrade-2025.2.x-to-2026.1.x.md for details. Set 'migration.skipBreakingChangesChecks: true' to bypass this check."
+
+  - it: should allow valid annotations
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: true
+      ingress.annotations:
+        nginx.ingress.kubernetes.io/proxy-body-size: "500m"
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: metadata.annotations["nginx.ingress.kubernetes.io/proxy-body-size"]
+          value: "500m"
+
+  - it: should allow haproxy rewrite-target when migration.skipBreakingChangesChecks is true
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: true
+      migration.skipBreakingChangesChecks: true
+      ingress.annotations:
+        haproxy.router.openshift.io/rewrite-target: /
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: metadata.annotations["haproxy.router.openshift.io/rewrite-target"]
+          value: "/"
+
+  - it: should allow nginx rewrite-target when migration.skipBreakingChangesChecks is true
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: true
+      migration.skipBreakingChangesChecks: true
+      ingress.annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: metadata.annotations["nginx.ingress.kubernetes.io/rewrite-target"]
+          value: "/"

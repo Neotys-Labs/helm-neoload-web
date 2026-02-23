@@ -9,8 +9,11 @@ metadata:
     {{ $key }}: {{ $value | quote }}
     {{- end }}
   annotations:
-    {{- range $key, $value := .Values.neoload.annotations.frontend }}
-    {{ $key }}: {{ $value | quote }}
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.frontend }}
+    {{- toYaml .Values.neoload.annotations.frontend | nindent 4 }}
+    {{- end }}
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.deployment .Values.neoload.annotations.deployment.frontend }}
+    {{- toYaml .Values.neoload.annotations.deployment.frontend | nindent 4 }}
     {{- end }}
 spec:
   replicas: {{ .Values.replicaCount.frontend }}
@@ -25,8 +28,11 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
       annotations:
-        {{- range $key, $value := .Values.neoload.annotations.frontend }}
-        {{ $key }}: {{ $value | quote }}
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.frontend }}
+        {{- toYaml .Values.neoload.annotations.frontend | nindent 8 }}
+        {{- end }}
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.pod .Values.neoload.annotations.pod.frontend }}
+        {{- toYaml .Values.neoload.annotations.pod.frontend | nindent 8 }}
         {{- end }}
     spec:
       serviceAccountName: {{ include "nlweb.serviceAccountName" . }}
@@ -42,71 +48,24 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.frontend.repository }}:{{ include "nlweb.frontend.imageTag" . }}"
           imagePullPolicy: {{ .Values.image.frontend.pullPolicy }}
-          env:
-            - name: MEMORY_MAX
-              value: {{ .Values.neoload.configuration.frontend.java.xmx }}
-            - name: DEPLOYMENT_TYPE
-              value: "helm/kubernetes"
-            - name: HA
-              value: "true"
-            - name: HAZELCAST_KUBERNETES_RESOLVE_NOT_READY_ADDRESSES
-              value: "true"
-            - name: HAZELCAST_KUBERNETES_SERVICE_PORT
-              value: "6701"
-            - name: START_MODE
-              value: "CLUSTER_KUB"
-            - name: KUB_NAMESPACE
-              value: {{ .Release.Namespace | quote }}
-            - name: KUB_HZ_PORT
-              value: "6701"
-            {{- if eq (include "nlweb.ha.mode" .) "API" }}
-            - name: KUB_SERVICE_NAME
-              value: "{{ include "nlweb.service-hazelcast-name" . }}"
-            {{- end -}}
-            {{- if eq (include "nlweb.ha.mode" .) "DNS" }}
-            - name: KUB_SERVICE_DNS_NAME
-              value: "{{ include "nlweb.service-hazelcast-name" . }}.{{ .Release.Namespace }}.svc.cluster.local"
-            {{- end -}}
-            {{- if .Values.neoload.configuration.misc -}}
-            {{- if .Values.neoload.configuration.misc.trackingUrl }}
-            - name: NEOTYS_TRACKING_URL
-              value: {{ .Values.neoload.configuration.misc.trackingUrl | quote }}
-            {{- end -}}
-            {{- end }}
-            - name: INTERNAL_TOKEN_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "nlweb.secrets.key.name" . }}
-                  key: internalTokenSecret
-            - name: JSESSIONID_SECURE_FLAG
-            {{- if eq ((include "nlweb.helpers.getScheme" .) | toString) "https://" }}
-              value: "true"
-            {{- else }}
-              value: "false"
-            {{- end }}
+          env: 
+            - name: PORT
+              value: '3000'
+            - name: API_URL
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.api-v4.host" .) | required "API v4 URL (.Values.services[\"api-v4\"].host or .Values.services.api.host) value is required." | quote }}
+            - name: API_FILE_URL
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.files.host" .) | required "NeoLoad Web Files API URL (.Values.services.files.host) value is required." | quote }}
+            - name: FRONT_PUBLIC_URL
+              value: {{ printf "%s%s/public" (include "nlweb.helpers.getScheme" .) (include "nlweb.webapp.host" .) | required "NeoLoad Web Next Gen Public URL (.Values.services.webapp.host or .Values.extra.hosts.webapp) value is required." | quote }}
             {{- if .Values.neoload.configuration.frontend.others }}
             {{- range $name, $value := .Values.neoload.configuration.frontend.others }}
             - name: {{ $name }}
               value: {{ $value | quote }}
             {{- end }}
             {{- end }}
-            - name: COOKIE_USE_SSL
-            {{- if eq ((include "nlweb.helpers.getScheme" .) | toString) "https://" }}
-              value: "true"
-            {{- else }}
-              value: "false"
-            {{- end }}
-            - name: COOKIE_DOMAIN
-              value: {{ .Values.domain | required "NeoLoad Web domain (.Values.domain) value is required." | quote }}
           ports:
             - name: webapp
-              containerPort: 9090
-              protocol: TCP
-            - name: frontend-admin
-              containerPort: 9091
-              protocol: TCP
-            - name: hazelcast
-              containerPort: 6701
+              containerPort: 3000
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -122,16 +81,13 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources.frontend | nindent 12 }}
-          volumeMounts:
-            - name: {{ .Release.Name }}-logger-config
-              mountPath: /server/conf
         {{- if ((.Values.extra).containers).frontend }}
         {{- toYaml .Values.extra.containers.frontend | nindent 8 }}
         {{- end }}
-      {{- with .Values.nodeSelector }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+    {{- end }}
     {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
@@ -140,10 +96,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+    {{- with ((.Values.extra).volumes).frontend }}
       volumes:
-        - name: {{ .Release.Name }}-logger-config
-          configMap:
-            name: {{ .Release.Name }}-logger-config
-    {{- if ((.Values.extra).volumes).frontend }}
-        {{- toYaml .Values.extra.volumes.frontend | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
     {{- end }}
