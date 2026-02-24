@@ -373,7 +373,7 @@ neoload:
 
 Depending on your mongoDB setup you must specify if an authentication is required or not. There are three options:
 
-- Set user info directly in the URI (see above section "Host and port")
+- Set user info directly in the URI (see above section ["Host and port"](#host-and-port))
 - Set `mongodb.usePassword` to `true` and replace the `YOUR_MONGODB_USER` and `YOUR_MONGODB_PASSWORD` placeholders accordingly in below example.
 
 ```yaml
@@ -384,7 +384,7 @@ mongodb:
   mongodbPassword: YOUR_MONGODB_PASSWORD
 ```
 
-- Use an existing secret by specifying its name in `mongodb.existingSecret`. This takes precedence over the two previous options. The existing secret must have the keys `username` and `password` if `mongodb.usePassword` is true. If not, the secret must contain the key `host`, which should be a URI with credentials.
+- Use an existing secret by specifying its name in `mongodb.existingSecret`. This takes precedence over the two previous options. The existing secret must have the keys `username`, `password` and `host` if `mongodb.usePassword` is `true`. If not, the secret must contain the key `host`, which should be a URI with credentials.
 
 
 #### NeoLoad Web secret key

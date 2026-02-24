@@ -55,14 +55,10 @@ spec:
             - name: MEMORY_MAX
               value: {{ .Values.neoload.configuration.backend.java.xmx }}
             - name: MONGODB_HOST
-            {{- if and .Values.neoload.configuration.backend.mongo.host .Values.mongodb.existingSecret }}
-              value: {{ .Values.neoload.configuration.backend.mongo.host | quote }}
-            {{- else }}
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.mongodb.existingSecret | default (include "nlweb.secrets.mongodb.name" .) }}
                   key: host
-            {{- end }}
             - name: MONGODB_PORT
               value: {{ default "27017" (.Values.neoload.configuration.backend.mongo.port | quote) }}
             {{- if .Values.mongodb.usePassword }}
