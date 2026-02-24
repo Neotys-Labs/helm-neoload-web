@@ -11,6 +11,7 @@ tests:
       services.files.host: myfiles.example.com
       domain: .example.com
       ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
     asserts:
       - isKind:
           of: Deployment
@@ -35,6 +36,7 @@ tests:
       services.files.host: myfiles.example.com
       domain: .example.com
       ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
     asserts:
       - lengthEqual:
           path: spec.template.spec.containers[0].env
