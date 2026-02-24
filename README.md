@@ -404,10 +404,35 @@ neoload:
     secretKey: MySecretKeyForNeoLoadWeb
 ```
 
-- Use an existing secret specifying its name in `neoload.configuration.secretKeyExistingSecret`. The existing Secret must contain the keys `nlwSecretKey` and `internalTokenSecret`. This takes precedence over `secretKey`.
+- Use an existing secret specifying its name in `neoload.configuration.secretKeyExistingSecret`. The existing Secret must contain the key `nlwSecretKey`. This takes precedence over `neoload.configuration.secretKey`.
 
 > [!WARNING]
 > Do not modify this key from one deployment to another, otherwise NeoLoad Web will not be able to read previously stored secrets from your database.
+
+#### NeoLoad Licensing Platform token
+
+The NeoLoad Licensing Platform token enables VUH (Virtual User Hours) licensing features in NeoLoad Web. This token authenticates your NeoLoad Web instance with the NeoLoad Licensing Platform to manage and track VUH consumption.
+
+The token can be configured in two ways:
+
+- Set the token directly in `neoload.configuration.backend.licensingPlatformToken`
+
+```yaml
+neoload:
+  configuration:
+    backend:
+      licensingPlatformToken: YOUR_LICENSING_PLATFORM_TOKEN
+```
+
+- Use an existing secret by specifying its name in `neoload.configuration.backend.licensingPlatformTokenExistingSecret`. The existing Secret must contain the key `licensingPlatformToken`. This takes precedence over `neoload.configuration.backend.licensingPlatformToken`.
+
+```yaml
+neoload:
+  configuration:
+    backend:
+      licensingPlatformTokenExistingSecret: my-licensing-secret
+```
+
 
 #### NeoLoad Web URLs and Domain
 
