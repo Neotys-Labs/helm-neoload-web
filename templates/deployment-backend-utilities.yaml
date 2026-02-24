@@ -5,9 +5,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "nlweb.labels" . | nindent 4 }}
-      {{- range $key, $value := .Values.neoload.labels.backendUtilities }}
-      {{ $key }}: {{ $value | quote }}
-      {{- end }}
+    {{- range $key, $value := .Values.neoload.labels.backendUtilities }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
   annotations:
     {{- if and .Values.neoload.annotations .Values.neoload.annotations.backendUtilities }}
     {{- toYaml .Values.neoload.annotations.backendUtilities | nindent 4 }}
@@ -24,9 +24,9 @@ spec:
     metadata:
       labels:
         {{- include "nlweb.backendUtilities.selectorLabels" . | nindent 8 }}
-          {{- range $key, $value := .Values.neoload.labels.backendUtilities }}
-          {{ $key }}: {{ $value | quote }}
-          {{- end }}
+        {{- range $key, $value := .Values.neoload.labels.backendUtilities }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
       annotations:
         {{- if and .Values.neoload.annotations .Values.neoload.annotations.backendUtilities }}
         {{- toYaml .Values.neoload.annotations.backendUtilities | nindent 8 }}
