@@ -41,14 +41,11 @@ domain: .mycompany.com
 ### Choose your preferred ingress controller configuration
 ingress:
   enabled: true
-  # Replace these annotations accordingly if you are not using the nginx ingress controller
-  className: nginx
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      proxy_ignore_client_abort "on";  
-    nginx.ingress.kubernetes.io/proxy-body-size: 0
+  # Replace these annotations accordingly if you are not using the Traefik ingress controller
+  className: traefik
+  annotations: {}
+  # Traefik uses sensible defaults (no body size limit, no forced SSL redirect).
+  # For custom middleware, see: https://doc.traefik.io/traefik/routing/providers/kubernetes-ingress/#on-ingress
     
 
 

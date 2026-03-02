@@ -43,7 +43,7 @@ Parameter | Description | Default
 `services.files.ingress.paths` | The path mapping for the files ingress. If value is `null`, ingress will not be created for this service. | `[""]`
  |  | 
 `ingress.enabled` | Enable ingresses | `true`
-`ingress.class` | Specifies which ingress controller class should listen to this ingress | `nginx`
+`ingress.class` | Specifies which ingress controller class should listen to this ingress | `traefik`
 `ingress.annotations` | Annotations for configuring the ingress | 
 `ingress.tls[0].secretName` | The name of your TLS secret | 
 `ingress.tls[0].secretCertificate` | The content of your imported certificate | `{}`
