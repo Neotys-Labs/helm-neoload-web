@@ -371,10 +371,10 @@ neoload:
 
 ##### Authentication
 
-Depending on your mongoDB setup you must specify if an authentication is required or not. There are two options:
+Depending on your mongoDB setup you must specify if an authentication is required or not. There are three options:
 
-- Either set user info directly in the URI (see above section "Host and port")
-- Or set `usePassword` to `true` and replace the `YOUR_MONGODB_USER` and `YOUR_MONGODB_PASSWORD` placeholders accordingly in below example.
+- Set user info directly in the URI (see above section ["Host and port"](#host-and-port))
+- Set `mongodb.usePassword` to `true` and replace the `YOUR_MONGODB_USER` and `YOUR_MONGODB_PASSWORD` placeholders accordingly in below example.
 
 ```yaml
 ### MongoDB user configuration
@@ -384,6 +384,7 @@ mongodb:
   mongodbPassword: YOUR_MONGODB_PASSWORD
 ```
 
+- Use an existing secret by specifying its name in `mongodb.existingSecret`. This takes precedence over the two previous options. The existing secret must have the keys `username`, `password` and `host` if `mongodb.usePassword` is `true`. If not, the secret must contain the key `host`, which should be a URI with credentials.
 
 
 #### NeoLoad Web secret key
@@ -392,13 +393,46 @@ The NeoLoad Web secret key is used to encrypt and decrypt the passwords that are
 It must be 8 characters minimum.
 If not set, NeoLoad Web will not start.
 
+The secret key can be specified in two ways:
+
+- Set the key in `neoload.configuration.secretKey`
+
 ```yaml
+neoload:
+  configuration:
     # The secret key must be at least 8 characters long
     secretKey: MySecretKeyForNeoLoadWeb
 ```
 
+- Use an existing secret specifying its name in `neoload.configuration.secretKeyExistingSecret`. The existing Secret must contain the key `nlwSecretKey`. This takes precedence over `neoload.configuration.secretKey`.
+
 > [!WARNING]
 > Do not modify this key from one deployment to another, otherwise NeoLoad Web will not be able to read previously stored secrets from your database.
+
+#### NeoLoad Licensing Platform token
+
+The NeoLoad Licensing Platform token enables VUH (Virtual User Hours) licensing features in NeoLoad Web. This token authenticates your NeoLoad Web instance with the NeoLoad Licensing Platform to manage and track VUH consumption.
+
+The token can be configured in two ways:
+
+- Set the token directly in `neoload.configuration.backend.licensingPlatformToken`
+
+```yaml
+neoload:
+  configuration:
+    backend:
+      licensingPlatformToken: YOUR_LICENSING_PLATFORM_TOKEN
+```
+
+- Use an existing secret by specifying its name in `neoload.configuration.backend.licensingPlatformTokenExistingSecret`. The existing Secret must contain the key `licensingPlatformToken`. This takes precedence over `neoload.configuration.backend.licensingPlatformToken`.
+
+```yaml
+neoload:
+  configuration:
+    backend:
+      licensingPlatformTokenExistingSecret: my-licensing-secret
+```
+
 
 #### NeoLoad Web URLs and Domain
 

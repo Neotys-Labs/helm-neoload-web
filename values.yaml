@@ -112,7 +112,10 @@ neoload:
         files:
           maxUploadSizeInBytes: "250000000"
           maxUploadPerWeek: "250"
-      licensingPlatformToken: 
+      ## Licensing token that will be stored in chart-managed Secret
+      licensingPlatformToken:
+      ## Use pre-existing Secret (must have "licensingPlatformToken" key). This takes precedence over "licensingPlatformToken".
+      licensingPlatformTokenExistingSecret: 
       livenessProbe:
         initDelaySeconds: 120
       readinessProbe:
@@ -131,11 +134,17 @@ neoload:
         xmx: 300m
     ha:
       mode: "API"
+    ## Secret key that will be stored in chart-managed Secret
     secretKey: 
+    ## Use pre-existing Secret (must have "nlwSecretKey" + "internalTokenSecret" keys). This takes precedence over "secretKey".
+    secretKeyExistingSecret: 
     sendUsageStatistics: true
 
 ### MongoDB user configuration
 mongodb:
+  ## Use pre-existing secret for MongoDB username and password (must have "username" + "password" keys)
+  existingSecret: 
+  ## Create a secret with MongoDB username and password (requires "mongodbUsername" and "mongodbPassword" to be set)
   usePassword: true
   mongodbUsername: 
   mongodbPassword: 

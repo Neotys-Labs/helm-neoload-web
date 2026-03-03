@@ -32,6 +32,20 @@ Build the name of the secrets-key secret.
 {{- end -}}
 
 {{/*
+Build the name of the mongodb-key secret.
+*/}}
+{{- define "nlweb.secrets.mongodb.name" -}}
+{{- printf "%s-%s" (include "nlweb.fullname" .) "mongo-secret" -}}
+{{- end -}}
+
+{{/*
+Build the name of the licensing-key secret.
+*/}}
+{{- define "nlweb.secrets.licensing.name" -}}
+{{- printf "%s-%s" (include "nlweb.fullname" .) "licensing-secret" -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "nlweb.chart" -}}

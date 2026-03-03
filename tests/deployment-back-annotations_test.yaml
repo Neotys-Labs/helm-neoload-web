@@ -11,6 +11,7 @@ tests:
       services.files.host: myfiles.example.com
       domain: .example.com
       ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
     asserts:
       - isKind:
           of: Deployment
@@ -30,6 +31,7 @@ tests:
       neoload.annotations.backend:
         annotation1: value1
         annotation2: value2
+      neoload.configuration.backend.mongo.host: mymongo.example.com
     asserts:
       - isKind:
           of: Deployment
@@ -57,6 +59,7 @@ tests:
       neoload.annotations.deployment.backend:
         annotation1: value1
         annotation2: value2
+      neoload.configuration.backend.mongo.host: mymongo.example.com
     asserts:
       - isKind:
           of: Deployment
@@ -80,6 +83,7 @@ tests:
       neoload.annotations.pod.backend:
         annotation1: value1
         annotation2: value2
+      neoload.configuration.backend.mongo.host: mymongo.example.com
     asserts:
       - isKind:
           of: Deployment
@@ -109,6 +113,7 @@ tests:
       neoload.annotations.deployment.backend:
         deployment-annotation1: value1
         deployment-annotation2: value2
+      neoload.configuration.backend.mongo.host: mymongo.example.com
     asserts:
       - isKind:
           of: Deployment

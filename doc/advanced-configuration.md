@@ -62,8 +62,10 @@ Parameter | Description | Default
  |  | 
 `neoload.configuration.externalTlsTermination` | Must be set to `true` if TLS termination is handled by a component [outside of the Helm Chart management](#external-tls-termination).  | `false`
 `neoload.configuration.sendUsageStatistics` | Can be set to `false` to avoid usage data collection | `true`
+`neoload.configuration.secretKey` | **(Required)** Secret key used to encrypt and decrypt passwords stored by NeoLoad Web. Must be at least 8 characters. See [NeoLoad Web secret key](../README.md#neoload-web-secret-key) for details | 
+`neoload.configuration.secretKeyExistingSecret` | Name of an existing Secret containing the secret key. Must have the key `nlwSecretKey`. Takes precedence over `neoload.configuration.secretKey`. | 
  |  | 
-`neoload.configuration.backend.mongo.host` | MongoDB host |
+`neoload.configuration.backend.mongo.host` | MongoDB host, should be omitted if using `mongodb.existingSecret`. See [MongoDB Authentication](../README.md#authentication) for details |
 `neoload.configuration.backend.mongo.port` | MongoDB port | `27017`
 `neoload.configuration.backend.mongo.poolSize` | MongoDB pool size | `50`
 `neoload.configuration.backend.java.xmx` | Java JVM Max heap size for the backend | `2000m`
@@ -71,6 +73,7 @@ Parameter | Description | Default
 `neoload.configuration.backend.misc.files.maxUploadSizeInBytes` | Max file upload size in bytes | `250000000`
 `neoload.configuration.backend.misc.files.maxUploadPerWeek` | Max file upload count per week | `250`
 `neoload.configuration.backend.licensingPlatformToken` | Token for enabling licensing features (such as VUHs) | 
+`neoload.configuration.backend.licensingPlatformTokenExistingSecret` | Name of an existing Secret containing the licensing platform token. Must have the key `licensingPlatformToken`. Takes precedence over `licensingPlatformToken`. | 
 `neoload.configuration.backend.livenessProbe.initDelaySeconds` | Backend Pods liveness probe initial delay in seconds | 60
 `neoload.configuration.backend.readinessProbe.initDelaySeconds` | Backend Pods readiness probe initial delay in seconds | 60
 `neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
@@ -100,6 +103,7 @@ Parameter | Description | Default
 `mongodb.usePassword` | Set to false if your MongoDB connection doesn't require authentication | `true`
 `mongodb.mongodbUsername` | MongoDB Username | 
 `mongodb.mongodbPassword` | MongoDB Password | 
+`mongodb.existingSecret` | Name of an existing Secret containing MongoDB credentials. See [MongoDB Authentication](../README.md#authentication) for details | 
  |  | 
 `clusterRbac.enabled` | Specifies whether a ClusterRole and ClusterRoleBinding should be created. Only applies when `neoload.configuration.ha.mode` is `API`. | `true`
 `nodeSelector` | Node Selector | `{}`

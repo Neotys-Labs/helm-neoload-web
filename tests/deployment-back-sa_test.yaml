@@ -11,6 +11,7 @@ tests:
       services.files.host: myfiles.example.com
       domain: .example.com
       ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
     asserts:
       - equal:
           path: spec.template.spec.serviceAccountName
@@ -26,6 +27,7 @@ tests:
       ingress.enabled: false
       serviceAccount.name: 'jenkins-no-scc'
       serviceAccount.create: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
     asserts:
       - equal:
           path: spec.template.spec.serviceAccountName
@@ -40,6 +42,7 @@ tests:
       domain: .example.com
       ingress.enabled: false
       serviceAccount.create: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
     asserts:
       - equal:
           path: spec.template.spec.serviceAccountName
