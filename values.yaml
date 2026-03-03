@@ -105,6 +105,9 @@ neoload:
         host: 
         port: 27017
         poolSize: 50
+        ## When set to true, the MongoDB host is injected as a plain environment variable
+        ## instead of being stored in a Kubernetes Secret. Ignored when mongodb.existingSecret is set.
+        hostDirectValue: false
       java:
         xmx: 2000m
       misc:

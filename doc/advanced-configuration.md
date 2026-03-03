@@ -68,6 +68,7 @@ Parameter | Description | Default
 `neoload.configuration.backend.mongo.host` | MongoDB host, should be omitted if using `mongodb.existingSecret`. See [MongoDB Authentication](../README.md#authentication) for details |
 `neoload.configuration.backend.mongo.port` | MongoDB port | `27017`
 `neoload.configuration.backend.mongo.poolSize` | MongoDB pool size | `50`
+`neoload.configuration.backend.mongo.hostDirectValue` | When set to `true`, the MongoDB host is injected as a plain environment variable value instead of being stored in a Kubernetes Secret. Ignored when `mongodb.existingSecret` is set. See [Host as direct value](../README.md#host-as-direct-value). | `false`
 `neoload.configuration.backend.java.xmx` | Java JVM Max heap size for the backend | `2000m`
 `neoload.configuration.backend.misc.maxFormAttributeSize` | Maximum size in bytes for HTTP form attributes (e.g., for SSO form parameters) | `32768`
 `neoload.configuration.backend.misc.files.maxUploadSizeInBytes` | Max file upload size in bytes | `250000000`
