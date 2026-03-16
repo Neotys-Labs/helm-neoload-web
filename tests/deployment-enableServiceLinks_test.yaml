@@ -1,0 +1,40 @@
+suite: test enableServiceLinks
+templates:
+  - deployment-front.yaml
+  - deployment-back.yaml
+  - deployment-backend-utilities.yaml
+tests:
+  - it: sets enableServiceLinks on all deployments when configured
+    set:
+      services.webapp.host: x
+      services.api.host: x
+      services.files.host: x
+      domain: .x
+      ingress.enabled: false
+      neoload.configuration.frontend.enableServiceLinks: false
+      neoload.configuration.backend.enableServiceLinks: false
+      neoload.configuration.backendUtilities.enableServiceLinks: false
+      neoload.configuration.backend.mongo.host: m
+    documentSelector:
+      path: kind
+      value: Deployment
+      matchMany: true
+    asserts:
+      - equal:
+          path: spec.template.spec.enableServiceLinks
+          value: false
+  - it: does not set enableServiceLinks when not configured
+    set:
+      services.webapp.host: x
+      services.api.host: x
+      services.files.host: x
+      domain: .x
+      ingress.enabled: false
+      neoload.configuration.backend.mongo.host: m
+    documentSelector:
+      path: kind
+      value: Deployment
+      matchMany: true
+    asserts:
+      - notExists:
+          path: spec.template.spec.enableServiceLinks

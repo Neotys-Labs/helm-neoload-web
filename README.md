@@ -560,3 +560,20 @@ neoload:
 ```
 
 Note: Set the value according to your IdP needs; larger SSO payloads may require higher limits.
+
+### Frontend does not start — "envsubst: Argument list too long"
+
+By default, Kubernetes injects environment variables for each Service in the namespace into every pod.
+In namespaces with very large number of services, this can cause failures (for example in the frontend image with nginx).
+Disable this by setting `enableServiceLinks: false`:
+
+```yaml
+neoload:
+  configuration:
+    frontend:
+      enableServiceLinks: false
+    backend:
+      enableServiceLinks: false
+    backendUtilities:
+      enableServiceLinks: false
+```
