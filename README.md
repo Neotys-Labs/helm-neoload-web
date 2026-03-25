@@ -369,6 +369,23 @@ neoload:
 > [!NOTE]
 > Other custom connection options are supported, see MongoDB connection string options official documentation [here](https://www.mongodb.com/docs/v4.4/reference/connection-string/).
 
+##### Host as direct value
+
+By default, the MongoDB `host` value is stored in a Kubernetes Secret and referenced via `secretKeyRef` in the backend deployment. If you prefer the host to be set directly as a plain environment variable value (e.g., because you want to change it easily), set `hostDirectValue` to `true`:
+
+```yaml
+neoload:
+  configuration:
+    backend:
+      mongo:
+        host: YOUR_MONGODB_HOST_URL
+        port: 0
+        hostDirectValue: true
+```
+
+> [!NOTE]
+> When `mongodb.existingSecret` is set, `hostDirectValue` is ignored — the host is always read from the existing secret.
+
 ##### Authentication
 
 Depending on your mongoDB setup you must specify if an authentication is required or not. There are three options:
