@@ -68,13 +68,13 @@ For custom deployments, multiply each pod count by its default resource requirem
 
 You can use your favorite [ingress controller](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/) for enabling your ingresses to route external traffic to NeoLoad Web.
 
-This chart is tested, maintained and shipped with default values for the nginx ingress controller.
-Supported ingress controllers are: nginx, OpenShift.
+This chart is tested, maintained and shipped with default values for the Traefik ingress controller.
+Supported ingress controllers are: Traefik, OpenShift.
 
-You can find documentation for nginx ingress controller [here](https://kubernetes.github.io/ingress-nginx/).
+You can find documentation for Traefik ingress controller [here](https://doc.traefik.io/traefik/).
 You can find documentation for OpenShift ingress controller [here](https://docs.openshift.com/container-platform/4.7/networking/ingress-operator.html).
 
-Basic configuration options are detailled [here](https://kubernetes.github.io/ingress-nginx/deploy/) and you can find advanced configuration options [here](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/).
+Basic configuration options are detailed [here](https://doc.traefik.io/traefik/routing/providers/kubernetes-ingress/) and you can find advanced configuration options [here](https://doc.traefik.io/traefik/routing/routers/).
 
 > [!CAUTION]
 > Using another ingress controller may require additional chart tuning from your part.
@@ -529,19 +529,11 @@ Simply refer to your secret in the `ingress.tls[0].secretName` parameter, and le
 
 #### Creating a new TLS secret
 
-##### Provide a certificate and a private key
+You need a valid TLS certificate and its associated private key.
 
-Use the following documentation or use your own means to provide both a certificate and a private key.
+Copy the content of the certificate and private key files into the `ingress.tls[0].secretCertificate` and `ingress.tls[0].secretKey` parameters in your custom values file.
 
-- [Kubernetes TLS Secret generation documentation](https://kubernetes.github.io/ingress-nginx/user-guide/tls/)
-
-##### Add these to your custom values file
-
-Copy the content of the files into the `ingress.tls[0].secretCertificate` and `ingress.tls[0].secretKey` parameters.
-
-##### Specify your new TLS secret name
-
-Set a name for your new TLS secret name into the `ingress.tls[0].secretName` parameter.
+Set a name for your new TLS secret into the `ingress.tls[0].secretName` parameter.
 
 ### External TLS termination
 
