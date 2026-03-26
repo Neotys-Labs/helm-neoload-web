@@ -79,10 +79,14 @@ Parameter | Description | Default
 `neoload.configuration.backend.readinessProbe.initDelaySeconds` | Backend Pods readiness probe initial delay in seconds | 60
 `neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
 `neoload.configuration.backend.cors.additionalAllowedOriginPattern` | Additional CORS origin regex appended to base `scheme + ".*" + domain`. Example: `https://.*.okta.com` | 
+`neoload.configuration.backend.enableServiceLinks` | When set, sets the pod spec `enableServiceLinks` (e.g. `false` to avoid too many service env vars). See [Troubleshooting](../README.md#frontend-does-not-start--envsubst-argument-list-too-long). |
 | | 
 `neoload.configuration.frontend.livenessProbe.initDelaySeconds` | Frontend Pods liveness probe initial delay in seconds | 60
 `neoload.configuration.frontend.readinessProbe.initDelaySeconds` | Frontend Pods readiness probe initial delay in seconds | 20
 `neoload.configuration.frontend.others` | Custom frontend environment variables. [Learn more.](#custom-environment-variables) |
+`neoload.configuration.frontend.enableServiceLinks` | When set, sets the pod spec `enableServiceLinks` (e.g. `false` to avoid too many service env vars). See [Troubleshooting](../README.md#frontend-does-not-start--envsubst-argument-list-too-long). |
+| | 
+`neoload.configuration.backendUtilities.enableServiceLinks` | When set, sets the pod spec `enableServiceLinks` for backend-utilities (e.g. `false` to avoid too many service env vars). See [Troubleshooting](../README.md#frontend-does-not-start--envsubst-argument-list-too-long). |
 | | 
 `neoload.configuration.proxy.https` | Connection string for your https proxy. Configuring proxy should be done through the application, using this value is only here as a workaround. 
 | |

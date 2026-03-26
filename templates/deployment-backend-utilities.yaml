@@ -36,6 +36,9 @@ spec:
         {{- end }}
     spec:
       serviceAccountName: {{ include "nlweb.serviceAccountName" . }}
+      {{- if hasKey .Values.neoload.configuration.backendUtilities "enableServiceLinks" }}
+      enableServiceLinks: {{ .Values.neoload.configuration.backendUtilities.enableServiceLinks }}
+      {{- end }}
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
       {{- toYaml . | nindent 8 }}
