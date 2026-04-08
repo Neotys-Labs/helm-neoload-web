@@ -1,0 +1,7 @@
+NeoLoad Web 2026.1.0 Technical Release Notes
+
+Next generation of frontend.
+LOAD-35947 Use of hardened docker images
+
+Known issues:
+- [LOAD-36956] - StartDate in Report time series are not correct.
