@@ -135,7 +135,6 @@ tests:
           path: spec.tls[0].hosts
           content: cert-host-two.example.com
 
-  # Per-host TLS secrets (one spec.tls[] entry per secret); see README (Ingress TLS termination).
   - it: should render valid Ingress with multiple tls entries and per-host secrets
     release:
       namespace: default
