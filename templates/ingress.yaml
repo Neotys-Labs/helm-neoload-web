@@ -40,12 +40,12 @@ spec:
   {{- range .Values.ingress.tls }}
     - secretName: {{ .secretName }}
       hosts:
-      {{- if .hosts -}}
-      {{- range .hosts }}
+      {{ if .hosts }}
+      {{ range .hosts }}
         - {{ . | quote }}
-      {{- end }}
-      {{- else -}}
-      {{- range $label, $service := $.Values.services }}
+      {{ end }}
+      {{ else }}
+      {{ range $label, $service := $.Values.services }}
         {{- /* Compute host with helpers for known services, keep value for customs */ -}}
         {{- $hostCtx := dict "val" $service.host -}}
         {{- if eq $label "webapp" -}}
@@ -58,8 +58,8 @@ spec:
           {{- $_ := set $hostCtx "val" (include "nlweb.files.host" $) -}}
         {{- end -}}
         - {{ (get $hostCtx "val") | required (printf "The %s service host is required. (--set services.%s.host=YOUR_HOST)" $label $label) | quote }}
+      {{ end }}
       {{- end }}
-      {{- end -}}
   {{- end }}
 {{- end }}
   rules:

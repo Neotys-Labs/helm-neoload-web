@@ -80,6 +80,30 @@ tests:
           path: metadata.annotations["nginx.ingress.kubernetes.io/proxy-body-size"]
           value: "500m"
 
+  # SWAT-9562: With only secretName (no tls[].hosts), hosts are derived from services.
+  # Bug: if/range/end used with {{- -}} so newlines after "hosts:" and between list items
+  # were stripped, yielding invalid YAML (e.g. hosts:- "a"- "b") and helm install failed.
+  - it: should render valid Ingress when ingress.tls has only secretName (auto hosts, SWAT-9562)
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.api-v4.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: true
+      ingress.tls[0].secretName: my-tls
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: spec.tls[0].secretName
+          value: my-tls
+      - lengthEqual:
+          path: spec.tls[0].hosts
+          count: 4
+
   - it: should allow haproxy rewrite-target when migration.skipBreakingChangesChecks is true
     release:
       namespace: default
