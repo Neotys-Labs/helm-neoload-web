@@ -518,10 +518,12 @@ If you want to secure NeoLoad Web through TLS, you should either:
 To enable TLS and access NeoLoad Web via https, the parameters :
 
 - `ingress.enabled` must be true
-- `ingress.tls` must contain at least one item with the tls secret data
+- `ingress.tls` must contain at least one item with the TLS secret data (or references to it)
 
-> [!CAUTION]
-> Ingresses support multiple TLS mapped to respective hosts and paths. This feature is not supported for NeoLoad Web, i.e. exactly zero or one TLS configuration is expected.
+> [!NOTE]
+> **Single TLS block (recommended):** Prefer **one** `ingress.tls` entry: either set `ingress.tls[0].secretName` and omit `hosts` (the chart fills `hosts` from `services`), or set one secret with a `hosts` list (or a wildcard / SAN certificate). This is the simplest to operate and matches most deployments.
+>
+> **Several `ingress.tls` entries:** The chart also supports **multiple** `ingress.tls` items—Kubernetes allows mapping different `secretName` values to different `hosts` (e.g. one secret per public hostname). The rendered `Ingress` is valid; use this when your PKI or operations require per-host secrets. `spec.rules` hostnames still come from your `services` configuration, so keep `services.*.host` aligned with the certificates you use.
 
 #### Using an existing TLS secret
 
