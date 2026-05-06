@@ -68,6 +68,12 @@ services:
     ingress:
       paths: ["/"]
 
+### Ingress (disabled by default; see values-custom.yaml for a full example)
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+
 resources:
   backend:
     requests:
