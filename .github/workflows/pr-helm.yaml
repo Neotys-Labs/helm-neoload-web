@@ -23,8 +23,11 @@ jobs:
         run: |
           helm plugin install https://github.com/helm-unittest/helm-unittest --version v1.0.3
 
-      - name: Helm lint
+      - name: Helm lint (example Kubernetes / Traefik values)
         run: helm lint . -f values-custom.yaml
+
+      - name: Helm lint (example OpenShift values)
+        run: helm lint . -f values-custom-openshift.yaml
 
       - name: Helm unittest
         run: helm unittest .
