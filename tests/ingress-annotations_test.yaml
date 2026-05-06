@@ -79,6 +79,8 @@ tests:
       - equal:
           path: metadata.annotations["nginx.ingress.kubernetes.io/proxy-body-size"]
           value: "500m"
+      - notExists:
+          path: spec.tls
 
   - it: should render valid Ingress when ingress.tls has only secretName (auto hosts, SWAT-9562)
     release:
@@ -97,6 +99,109 @@ tests:
       - equal:
           path: spec.tls[0].secretName
           value: my-tls
+      - lengthEqual:
+          path: spec.tls[0].hosts
+          count: 4
+
+  - it: should render valid Ingress when ingress.tls has explicit hosts list
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.api-v4.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress:
+        enabled: true
+        tls:
+          - secretName: cert-tls
+            hosts:
+              - cert-host-one.example.com
+              - cert-host-two.example.com
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: spec.tls[0].secretName
+          value: cert-tls
+      - lengthEqual:
+          path: spec.tls[0].hosts
+          count: 2
+      - contains:
+          path: spec.tls[0].hosts
+          content: cert-host-one.example.com
+      - contains:
+          path: spec.tls[0].hosts
+          content: cert-host-two.example.com
+
+  - it: should render valid Ingress with multiple tls entries and per-host secrets
+    release:
+      namespace: default
+    set:
+      services.webapp.host: app.mycompany.com
+      services.api.host: api.mycompany.com
+      services.api-v4.host: api.mycompany.com
+      services.files.host: files.mycompany.com
+      domain: .mycompany.com
+      ingress:
+        enabled: true
+        tls:
+          - hosts:
+              - app.mycompany.com
+            secretName: neoload-web-tls
+          - hosts:
+              - api.mycompany.com
+            secretName: neoload-api-tls
+          - hosts:
+              - files.mycompany.com
+            secretName: neoload-files-tls
+    asserts:
+      - isKind:
+          of: Ingress
+      - lengthEqual:
+          path: spec.tls
+          count: 3
+      - equal:
+          path: spec.tls[0].secretName
+          value: neoload-web-tls
+      - equal:
+          path: spec.tls[0].hosts[0]
+          value: app.mycompany.com
+      - equal:
+          path: spec.tls[1].secretName
+          value: neoload-api-tls
+      - equal:
+          path: spec.tls[1].hosts[0]
+          value: api.mycompany.com
+      - equal:
+          path: spec.tls[2].secretName
+          value: neoload-files-tls
+      - equal:
+          path: spec.tls[2].hosts[0]
+          value: files.mycompany.com
+
+  - it: should render valid Ingress with ingressClassName and TLS secretName only
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.api-v4.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: true
+      ingress.className: traefik
+      ingress.tls[0].secretName: combined-tls
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: spec.ingressClassName
+          value: traefik
+      - equal:
+          path: spec.tls[0].secretName
+          value: combined-tls
       - lengthEqual:
           path: spec.tls[0].hosts
           count: 4
