@@ -525,6 +525,68 @@ To enable TLS and access NeoLoad Web via https, the parameters :
 >
 > **Several `ingress.tls` entries:** The chart also supports **multiple** `ingress.tls` items—Kubernetes allows mapping different `secretName` values to different `hosts` (e.g. one secret per public hostname). The rendered `Ingress` is valid; use this when your PKI or operations require per-host secrets. `spec.rules` hostnames still come from your `services` configuration, so keep `services.*.host` aligned with the certificates you use.
 
+#### Examples
+
+Minimal value fragments (merge with your own file). Hostnames and secret names are illustrative.
+
+**One `ingress.tls` entry — only `secretName`:** The chart fills `spec.tls[0].hosts` from `services.*.host` (and related settings).
+
+```yaml
+ingress:
+  enabled: true
+  tls:
+    - secretName: my-tls
+services:
+  webapp:
+    host: myapp.example.com
+  api:
+    host: myapi.example.com
+  api-v4:
+    host: myapi.example.com
+  files:
+    host: myfiles.example.com
+domain: .example.com
+```
+
+**One `ingress.tls` entry — `secretName` plus explicit `hosts`:** Use when a single certificate lists the names explicitly (SAN / wildcard).
+
+```yaml
+ingress:
+  enabled: true
+  tls:
+    - secretName: cert-tls
+      hosts:
+        - cert-host-one.example.com
+        - cert-host-two.example.com
+```
+
+**Several `ingress.tls` entries — one secret per hostname:**
+
+```yaml
+ingress:
+  enabled: true
+  tls:
+    - hosts:
+        - app.mycompany.com
+      secretName: neoload-web-tls
+    - hosts:
+        - api.mycompany.com
+      secretName: neoload-api-tls
+    - hosts:
+        - files.mycompany.com
+      secretName: neoload-files-tls
+services:
+  webapp:
+    host: app.mycompany.com
+  api:
+    host: api.mycompany.com
+  api-v4:
+    host: api.mycompany.com
+  files:
+    host: files.mycompany.com
+domain: .mycompany.com
+```
+
 #### Using an existing TLS secret
 
 Simply refer to your secret in the `ingress.tls[0].secretName` parameter, and leave both `ingress.tls[0].secretCertificate` and `ingress.tls[0].secretKey` empty.
