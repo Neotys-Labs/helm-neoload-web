@@ -81,7 +81,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: NEOLOAD_WEB_INTERNAL_URL_NEXT_GEN
-            value: "http://RELEASE-NAME-nlweb-svc-webapp.default.svc.cluster.local"
+            value: "http://RELEASE-NAME-nlweb-svc-webapp.default.svc.cluster.local/internal"
           any: true
       - contains:
           path: spec.template.spec.containers[0].env
@@ -177,7 +177,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: CORS_ALLOWED_ORIGIN_PATTERN
-            value: "http://.*.example.com"
+            value: "http://.*.example.com,http://RELEASE-NAME-nlweb-svc-webapp.default.svc.cluster.local"
           any: true
       - contains:
           path: spec.template.spec.containers[0].env
