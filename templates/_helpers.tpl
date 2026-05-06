@@ -265,10 +265,11 @@ Returns a single-line string combining scheme+domain and optional additional pat
 */}}
 {{- define "nlweb.helpers.corsAllowedOriginPattern" -}}
     {{- $base := (printf "%s.*%s" (include "nlweb.helpers.getScheme" .) (.Values.domain) | required "NeoLoad Web domain (.Values.domain) value is required.") -}}
+    {{- $internalWebapp := printf "http://%s-svc-webapp.%s.svc.cluster.local" (include "nlweb.fullname" .) .Release.Namespace -}}
     {{- $cors := (default dict .Values.neoload.configuration.backend.cors) -}}
     {{- if $cors.additionalAllowedOriginPattern -}}
-        {{- printf "%s,%s" $base $cors.additionalAllowedOriginPattern -}}
+        {{- printf "%s,%s,%s" $base $internalWebapp $cors.additionalAllowedOriginPattern -}}
     {{- else -}}
-        {{- $base -}}
+        {{- printf "%s,%s" $base $internalWebapp -}}
     {{- end -}}
 {{- end -}}
