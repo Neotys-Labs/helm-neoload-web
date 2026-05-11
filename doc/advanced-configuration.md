@@ -157,30 +157,6 @@ Other examples:
 - Keycloak single host: `"https://keycloak.example.com"`
 - Azure AD (example): `"https://login.microsoftonline.com"`
 
-## Session cookies (`COOKIE_SECURE`)
-
-The chart configures the backend's session cookie `Secure` attribute automatically based on the deployment's TLS state. The same signal that picks `http://` vs `https://` for the public URLs (`nlweb.helpers.getScheme`) is used to derive the `COOKIE_SECURE` env var injected into the backend Pod:
-
-| Deployment | `COOKIE_SECURE` |
-| --- | --- |
-| `ingress.enabled: true` and `ingress.tls` is set | `"true"` |
-| `neoload.configuration.externalTlsTermination: true` | `"true"` |
-| Plain HTTP (no `ingress.tls`, `externalTlsTermination` unset/false) | `"false"` |
-
-`Secure` cookies are required for HTTPS deployments and dropped by browsers on plain HTTP. Letting the chart derive this avoids the silent login redirect loop that occurs when a `Secure` cookie is issued over HTTP.
-
-### Overriding the default
-
-If you need to force a specific value (e.g. for an unusual reverse-proxy setup that performs TLS termination outside the chart's knowledge), set it explicitly under `neoload.configuration.backend.others`:
-
-```yaml
-neoload:
-  configuration:
-    backend:
-      others:
-        COOKIE_SECURE: "true"
-```
-
 ## Side-car containers
 
 > [!CAUTION]

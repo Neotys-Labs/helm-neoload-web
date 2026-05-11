@@ -622,7 +622,7 @@ NeoLoad Web gathers and sends data related to the usage of specific features and
 
 If users land back on `/login?return=/` immediately after submitting valid credentials on a plain HTTP deployment, the backend session cookie is being issued with the `Secure` attribute, which browsers refuse to send back over HTTP.
 
-Since chart `3.0.2`, `COOKIE_SECURE` is derived automatically from the chart's TLS detection (see [Session cookies](./doc/advanced-configuration.md#session-cookies-cookie_secure)):
+Since chart `3.0.2`, `COOKIE_SECURE` is derived automatically from the chart's TLS detection:
 
 - `ingress.tls` set, or `neoload.configuration.externalTlsTermination: true` → `COOKIE_SECURE=true`
 - otherwise → `COOKIE_SECURE=false`
