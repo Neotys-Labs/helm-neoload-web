@@ -158,6 +158,16 @@ spec:
             - name: COOKIE_DOMAIN
               value: {{ (.Values.domain | required "NeoLoad Web domain (.Values.domain) value is required." ) | quote }}
             {{- end }}
+            {{- /*
+              Derive COOKIE_SECURE from the chart's TLS detection (same signal as nlweb.helpers.getScheme):
+                - TLS-terminated deployments  -> "true"  (Secure cookies, required for HTTPS)
+                - Plain HTTP deployments      -> "false" (browsers drop Secure cookies on HTTP, breaking login)
+              Users can still override by setting `neoload.configuration.backend.others.COOKIE_SECURE`.
+            */ -}}
+            {{- if or (not .Values.neoload.configuration.backend.others) (not (hasKey .Values.neoload.configuration.backend.others "COOKIE_SECURE")) }}
+            - name: COOKIE_SECURE
+              value: {{ include "nlweb.helpers.tlsEnabled" . | quote }}
+            {{- end }}
           ports:
             - name: api
               containerPort: 1081

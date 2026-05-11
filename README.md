@@ -618,6 +618,25 @@ NeoLoad Web gathers and sends data related to the usage of specific features and
 
 ## Troubleshooting
 
+### Login redirect loop on plain HTTP deployments
+
+If users land back on `/login?return=/` immediately after submitting valid credentials on a plain HTTP deployment, the backend session cookie is being issued with the `Secure` attribute, which browsers refuse to send back over HTTP.
+
+Since chart `3.0.2`, `COOKIE_SECURE` is derived automatically from the chart's TLS detection (see [Session cookies](./doc/advanced-configuration.md#session-cookies-cookie_secure)):
+
+- `ingress.tls` set, or `neoload.configuration.externalTlsTermination: true` → `COOKIE_SECURE=true`
+- otherwise → `COOKIE_SECURE=false`
+
+If you are on `3.0.0` or `3.0.1`, either upgrade to `3.0.2`+ or override manually:
+
+```yaml
+neoload:
+  configuration:
+    backend:
+      others:
+        COOKIE_SECURE: "false" # only on HTTP-only deployments
+```
+
 ### SSO error: "Size exceed allowed maximum capacity"
 
 If, during SSO authentication, the browser shows the error "Size exceed allowed maximum capacity", it likely means the default maximum size for HTTP form attributes (32768 bytes) is too low for your IdP's payload.

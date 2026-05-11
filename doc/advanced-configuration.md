@@ -77,7 +77,7 @@ Parameter | Description | Default
 `neoload.configuration.backend.licensingPlatformTokenExistingSecret` | Name of an existing Secret containing the licensing platform token. Must have the key `licensingPlatformToken`. Takes precedence over `licensingPlatformToken`. | 
 `neoload.configuration.backend.livenessProbe.initDelaySeconds` | Backend Pods liveness probe initial delay in seconds | 60
 `neoload.configuration.backend.readinessProbe.initDelaySeconds` | Backend Pods readiness probe initial delay in seconds | 60
-`neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
+`neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) Notably, this is also the only way to override the auto-derived `COOKIE_SECURE` value (`COOKIE_SECURE: "true"` or `"false"`). |
 `neoload.configuration.backend.cors.additionalAllowedOriginPattern` | Additional CORS origin regex appended to base `scheme + ".*" + domain`. Example: `https://.*.okta.com` | 
 `neoload.configuration.backend.enableServiceLinks` | When set, sets the pod spec `enableServiceLinks` (e.g. `false` to avoid too many service env vars). See [Troubleshooting](../README.md#frontend-does-not-start--envsubst-argument-list-too-long). |
 | | 
@@ -156,6 +156,33 @@ Other examples:
 - Exact Okta tenant: `"https://my-tenant.okta.com"`
 - Keycloak single host: `"https://keycloak.example.com"`
 - Azure AD (example): `"https://login.microsoftonline.com"`
+
+## Session cookies (`COOKIE_SECURE`)
+
+The chart configures the backend's session cookie `Secure` attribute automatically based on the deployment's TLS state. The same signal that picks `http://` vs `https://` for the public URLs (`nlweb.helpers.getScheme`) is used to derive the `COOKIE_SECURE` env var injected into the backend Pod:
+
+| Deployment | `COOKIE_SECURE` |
+| --- | --- |
+| `ingress.enabled: true` and `ingress.tls` is set | `"true"` |
+| `neoload.configuration.externalTlsTermination: true` | `"true"` |
+| Plain HTTP (no `ingress.tls`, `externalTlsTermination` unset/false) | `"false"` |
+
+`Secure` cookies are required for HTTPS deployments and dropped by browsers on plain HTTP. Letting the chart derive this avoids the silent login redirect loop that occurs when a `Secure` cookie is issued over HTTP.
+
+### Overriding the default
+
+If you need to force a specific value (e.g. for an unusual reverse-proxy setup that performs TLS termination outside the chart's knowledge), set it explicitly under `neoload.configuration.backend.others`:
+
+```yaml
+neoload:
+  configuration:
+    backend:
+      others:
+        COOKIE_SECURE: "true"
+```
+
+> [!CAUTION]
+> Do not set `COOKIE_SECURE: "false"` on a TLS-enabled deployment.
 
 ## Side-car containers
 
