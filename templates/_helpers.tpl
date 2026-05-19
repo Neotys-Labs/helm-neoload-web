@@ -132,11 +132,26 @@ Helper - stringToStrings
 {{- end -}}
 
 {{/*
+Helper - tlsEnabled
+Returns the string "true" when the deployment is TLS-terminated, "false" otherwise.
+TLS is considered enabled when either:
+  - the chart-managed Ingress is enabled and `ingress.tls` is set, or
+  - `neoload.configuration.externalTlsTermination` is set to "true" (TLS handled in front of the Ingress controller).
+*/}}
+{{- define "nlweb.helpers.tlsEnabled" -}}
+    {{- if or (and .Values.ingress.enabled .Values.ingress.tls) (eq (.Values.neoload.configuration.externalTlsTermination | toString) "true") -}}
+        true
+    {{- else -}}
+        false
+    {{- end -}}
+{{- end -}}
+
+{{/*
 Helper - getScheme
 */}}
 {{- define "nlweb.helpers.getScheme" -}}
     http
-    {{- if or (and .Values.ingress.enabled .Values.ingress.tls) (eq (.Values.neoload.configuration.externalTlsTermination | toString) "true") -}}
+    {{- if eq (include "nlweb.helpers.tlsEnabled" .) "true" -}}
         s
     {{- end -}}
     ://

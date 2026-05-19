@@ -160,6 +160,10 @@ spec:
             - name: COOKIE_DOMAIN
               value: {{ (.Values.domain | required "NeoLoad Web domain (.Values.domain) value is required." ) | quote }}
             {{- end }}
+            {{- if or (not .Values.neoload.configuration.backend.others) (not (hasKey .Values.neoload.configuration.backend.others "COOKIE_SECURE")) }}
+            - name: COOKIE_SECURE
+              value: {{ include "nlweb.helpers.tlsEnabled" . | quote }}
+            {{- end }}
           ports:
             - name: api
               containerPort: 1081
