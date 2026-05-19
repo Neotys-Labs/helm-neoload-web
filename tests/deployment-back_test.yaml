@@ -81,7 +81,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: NEOLOAD_WEB_PUBLIC_URL_NEXT_GEN_KUB
-            value: "http://RELEASE-NAME-nlweb-svc-webapp.default.svc.cluster.local/internal"
+            value: "http://RELEASE-NAME-nlweb-svc-webapp.default.svc.cluster.local/public"
           any: true
       - contains:
           path: spec.template.spec.containers[0].env
