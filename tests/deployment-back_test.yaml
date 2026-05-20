@@ -40,7 +40,7 @@ tests:
     asserts:
       - lengthEqual:
           path: spec.template.spec.containers[0].env
-          count: 29
+          count: 30
       - contains:
           path: spec.template.spec.containers[0].env
           content:
@@ -76,6 +76,12 @@ tests:
           content:
             name: NEOLOAD_WEB_PUBLIC_URL_NEXT_GEN
             value: "http://myapp.example.com/public"
+          any: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: NEOLOAD_WEB_PUBLIC_URL_NEXT_GEN_KUB
+            value: "http://RELEASE-NAME-nlweb-svc-webapp.default.svc.cluster.local/public"
           any: true
       - contains:
           path: spec.template.spec.containers[0].env
@@ -171,7 +177,7 @@ tests:
           path: spec.template.spec.containers[0].env
           content:
             name: CORS_ALLOWED_ORIGIN_PATTERN
-            value: "http://.*.example.com"
+            value: "http://.*.example.com,http://RELEASE-NAME-nlweb-svc-webapp.default.svc.cluster.local"
           any: true
       - contains:
           path: spec.template.spec.containers[0].env
