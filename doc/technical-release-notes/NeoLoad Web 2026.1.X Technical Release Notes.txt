@@ -5,3 +5,10 @@ LOAD-35947 Use of hardened docker images
 
 Known issues:
 - [LOAD-36956] - StartDate in Report time series are not correct.
+
+NeoLoad Web 2026.1.1 Technical Release Notes
+
+[LOAD-36956] - Fixed the start date and duration on time series tiles in reports and comparison dashboards. The dates in tile summaries now match the absolute times shown in chart tooltips.
+[LOAD-36989] - Fixed the zones settings drawer. A scrollbar now appears when a zone lists many Load Generators. You can view the full list without zooming out the browser.
+[LOAD-37338] - Fixed legend truncation in dashboard PDF exports. Series tiles with many curves now show all curve labels.
+[LOAD-37429] - Fixed an error that prevented PDF export of comparison dashboards. All exports now complete successfully.
