@@ -308,3 +308,53 @@ tests:
             name: COOKIE_SECURE
             value: "true"
           any: true
+
+  - it: should generate short service names when useFqdn is false
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
+      neoload.configuration.backend.useFqdn: false
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: NEOLOAD_WEB_PUBLIC_URL_NEXT_GEN_KUB
+            value: "http://RELEASE-NAME-nlweb-svc-webapp.default/public"
+          any: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERNAL_FILE_STORAGE_ROUTER_BASE_URL
+            value: "http://RELEASE-NAME-nlweb-svc-files.default"
+          any: true
+
+  - it: should generate FQDN service names when useFqdn is true
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
+      neoload.configuration.backend.useFqdn: true
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: NEOLOAD_WEB_PUBLIC_URL_NEXT_GEN_KUB
+            value: "http://RELEASE-NAME-nlweb-svc-webapp.default.svc.cluster.local/public"
+          any: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: INTERNAL_FILE_STORAGE_ROUTER_BASE_URL
+            value: "http://RELEASE-NAME-nlweb-svc-files.default.svc.cluster.local"
+          any: true
