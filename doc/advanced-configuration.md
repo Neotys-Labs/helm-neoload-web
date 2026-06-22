@@ -77,6 +77,7 @@ Parameter | Description | Default
 `neoload.configuration.backend.licensingPlatformTokenExistingSecret` | Name of an existing Secret containing the licensing platform token. Must have the key `licensingPlatformToken`. Takes precedence over `licensingPlatformToken`. | 
 `neoload.configuration.backend.livenessProbe.initDelaySeconds` | Backend Pods liveness probe initial delay in seconds | 60
 `neoload.configuration.backend.readinessProbe.initDelaySeconds` | Backend Pods readiness probe initial delay in seconds | 60
+`neoload.configuration.backend.useFqdn` | Set to `false` to use short service names instead of FQDNs to avoid upstream DNS resolution issues in restricted environments | `true`
 `neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
 `neoload.configuration.backend.cors.additionalAllowedOriginPattern` | Additional CORS origin regex appended to base `scheme + ".*" + domain`. Example: `https://.*.okta.com` | 
 `neoload.configuration.backend.enableServiceLinks` | When set, sets the pod spec `enableServiceLinks` (e.g. `false` to avoid too many service env vars). See [Troubleshooting](../README.md#frontend-does-not-start--envsubst-argument-list-too-long). |

@@ -101,6 +101,10 @@ neoload:
     backendUtilities: {}
   configuration:
     backend:
+      # Set to false to use short service names (e.g. svc-name.namespace)
+      # instead of FQDN (e.g. svc-name.namespace.svc.cluster.local)
+      # to avoid upstream DNS resolution issues in some environments.
+      useFqdn: true
       mongo:
         host: 
         port: 27017
