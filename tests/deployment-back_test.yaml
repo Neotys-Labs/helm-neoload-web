@@ -333,6 +333,12 @@ tests:
             name: INTERNAL_FILE_STORAGE_ROUTER_BASE_URL
             value: "http://RELEASE-NAME-nlweb-svc-files.default"
           any: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CORS_ALLOWED_ORIGIN_PATTERN
+            value: "http://.*.example.com,http://RELEASE-NAME-nlweb-svc-webapp.default"
+          any: true
 
   - it: should generate FQDN service names when useFqdn is true
     release:
@@ -357,4 +363,10 @@ tests:
           content:
             name: INTERNAL_FILE_STORAGE_ROUTER_BASE_URL
             value: "http://RELEASE-NAME-nlweb-svc-files.default.svc.cluster.local"
+          any: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: CORS_ALLOWED_ORIGIN_PATTERN
+            value: "http://.*.example.com,http://RELEASE-NAME-nlweb-svc-webapp.default.svc.cluster.local"
           any: true
