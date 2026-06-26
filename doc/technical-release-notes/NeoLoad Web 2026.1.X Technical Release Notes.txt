@@ -12,3 +12,7 @@ NeoLoad Web 2026.1.1 Technical Release Notes
 [LOAD-36989] - Fixed the zones settings drawer. A scrollbar now appears when a zone lists many Load Generators. You can view the full list without zooming out the browser.
 [LOAD-37338] - Fixed legend truncation in dashboard PDF exports. Series tiles with many curves now show all curve labels.
 [LOAD-37429] - Fixed an error that prevented PDF export of comparison dashboards. All exports now complete successfully.
+
+NeoLoad Web 2026.1.2 Technical Release Notes
+
+[LOAD-38254] - Bundle Inter font locally to support restricted network environments
