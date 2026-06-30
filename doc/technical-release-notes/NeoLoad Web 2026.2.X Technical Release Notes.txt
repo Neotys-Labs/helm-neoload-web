@@ -1,0 +1,24 @@
+NeoLoad Web 2026.2.0 Technical Release Notes
+
+Results analysis enhancements
+NeoLoad Web now makes it easier to create, expand, and find your dashboards. Here?s what we improved:
+Select up to 4 test results in the Results section to quickly create a comparison dashboard.
+When you drag test result data onto a tile, NeoLoad Web now recognizes the data type and only lets you drop it onto tiles with a matching type.
+Filter results by interval, zone, population, or user path when you create a new tile or add results to an existing tile.
+Plot scatter duration for your test results. Use it to see how a transaction?s duration relates to time and load, and to spot outliers that an averaged line hides.
+Open the new Dashboards tab in the test result page to see every dashboard that includes it.
+The analysis now includes two new metrics:
+Elements count is now available in Dashboards. It shows how many times elements trigger during a test run with its successes and failures.
+Standard deviation is now available in Dashboards and Results > Values. Use it to check how much response times of Transactions vary from the average.
+Edit running virtual users in real time
+NeoLoad Web now lets you add or stop virtual users in a population while a test runs, without stopping the test. Use the Running VUs tab in Results to change the load in real time.
+Run JMeter tests from the new interface
+NeoLoad Web now lets you run JMeter tests directly from the new interface, so you get NeoLoad?s real-time reporting and analysis for your existing JMeter scripts.
+
+Resolved issues
+
+LOAD-36304 - Resolved an issue where dashboard PDF export didn?t use internal routes on on-premises deployments.
+LOAD-37429 - Resolved an issue where exporting a comparison dashboard to PDF failed.
+LOAD-37500 - Resolved an issue where negative and positive values didn?t appear in the exported PDF dashboard.
+LOAD-35195 - Resolved an issue where the backend behaved abnormally when the licensing platform proxy setting was flooded.
+LOAD-38254 - Resolved an issue where the Inter font didn?t load in restricted-network environments.
