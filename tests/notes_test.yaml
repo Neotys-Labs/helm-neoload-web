@@ -1,8 +1,8 @@
-suite: test ingress mcp server
+suite: test notes
 templates:
-  - ingress-mcp-server.yaml
+  - NOTES.txt
 tests:
-  - it: should render dedicated MCP ingress on the API host
+  - it: should list MCP URL when MCP is enabled
     release:
       namespace: default
     set:
@@ -14,35 +14,24 @@ tests:
       ingress.enabled: true
       neoload.configuration.backend.mongo.host: mymongo.example.com
     asserts:
-      - isKind:
-          of: Ingress
-      - equal:
-          path: metadata.name
-          value: RELEASE-NAME-nlweb-ingress-mcp-server
-      - equal:
-          path: spec.rules[0].host
-          value: myapi.example.com
-      - equal:
-          path: spec.rules[0].http.paths[0].path
-          value: /mcp-server
-      - equal:
-          path: spec.rules[0].http.paths[0].backend.service.name
-          value: RELEASE-NAME-nlweb-svc-mcp-server
-  - it: should not render MCP ingress when replicaCount is zero
+      - matchRegexRaw:
+          pattern: myapi\.example\.com/mcp-server
+  - it: should not list MCP URL when replicaCount is zero
     release:
       namespace: default
     set:
       services.webapp.host: myapp.example.com
       services.api.host: myapi.example.com
+      services.api-v4.host: myapi.example.com
       services.files.host: myfiles.example.com
       domain: .example.com
       ingress.enabled: true
       neoload.configuration.backend.mongo.host: mymongo.example.com
       replicaCount.mcpServer: 0
     asserts:
-      - hasDocuments:
-          count: 0
-  - it: should not render MCP ingress when service ingress is null
+      - notMatchRegexRaw:
+          pattern: mcp-server
+  - it: should not list MCP URL when service ingress is null
     release:
       namespace: default
     set:
@@ -55,5 +44,5 @@ tests:
       neoload.configuration.backend.mongo.host: mymongo.example.com
       services.mcp-server.ingress: null
     asserts:
-      - hasDocuments:
-          count: 0
+      - notMatchRegexRaw:
+          pattern: mcp-server

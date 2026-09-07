@@ -43,7 +43,7 @@ Parameter | Description | Default
 `services.mcp-server.host` | The hostname for MCP Server ingress. If unset, falls back to `services.api-v4.host` (or `services.api.host`). |
 `services.mcp-server.type` | The service type for the MCP Server deployment | `ClusterIP`
 `services.mcp-server.port` | The service port for the MCP Server deployment | `80`
-`services.mcp-server.ingress.paths` | The path mapping for the MCP Server ingress. | `["/mcp-server"]`
+`services.mcp-server.ingress.paths` | The path mapping for the MCP Server ingress. If `services.mcp-server.ingress` is `null`, the dedicated MCP Ingress is not created. | `["/mcp-server"]`
 `services.files.host` | The hostname for the files deployment | 
 `services.files.type` | The service type for the files deployment | `ClusterIP`
 `services.files.port` | The service port for the files deployment | `80`

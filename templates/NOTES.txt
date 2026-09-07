@@ -1,7 +1,7 @@
 {{- if .Values.ingress.enabled }}
 1. Access the application with the following URL:
  {{ range $label, $service := .Values.services }}
-   {{- if $service.ingress }}
+   {{- if and $service.ingress (or (ne $label "mcp-server") (gt (int $.Values.replicaCount.mcpServer) 0)) }}
     {{- $path := "/" -}}
     {{- if $service.ingress.paths -}}
       {{- $path = (index $service.ingress.paths 0 | default "/") -}}
