@@ -30,10 +30,6 @@ ingress:
 
 See `values-custom-openshift.yaml`. If your ingress controller cannot scope timeouts per Ingress, document the trade-off for your environment (for example a global API-host timeout).
 
-### Environment variables
-
-The MCP pod receives in-cluster ClusterIP URLs for `API_URL` and `FILES_API_URL`, and the public webapp URL for `FRONTEND_URL`. The chart does **not** set `TRACKING_URL`, `MCP_USAGE_TRACKING_KEY`, or runtime `APPLICATION_DISTRIBUTION`.
-
 ### Resource planning
 
 Default MCP resources (`resources.mcpServer`): **10m CPU, 125Mi RAM** per pod. Add one pod to your capacity planning when MCP is enabled.
