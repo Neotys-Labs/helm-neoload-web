@@ -98,6 +98,14 @@ app.kubernetes.io/component: backend-utilities
 {{- end -}}
 
 {{/*
+MCP Server Selector labels
+*/}}
+{{- define "nlweb.mcpServer.selectorLabels" -}}
+{{ include "nlweb.selectorLabels" . }}
+app.kubernetes.io/component: mcp-server
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "nlweb.serviceAccountName" -}}
@@ -205,6 +213,13 @@ Backend utilities image tag
 {{- end -}}
 
 {{/*
+MCP Server image tag
+*/}}
+{{- define "nlweb.mcpServer.imageTag" -}}
+    {{ default .Chart.AppVersion .Values.image.mcpServer.tag }}
+{{- end -}}
+
+{{/*
 High Availability (HA) Mode
 */}}
 {{- define "nlweb.ha.mode" -}}
@@ -271,6 +286,46 @@ Define files host, default to .Values.services.files.host but can be overrided b
         {{- .Values.extra.hosts.files -}}
     {{- else -}}
         {{- .Values.services.files.host -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*
+Define mcp-server host with fallback logic:
+- Prefer .Values.extra.hosts["mcp-server"] when provided
+- Else use .Values.services["mcp-server"].host when set
+- Else fallback to the API v4 host
+*/}}
+{{- define "nlweb.mcp-server.host" -}}
+    {{- $extra := .Values.extra -}}
+    {{- $services := .Values.services -}}
+    {{- if and $extra $extra.hosts (hasKey $extra.hosts "mcp-server") -}}
+        {{- index $extra.hosts "mcp-server" -}}
+    {{- else if and $services (hasKey $services "mcp-server") (index $services "mcp-server").host -}}
+        {{- (index $services "mcp-server").host -}}
+    {{- else -}}
+        {{- include "nlweb.api-v4.host" . -}}
+    {{- end -}}
+{{- end -}}
+
+{{/*
+In-cluster API v4 base URL for MCP Server
+*/}}
+{{- define "nlweb.mcp-server.internalApiV4Url" -}}
+    {{- if .Values.neoload.configuration.backend.useFqdn -}}
+http://{{ include "nlweb.fullname" . }}-svc-api-v4.{{ .Release.Namespace }}.svc.cluster.local
+    {{- else -}}
+http://{{ include "nlweb.fullname" . }}-svc-api-v4.{{ .Release.Namespace }}
+    {{- end -}}
+{{- end -}}
+
+{{/*
+In-cluster Files API base URL for MCP Server
+*/}}
+{{- define "nlweb.mcp-server.internalFilesUrl" -}}
+    {{- if .Values.neoload.configuration.backend.useFqdn -}}
+http://{{ include "nlweb.fullname" . }}-svc-files.{{ .Release.Namespace }}.svc.cluster.local
+    {{- else -}}
+http://{{ include "nlweb.fullname" . }}-svc-files.{{ .Release.Namespace }}
     {{- end -}}
 {{- end -}}
 

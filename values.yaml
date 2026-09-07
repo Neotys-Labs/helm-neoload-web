@@ -6,6 +6,7 @@ replicaCount:
   frontend: 2
   backend: 2
   backendUtilities: 1
+  mcpServer: 1
 
 image:
   backend:
@@ -16,6 +17,9 @@ image:
     pullPolicy: IfNotPresent
   backendUtilities:
     repository: neotys/neoload-web-backend-utilities
+    pullPolicy: IfNotPresent
+  mcpServer:
+    repository: neotys/nlweb-mcp-server-onprem
     pullPolicy: IfNotPresent
 
 imagePullSecrets: []
@@ -61,6 +65,14 @@ services:
     ingress:
       paths:
         - /v4
+  mcp-server:
+    component: mcp-server
+    host:
+    type: ClusterIP
+    port: 80
+    ingress:
+      paths:
+        - /mcp-server
   files:
     host: 
     type: ClusterIP
@@ -88,6 +100,12 @@ resources:
       memory: 2Gi
     limits:
       memory: 2Gi
+  mcpServer:
+    requests:
+      cpu: 10m
+      memory: 125Mi
+    limits:
+      memory: 125Mi
 
 # NLWeb configuration
 neoload:
@@ -95,10 +113,12 @@ neoload:
     backend: {}
     frontend: {}
     backendUtilities: {}
+    mcpServer: {}
   annotations:
     backend: {}
     frontend: {}
     backendUtilities: {}
+    mcpServer: {}
   configuration:
     backend:
       # Set to false to use short service names (e.g. svc-name.namespace)
@@ -139,6 +159,15 @@ neoload:
         initDelaySeconds: 20
       java:
         xmx: 300m
+    mcpServer:
+      livenessProbe:
+        initDelaySeconds: 5
+      readinessProbe:
+        initDelaySeconds: 5
+      startupProbe:
+        failureThreshold: 30
+        initialDelaySeconds: 5
+        periodSeconds: 5
     ha:
       mode: "API"
     ## Secret key that will be stored in chart-managed Secret

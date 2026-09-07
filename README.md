@@ -38,21 +38,23 @@ This chart is meant for experienced Kubernetes/Helm users as a successful instal
 
 ### Hardware
 
-NeoLoad Web will require your cluster to run a minimum of 3 pods, hosting the frontend, backend, and backend-utilities separately.
+NeoLoad Web will require your cluster to run a minimum of 4 pods when MCP Server is enabled (default): frontend, backend, backend-utilities, and MCP Server.
 Here is a table to help you estimate the resource requirements of your nodes based on the default `resources.*` values.
 
 Deployment | Content | Requirements
 ----- | ----------- | -----
-Minimal | 1 Frontend Pod, 1 Backend Pod, 1 Backend-Utilities Pod | **1.55 CPU, 5.1Gi RAM**
-Recommended | 2 Frontend Pods, 2 Backend Pods, 1 Backend-Utilities Pod | **2.6 CPU, 8.2Gi RAM**
+Minimal | 1 Frontend Pod, 1 Backend Pod, 1 Backend-Utilities Pod, 1 MCP Server Pod | **1.56 CPU, 5.22Gi RAM**
+Recommended | 2 Frontend Pods, 2 Backend Pods, 1 Backend-Utilities Pod, 1 MCP Server Pod | **2.61 CPU, 8.32Gi RAM**
 
 For custom deployments, multiply each pod count by its default resource requirements and sum the totals [(see Advanced Configuration)](#advanced-configuration):
 - **Frontend**: 50m CPU, 0.1Gi RAM
 - **Backend**: 1 CPU, 3Gi RAM
 - **Backend-Utilities**: 0.5 CPU, 2Gi RAM
+- **MCP Server**: 10m CPU, 0.125Gi RAM
 
 > [!NOTE]
-> If you modify the default resource values via `resources.frontend.*`, `resources.backend.*`, or `resources.backendUtilities.*`, you must recompute the total resources required accordingly.
+> If you modify the default resource values via `resources.frontend.*`, `resources.backend.*`, `resources.backendUtilities.*`, or `resources.mcpServer.*`, you must recompute the total resources required accordingly.
+> Set `replicaCount.mcpServer: 0` to disable MCP Server and exclude it from resource totals.
 
 ### Software
 

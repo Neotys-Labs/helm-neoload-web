@@ -1,0 +1,93 @@
+suite: test deployment mcp server
+templates:
+  - deployment-mcp-server.yaml
+tests:
+  - it: should render MCP Server deployment with default replica count
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.api-v4.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
+    asserts:
+      - isKind:
+          of: Deployment
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-nlweb-mcp-server
+      - equal:
+          path: spec.replicas
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: neotys/nlweb-mcp-server-onprem:2026.2.0
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: API_URL
+            value: http://RELEASE-NAME-nlweb-svc-api-v4.default.svc.cluster.local
+          any: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: FILES_API_URL
+            value: http://RELEASE-NAME-nlweb-svc-files.default.svc.cluster.local
+          any: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: FRONTEND_URL
+            value: http://myapp.example.com
+          any: true
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: TRACKING_URL
+          any: true
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: MCP_USAGE_TRACKING_KEY
+          any: true
+      - notContains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: APPLICATION_DISTRIBUTION
+          any: true
+  - it: should use short service names when useFqdn is false
+    release:
+      namespace: nlweb
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.api-v4.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
+      neoload.configuration.backend.useFqdn: false
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: API_URL
+            value: http://RELEASE-NAME-nlweb-svc-api-v4.nlweb
+          any: true
+  - it: should not render MCP Server deployment when replicaCount is zero
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
+      replicaCount.mcpServer: 0
+    asserts:
+      - hasDocuments:
+          count: 0

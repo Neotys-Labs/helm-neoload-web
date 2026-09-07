@@ -1,0 +1,62 @@
+{{- if and .Values.ingress.enabled (gt (int .Values.replicaCount.mcpServer) 0) -}}
+{{- $fullName := include "nlweb.fullname" . -}}
+{{- $mcpService := index .Values.services "mcp-server" -}}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  name: {{ $fullName }}-ingress-mcp-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nlweb.labels" . | nindent 4 }}
+  annotations:
+    {{- range $label, $annotation := (.Values.ingress.annotations | default dict) }}
+    {{ $label }}: {{ $annotation | quote }}
+    {{- end }}
+    {{- range $label, $annotation := ((.Values.ingress.mcpServer).annotations | default dict) }}
+    {{ $label }}: {{ $annotation | quote }}
+    {{- end }}
+spec:
+{{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+{{- end -}}
+{{- if .Values.ingress.tls }}
+  tls:
+  {{- range .Values.ingress.tls }}
+    - secretName: {{ .secretName }}
+      hosts:
+      {{- if .hosts }}
+      {{- range .hosts }}
+        - {{ . | quote }}
+      {{- end }}
+      {{- else }}
+        - {{ include "nlweb.mcp-server.host" $ | required "The mcp-server service host is required. (--set services.mcp-server.host=YOUR_HOST or services.api-v4.host=YOUR_HOST)" | quote }}
+      {{- end }}
+  {{- end }}
+{{- end }}
+  rules:
+    - host: {{ include "nlweb.mcp-server.host" . | required "The mcp-server service host is required. (--set services.mcp-server.host=YOUR_HOST or services.api-v4.host=YOUR_HOST)" | quote }}
+      http:
+        paths:
+        {{- range $path := ($mcpService.ingress.paths | default (list "/mcp-server")) }}
+        {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.Version }}
+          - path: {{ $path }}
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $fullName }}-svc-mcp-server
+                port:
+                  number: {{ $mcpService.port }}
+        {{- else }}
+          - path: {{ $path }}
+            backend:
+              serviceName: {{ $fullName }}-svc-mcp-server
+              servicePort: {{ $mcpService.port }}
+        {{- end }}
+        {{- end }}
+{{- end }}
