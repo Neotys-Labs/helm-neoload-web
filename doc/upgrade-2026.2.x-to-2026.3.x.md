@@ -13,7 +13,7 @@ From chart **2026.3** onward, the chart ships an optional MCP Server Deployment 
 - Default replica count: `replicaCount.mcpServer: 1`
 - Disable MCP (remove pod, Service, and dedicated Ingress): `replicaCount.mcpServer: 0`
 - Client URL: `https://<api-host>/mcp-server/mcp` (and `/mcp-server/mcp-v2`)
-- Default image: `neotys/nlweb-mcp-server-onprem` (On-premise build; override `image.mcpServer.repository` / `tag` for your registry)
+- Default image: `neotys/neoload-web-mcp` (On-premise build; override `image.mcpServer.repository` / `tag` for your registry)
 
 ### Ingress timeout
 

@@ -19,7 +19,7 @@ image:
     repository: neotys/neoload-web-backend-utilities
     pullPolicy: IfNotPresent
   mcpServer:
-    repository: neotys/nlweb-mcp-server-onprem
+    repository: neotys/neoload-web-mcp
     pullPolicy: IfNotPresent
 
 imagePullSecrets: []

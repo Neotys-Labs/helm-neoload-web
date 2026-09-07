@@ -15,7 +15,7 @@ Parameter | Description | Default
 `image.backendUtilities.repository` | The backend-utilities image repository to pull from | `neotys/neoload-web-backend-utilities`
 `image.backendUtilities.pullPolicy` | The backend-utilities image pull policy | `IfNotPresent`
 `image.backendUtilities.tag` | The backend-utilities image tag | See appVersion in [Chart.yaml](./Chart.yaml)
-`image.mcpServer.repository` | The MCP Server image repository to pull from | `neotys/nlweb-mcp-server-onprem`
+`image.mcpServer.repository` | The MCP Server image repository to pull from | `neotys/neoload-web-mcp`
 `image.mcpServer.pullPolicy` | The MCP Server image pull policy | `IfNotPresent`
 `image.mcpServer.tag` | The MCP Server image tag | See appVersion in [Chart.yaml](./Chart.yaml)
 `imagePullSecrets` | The image pull secrets | `[]`
