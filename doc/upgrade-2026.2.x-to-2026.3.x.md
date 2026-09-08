@@ -33,4 +33,4 @@ See `values-custom-openshift.yaml`. If your ingress controller cannot scope time
 
 ### Resource planning
 
-Default MCP resources (`resources.mcpServer`): **10m CPU, 125Mi RAM** per pod. Add one pod to your capacity planning when MCP is enabled.
+Default MCP resources (`resources.mcpServer`): **10m CPU, 256Mi RAM** per pod. Add one pod to your capacity planning when MCP is enabled.

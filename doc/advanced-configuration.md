@@ -68,8 +68,8 @@ Parameter | Description | Default
 `resources.backendUtilities.requests.memory` | Memory resource request for the backend-utilities | `500Mi`
 `resources.backendUtilities.limits.memory` | Memory resource limit for the backend-utilities | `1Gi`
 `resources.mcpServer.requests.cpu` | CPU resource request for the MCP Server | `10m`
-`resources.mcpServer.requests.memory` | Memory resource request for the MCP Server | `125Mi`
-`resources.mcpServer.limits.memory` | Memory resource limit for the MCP Server | `125Mi`
+`resources.mcpServer.requests.memory` | Memory resource request for the MCP Server | `256Mi`
+`resources.mcpServer.limits.memory` | Memory resource limit for the MCP Server | `256Mi`
  |  | 
 `neoload.configuration.externalTlsTermination` | Must be set to `true` if TLS termination is handled by a component [outside of the Helm Chart management](#external-tls-termination).  | `false`
 `neoload.configuration.sendUsageStatistics` | Can be set to `false` to avoid usage data collection | `true`

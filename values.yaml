@@ -103,9 +103,9 @@ resources:
   mcpServer:
     requests:
       cpu: 10m
-      memory: 125Mi
+      memory: 256Mi
     limits:
-      memory: 125Mi
+      memory: 256Mi
 
 # NLWeb configuration
 neoload:

@@ -43,14 +43,14 @@ Here is a table to help you estimate the resource requirements of your nodes bas
 
 Deployment | Content | Requirements
 ----- | ----------- | -----
-Minimal | 1 Frontend Pod, 1 Backend Pod, 1 Backend-Utilities Pod, 1 MCP Server Pod | **1.56 CPU, 5.22Gi RAM**
-Recommended | 2 Frontend Pods, 2 Backend Pods, 1 Backend-Utilities Pod, 1 MCP Server Pod | **2.61 CPU, 8.32Gi RAM**
+Minimal | 1 Frontend Pod, 1 Backend Pod, 1 Backend-Utilities Pod, 1 MCP Server Pod | **1.56 CPU, 5.35Gi RAM**
+Recommended | 2 Frontend Pods, 2 Backend Pods, 1 Backend-Utilities Pod, 1 MCP Server Pod | **2.61 CPU, 8.45Gi RAM**
 
 For custom deployments, multiply each pod count by its default resource requirements and sum the totals [(see Advanced Configuration)](#advanced-configuration):
 - **Frontend**: 50m CPU, 0.1Gi RAM
 - **Backend**: 1 CPU, 3Gi RAM
 - **Backend-Utilities**: 0.5 CPU, 2Gi RAM
-- **MCP Server**: 10m CPU, 0.125Gi RAM
+- **MCP Server**: 10m CPU, 0.25Gi RAM
 
 > [!NOTE]
 > If you modify the default resource values via `resources.frontend.*`, `resources.backend.*`, `resources.backendUtilities.*`, or `resources.mcpServer.*`, you must recompute the total resources required accordingly.
