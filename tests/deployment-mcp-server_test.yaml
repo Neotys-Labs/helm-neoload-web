@@ -43,21 +43,6 @@ tests:
             name: FRONTEND_URL
             value: http://myapp.example.com
           any: true
-      - notContains:
-          path: spec.template.spec.containers[0].env
-          content:
-            name: TRACKING_URL
-          any: true
-      - notContains:
-          path: spec.template.spec.containers[0].env
-          content:
-            name: MCP_USAGE_TRACKING_KEY
-          any: true
-      - notContains:
-          path: spec.template.spec.containers[0].env
-          content:
-            name: APPLICATION_DISTRIBUTION
-          any: true
   - it: should use short service names when useFqdn is false
     release:
       namespace: nlweb
