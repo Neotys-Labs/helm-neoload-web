@@ -42,6 +42,9 @@ ingress:
   # Replace these annotations accordingly if you are not using the openshift ingress controller
   annotations:
     route.openshift.io/termination: "edge"
+  mcpServer:
+    annotations:
+      haproxy.router.openshift.io/timeout: "2000s"
 
   ### TLS configuration
   ### Uncomment if you want to secure your app with https

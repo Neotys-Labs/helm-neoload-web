@@ -1,5 +1,6 @@
 {{- if .Values.services -}}
 {{- range $label, $service := .Values.services }}
+{{- if or (ne $label "mcp-server") (gt (int $.Values.replicaCount.mcpServer) 0) }}
 
 {{ $serviceName := printf "%s-%s-%s" (include "nlweb.fullname" $) "svc" $label }}
 
@@ -22,6 +23,8 @@ spec:
     {{- include "nlweb.frontend.selectorLabels" $ | nindent 4 }}
     {{- else if or (eq $label "files") (eq $label "api") (eq $label "api-v4") }}
     {{- include "nlweb.backend.selectorLabels" $ | nindent 4 }}
+    {{- else if eq $label "mcp-server" }}
+    {{- include "nlweb.mcpServer.selectorLabels" $ | nindent 4 }}
     {{- else }}
       {{- if eq $service.component "backend" }}
       {{- include "nlweb.backend.selectorLabels" $ | nindent 4 }}
@@ -34,5 +37,6 @@ spec:
 
 ---
 
+{{- end -}}
 {{- end -}}
 {{- end -}}

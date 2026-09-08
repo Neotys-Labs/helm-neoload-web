@@ -1,0 +1,124 @@
+{{- if gt (int .Values.replicaCount.mcpServer) 0 }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nlweb.fullname" . }}-mcp-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nlweb.labels" . | nindent 4 }}
+    {{- range $key, $value := .Values.neoload.labels.mcpServer }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  annotations:
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.mcpServer }}
+    {{- toYaml .Values.neoload.annotations.mcpServer | nindent 4 }}
+    {{- end }}
+    {{- if and .Values.neoload.annotations .Values.neoload.annotations.deployment .Values.neoload.annotations.deployment.mcpServer }}
+    {{- toYaml .Values.neoload.annotations.deployment.mcpServer | nindent 4 }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount.mcpServer }}
+  selector:
+    matchLabels:
+      {{- include "nlweb.mcpServer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "nlweb.mcpServer.selectorLabels" . | nindent 8 }}
+        {{- range $key, $value := .Values.neoload.labels.mcpServer }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      annotations:
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.mcpServer }}
+        {{- toYaml .Values.neoload.annotations.mcpServer | nindent 8 }}
+        {{- end }}
+        {{- if and .Values.neoload.annotations .Values.neoload.annotations.pod .Values.neoload.annotations.pod.mcpServer }}
+        {{- toYaml .Values.neoload.annotations.pod.mcpServer | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "nlweb.serviceAccountName" . }}
+      {{- if hasKey .Values.neoload.configuration.mcpServer "enableServiceLinks" }}
+      enableServiceLinks: {{ .Values.neoload.configuration.mcpServer.enableServiceLinks }}
+      {{- end }}
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}-mcp-server
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.mcpServer.repository }}:{{ include "nlweb.mcpServer.imageTag" . }}"
+          imagePullPolicy: {{ .Values.image.mcpServer.pullPolicy }}
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: PORT
+              value: "3000"
+            - name: API_URL
+              value: {{ include "nlweb.mcp-server.internalApiV4Url" . | quote }}
+            - name: FILES_API_URL
+              value: {{ include "nlweb.mcp-server.internalFilesUrl" . | quote }}
+            - name: FRONTEND_URL
+              value: {{ printf "%s%s" (include "nlweb.helpers.getScheme" .) (include "nlweb.webapp.host" .) | required "NeoLoad Web Public URL (.Values.services.webapp.host) value is required." | quote }}
+            {{- if .Values.neoload.configuration.mcpServer.others }}
+            {{- range $name, $value := .Values.neoload.configuration.mcpServer.others }}
+            - name: {{ $name }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
+          ports:
+            - name: mcp-server
+              containerPort: 3000
+              protocol: TCP
+          startupProbe:
+            failureThreshold: {{ .Values.neoload.configuration.mcpServer.startupProbe.failureThreshold }}
+            initialDelaySeconds: {{ .Values.neoload.configuration.mcpServer.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.neoload.configuration.mcpServer.startupProbe.periodSeconds }}
+            successThreshold: 1
+            httpGet:
+              path: /mcp-server/health
+              port: mcp-server
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 2
+            initialDelaySeconds: {{ .Values.neoload.configuration.mcpServer.livenessProbe.initDelaySeconds }}
+            periodSeconds: 5
+            successThreshold: 1
+            httpGet:
+              path: /mcp-server/health
+              port: mcp-server
+            timeoutSeconds: 1
+          readinessProbe:
+            failureThreshold: 2
+            initialDelaySeconds: {{ .Values.neoload.configuration.mcpServer.readinessProbe.initDelaySeconds }}
+            periodSeconds: 5
+            successThreshold: 1
+            httpGet:
+              path: /mcp-server/health
+              port: mcp-server
+            timeoutSeconds: 1
+          resources:
+            {{- toYaml .Values.resources.mcpServer | nindent 12 }}
+        {{- if ((.Values.extra).containers).mcpServer }}
+        {{- toYaml .Values.extra.containers.mcpServer | nindent 8 }}
+        {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with ((.Values.extra).volumes).mcpServer }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+{{- end }}

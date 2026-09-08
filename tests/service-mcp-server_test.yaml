@@ -1,0 +1,23 @@
+suite: test service mcp server
+templates:
+  - service.yaml
+tests:
+  - it: should render MCP service with mcp-server selector
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
+    documentSelector:
+      path: metadata.name
+      value: RELEASE-NAME-nlweb-svc-mcp-server
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.ports[0].targetPort
+          value: mcp-server

@@ -15,6 +15,9 @@ Parameter | Description | Default
 `image.backendUtilities.repository` | The backend-utilities image repository to pull from | `neotys/neoload-web-backend-utilities`
 `image.backendUtilities.pullPolicy` | The backend-utilities image pull policy | `IfNotPresent`
 `image.backendUtilities.tag` | The backend-utilities image tag | See appVersion in [Chart.yaml](./Chart.yaml)
+`image.mcpServer.repository` | The MCP Server image repository to pull from | `neotys/neoload-web-mcp`
+`image.mcpServer.pullPolicy` | The MCP Server image pull policy | `IfNotPresent`
+`image.mcpServer.tag` | The MCP Server image tag | See appVersion in [Chart.yaml](./Chart.yaml)
 `imagePullSecrets` | The image pull secrets | `[]`
  |  | 
 `serviceAccount.create` | Specifies whether a service account should be created | `true`
@@ -37,6 +40,10 @@ Parameter | Description | Default
 `services.api-v4.type` | The service type for the API v4 service | `ClusterIP`
 `services.api-v4.port` | The service port for the API v4 service | `80`
 `services.api-v4.ingress.paths` | The path mapping for the API v4 ingress. | `["/v4"]`
+`services.mcp-server.host` | The hostname for MCP Server ingress. If unset, falls back to `services.api-v4.host` (or `services.api.host`). |
+`services.mcp-server.type` | The service type for the MCP Server deployment | `ClusterIP`
+`services.mcp-server.port` | The service port for the MCP Server deployment | `80`
+`services.mcp-server.ingress.paths` | The path mapping for the MCP Server ingress. If `services.mcp-server.ingress` is `null`, the dedicated MCP Ingress is not created. | `["/mcp-server"]`
 `services.files.host` | The hostname for the files deployment | 
 `services.files.type` | The service type for the files deployment | `ClusterIP`
 `services.files.port` | The service port for the files deployment | `80`
@@ -45,6 +52,7 @@ Parameter | Description | Default
 `ingress.enabled` | Enable ingresses | `true`
 `ingress.class` | Specifies which ingress controller class should listen to this ingress | `traefik`
 `ingress.annotations` | Annotations for configuring the ingress | 
+`ingress.mcpServer.annotations` | Additional annotations for the dedicated MCP Server ingress (for example OpenShift long timeout on `/mcp-server` only) | `{}`
 `ingress.tls[0].secretName` | The name of your TLS secret | 
 `ingress.tls[0].secretCertificate` | The content of your imported certificate | `{}`
 `ingress.tls[0].secretKey` | The content of your imported private key | 
@@ -59,6 +67,9 @@ Parameter | Description | Default
 `resources.backendUtilities.requests.cpu` | CPU resource request for the backend-utilities | `100m`
 `resources.backendUtilities.requests.memory` | Memory resource request for the backend-utilities | `500Mi`
 `resources.backendUtilities.limits.memory` | Memory resource limit for the backend-utilities | `1Gi`
+`resources.mcpServer.requests.cpu` | CPU resource request for the MCP Server | `10m`
+`resources.mcpServer.requests.memory` | Memory resource request for the MCP Server | `256Mi`
+`resources.mcpServer.limits.memory` | Memory resource limit for the MCP Server | `256Mi`
  |  | 
 `neoload.configuration.externalTlsTermination` | Must be set to `true` if TLS termination is handled by a component [outside of the Helm Chart management](#external-tls-termination).  | `false`
 `neoload.configuration.sendUsageStatistics` | Can be set to `false` to avoid usage data collection | `true`
@@ -117,6 +128,7 @@ Parameter | Description | Default
 `replicaCount.frontend` | Number of frontend pods in your Deployment. [Learn more.](#high-availability) | 2
 `replicaCount.backend` | Number of backend pods in your Deployment. [Learn more.](#high-availability) | 2
 `replicaCount.backendUtilities` | Number of backend-utilities pods in your Deployment. | 1
+`replicaCount.mcpServer` | Number of MCP Server pods. Set to `0` to disable MCP (no pod, Service, or MCP ingress). | 1
 `loggerConfiguration` | Logger configuration. [Learn more.](./doc/logging-configuration.md) | [Default logger configuration as defined here](./values.yaml)
 `extra.volumes.backend` | Allows specifying a list of valid [Volumes](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.26/#volume-v1-core). These will be added to the PodSpec of the backend Deployment. |
 `extra.volumeMounts.backend` | Add custom volume mounts to the NeoLoad Web backend Container.  | 
