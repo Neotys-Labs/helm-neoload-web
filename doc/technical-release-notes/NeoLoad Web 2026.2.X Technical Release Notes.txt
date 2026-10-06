@@ -25,4 +25,11 @@ LOAD-38254 - Resolved an issue where the Inter font didn?t load in restricted-ne
 
 NeoLoad Web 2026.2.1 Technical Release Notes
 
-TODO: add release notes content (ask Alain Origlia).
+Resolved issues
+
+LOAD-38849 - Resolved an issue where NeoLoad Web truncated some button labels in the custom scenario settings in the French interface.
+LOAD-38462 - Resolved an issue where NeoLoad Web displayed years instead of times on the graph time axis during a test run when you enabled Absolute time.
+
+Security
+
+Updated third-party dependencies to fix known vulnerabilities (CVEs), including Apache CXF 4.2.2 and Netty 4.1.137.Final.
