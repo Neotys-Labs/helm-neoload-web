@@ -22,3 +22,7 @@ LOAD-37429 - Resolved an issue where exporting a comparison dashboard to PDF fai
 LOAD-37500 - Resolved an issue where negative and positive values didn?t appear in the exported PDF dashboard.
 LOAD-35195 - Resolved an issue where the backend behaved abnormally when the licensing platform proxy setting was flooded.
 LOAD-38254 - Resolved an issue where the Inter font didn?t load in restricted-network environments.
+
+NeoLoad Web 2026.2.1 Technical Release Notes
+
+TODO: add release notes content (ask Alain Origlia).
