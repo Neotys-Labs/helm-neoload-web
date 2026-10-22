@@ -89,7 +89,7 @@ Parameter | Description | Default
 `neoload.configuration.backend.livenessProbe.initDelaySeconds` | Backend Pods liveness probe initial delay in seconds | 60
 `neoload.configuration.backend.readinessProbe.initDelaySeconds` | Backend Pods readiness probe initial delay in seconds | 60
 `neoload.configuration.backend.useFqdn` | Set to `false` to use short service names instead of FQDNs to avoid upstream DNS resolution issues in restricted environments | `true`
-`neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) |
+`neoload.configuration.backend.others` | Custom backend environment variables. [Learn more.](#custom-environment-variables) | The Git protection variables, see [Outbound Git connections](#outbound-git-connections)
 `neoload.configuration.backend.cors.additionalAllowedOriginPattern` | Additional CORS origin regex appended to base `scheme + ".*" + domain`. Example: `https://.*.okta.com` | 
 `neoload.configuration.backend.enableServiceLinks` | When set, sets the pod spec `enableServiceLinks` (e.g. `false` to avoid too many service env vars). See [Troubleshooting](../README.md#frontend-does-not-start--envsubst-argument-list-too-long). |
 | | 
@@ -213,6 +213,27 @@ neoload:
         ENV_VAR_1: variable1 
         ENV_VAR_2: variable2
 
+```
+
+### Outbound Git connections
+
+The chart sets four backend variables by default to restrict where NeoLoad Web can open Git connections. Your `others` values are merged with them: set a variable to change it, or set it to `null` to disable its check.
+
+Variable | Description | Default
+--- | --- | ---
+`GIT_BLOCKED_IP_RANGES` | Comma separated CIDR ranges that Git connections may not reach, including after a redirect | `0.0.0.0/8,127.0.0.0/8,169.254.0.0/16,::/128,::1/128,fe80::/10,fd00:ec2::/64` (loopback, link-local and cloud metadata)
+`GIT_NAMESPACE_DENIED_PORTS` | Comma separated ports refused in Git namespace URLs | `0,22,25,465,587,3306,5432,6379,9200,11211,27017`
+`GIT_NAMESPACE_MAX_URL_LENGTH` | Maximum length of a Git namespace URL | `1000`
+`GIT_CONNECTIVITY_CHECK_MAX_CONCURRENT` | Maximum number of Git repository connectivity checks running at once; further checks are answered with HTTP 429 | `20`
+
+An invalid value stops the backend at startup. A variable removed with `null` disables its check, and the backend logs a warning at startup. For example, to also refuse a private network that hosts internal services:
+
+```yaml
+neoload:
+  configuration:
+    backend:
+      others:
+        GIT_BLOCKED_IP_RANGES: "0.0.0.0/8,127.0.0.0/8,169.254.0.0/16,::/128,::1/128,fe80::/10,fd00:ec2::/64,10.20.0.0/16"
 ```
 
 ## Logger configuration
