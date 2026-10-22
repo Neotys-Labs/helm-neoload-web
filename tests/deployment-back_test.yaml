@@ -333,8 +333,8 @@ tests:
       - contains:
           path: spec.template.spec.containers[0].env
           content:
-            name: GIT_NAMESPACE_MAX_PORT
-            value: "65535"
+            name: GIT_CONNECTIVITY_CHECK_MAX_CONCURRENT
+            value: "20"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
