@@ -309,6 +309,67 @@ tests:
             value: "true"
           any: true
 
+  - it: should protect outbound Git connections by default
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: GIT_BLOCKED_IP_RANGES
+            value: "0.0.0.0/8,127.0.0.0/8,169.254.0.0/16,::/128,::1/128,fe80::/10,fd00:ec2::/64"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: GIT_NAMESPACE_DENIED_PORTS
+            value: "0,22,25,465,587,3306,5432,6379,9200,11211,27017"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: GIT_NAMESPACE_MAX_PORT
+            value: "65535"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: GIT_NAMESPACE_MAX_URL_LENGTH
+            value: "1000"
+
+  - it: should keep the Git protection defaults when users set other backend variables
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
+      neoload.configuration.backend.others.ENV_VAR_1: variable1
+      neoload.configuration.backend.others.GIT_NAMESPACE_MAX_URL_LENGTH: "2000"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: ENV_VAR_1
+            value: variable1
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: GIT_NAMESPACE_MAX_URL_LENGTH
+            value: "2000"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: GIT_BLOCKED_IP_RANGES
+            value: "0.0.0.0/8,127.0.0.0/8,169.254.0.0/16,::/128,::1/128,fe80::/10,fd00:ec2::/64"
+
   - it: should generate short service names when useFqdn is false
     release:
       namespace: default
