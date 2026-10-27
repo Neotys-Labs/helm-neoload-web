@@ -40,7 +40,7 @@ tests:
     asserts:
       - lengthEqual:
           path: spec.template.spec.containers[0].env
-          count: 34
+          count: 33
       - contains:
           path: spec.template.spec.containers[0].env
           content:
