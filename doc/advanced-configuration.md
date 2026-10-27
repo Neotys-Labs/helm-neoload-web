@@ -224,7 +224,6 @@ Variable | Description | Default
 `GIT_BLOCKED_IP_RANGES` | Comma separated CIDR ranges that Git connections may not reach, including after a redirect | `0.0.0.0/8,127.0.0.0/8,169.254.0.0/16,::/128,::1/128,fe80::/10,fd00:ec2::/64` (loopback, link-local and cloud metadata)
 `GIT_NAMESPACE_DENIED_PORTS` | Comma separated ports refused in Git namespace URLs | `0,22,25,465,587,3306,5432,6379,9200,11211,27017`
 `GIT_NAMESPACE_MAX_URL_LENGTH` | Maximum length of a Git namespace URL | `1000`
-`GIT_CONNECTIVITY_CHECK_MAX_CONCURRENT` | Maximum number of Git repository connectivity checks running at once; further checks are answered with HTTP 429 | `20`
 
 An invalid value stops the backend at startup. A variable removed with `null` disables its check, and the backend logs a warning at startup. For example, to also refuse a private network that hosts internal services:
 

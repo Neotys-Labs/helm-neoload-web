@@ -145,7 +145,6 @@ neoload:
         GIT_BLOCKED_IP_RANGES: "0.0.0.0/8,127.0.0.0/8,169.254.0.0/16,::/128,::1/128,fe80::/10,fd00:ec2::/64"
         GIT_NAMESPACE_DENIED_PORTS: "0,22,25,465,587,3306,5432,6379,9200,11211,27017"
         GIT_NAMESPACE_MAX_URL_LENGTH: "1000"
-        GIT_CONNECTIVITY_CHECK_MAX_CONCURRENT: "20"
       ## Licensing token that will be stored in chart-managed Secret
       licensingPlatformToken:
       ## Use pre-existing Secret (must have "licensingPlatformToken" key). This takes precedence over "licensingPlatformToken".
