@@ -217,7 +217,7 @@ neoload:
 
 ### Outbound Git connections
 
-The chart sets four backend variables by default to restrict where NeoLoad Web can open Git connections. Your `others` values are merged with them: set a variable to change it, or set it to `null` to disable its check.
+The chart sets three backend variables by default to restrict where NeoLoad Web can open Git connections. Your `others` values are merged with them: set a variable to change it, or set it to an empty string (`""`) to disable its check.
 
 Variable | Description | Default
 --- | --- | ---
@@ -225,7 +225,7 @@ Variable | Description | Default
 `GIT_NAMESPACE_DENIED_PORTS` | Comma separated ports refused in Git namespace URLs | `0,22,25,465,587,3306,5432,6379,9200,11211,27017`
 `GIT_NAMESPACE_MAX_URL_LENGTH` | Maximum length of a Git namespace URL | `1000`
 
-An invalid value stops the backend at startup. A variable removed with `null` disables its check, and the backend logs a warning at startup. For example, to also refuse a private network that hosts internal services:
+An invalid value stops the backend at startup. A variable set to an empty string disables its check, and the backend logs a warning at startup. For example, to also refuse a private network that hosts internal services:
 
 ```yaml
 neoload:

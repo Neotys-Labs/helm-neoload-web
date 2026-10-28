@@ -140,7 +140,7 @@ neoload:
           maxUploadSizeInBytes: "250000000"
           maxUploadPerWeek: "250"
       ## Custom backend environment variables, merged with the ones set in your values file.
-      ## The GIT_* ones protect outbound Git connections: change a value to adapt it, or set it to null to disable its check.
+      ## The GIT_* ones protect outbound Git connections: change a value to adapt it, or set it to an empty string ("") to disable its check.
       others:
         GIT_BLOCKED_IP_RANGES: "0.0.0.0/8,127.0.0.0/8,169.254.0.0/16,::/128,::1/128,fe80::/10,fd00:ec2::/64"
         GIT_NAMESPACE_DENIED_PORTS: "0,22,25,465,587,3306,5432,6379,9200,11211,27017"
