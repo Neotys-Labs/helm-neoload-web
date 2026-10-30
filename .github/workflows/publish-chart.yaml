@@ -1,0 +1,184 @@
+name: Publish chart to ChartMuseum
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: >-
+          development publishes the next {version}-dev.N to the development repository.
+          incubator publishes the next {version}-rc.N to development and incubator.
+          stable publishes the Chart.yaml version unchanged to development, incubator, and stable.
+        type: choice
+        required: true
+        default: development
+        options:
+          - development
+          - incubator
+          - stable
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-chart-${{ github.workflow }}-${{ inputs.channel }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish chart
+    runs-on: ubuntu-stepsecurity-x64
+    env:
+      CHANNEL: ${{ inputs.channel }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Set up Helm
+        uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2  # v5
+        with:
+          version: v3.18.4
+
+      - name: Add ChartMuseum repositories
+        shell: bash
+        run: |
+          set -euo pipefail
+          helm repo add neotys-dev https://helm.prod.neotys.com/development/
+          helm repo add neotys-inc https://helm.prod.neotys.com/incubator/
+          helm repo update
+
+      - name: Lint chart
+        run: helm lint . -f values-custom.yaml
+
+      - name: Resolve target chart version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          chart_name=$(awk -F': ' '/^name:/{print $2; exit}' Chart.yaml)
+          base_version=$(awk -F': ' '/^version:/{print $2; exit}' Chart.yaml)
+
+          case "${CHANNEL}" in
+            stable)
+              target_version="${base_version}"
+              ;;
+            incubator|development)
+              if [ "${CHANNEL}" = "incubator" ]; then
+                repo_alias=neotys-inc
+                suffix=rc
+                upper_suffix=s
+              else
+                repo_alias=neotys-dev
+                suffix=dev
+                upper_suffix=e
+              fi
+              prefix="${base_version}-${suffix}."
+              constraint=">=${base_version}-${suffix}.0 <${base_version}-${upper_suffix}"
+
+              latest_chart_yaml=$(helm show chart "${repo_alias}/${chart_name}" --devel --version "${constraint}" 2>/dev/null || true)
+              if [ -n "${latest_chart_yaml}" ]; then
+                latest_version=$(printf '%s\n' "${latest_chart_yaml}" | awk -F': ' '/^version:/{print $2; exit}')
+                increment=${latest_version#"${prefix}"}
+                target_version="${prefix}$((increment + 1))"
+              else
+                target_version="${prefix}0"
+              fi
+              ;;
+            *)
+              echo "::error::Unsupported channel: ${CHANNEL}"
+              exit 1
+              ;;
+          esac
+
+          echo "Target version: ${target_version}"
+          {
+            echo "chart-name=${chart_name}"
+            echo "target-version=${target_version}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Package chart
+        run: helm package . --version "${{ steps.version.outputs.target-version }}"
+
+      - name: Publish chart to ChartMuseum
+        id: publish
+        env:
+          CHARTMUSEUM_USERNAME: ${{ secrets.CHARTMUSEUM_USERNAME }}
+          CHARTMUSEUM_PASSWORD: ${{ secrets.CHARTMUSEUM_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "${CHARTMUSEUM_USERNAME}" ] || [ -z "${CHARTMUSEUM_PASSWORD}" ]; then
+            echo "::error::CHARTMUSEUM_USERNAME and/or CHARTMUSEUM_PASSWORD secrets are not configured"
+            exit 1
+          fi
+
+          chart_file=$(find . -maxdepth 1 -name '*.tgz' -print -quit)
+          if [ -z "${chart_file}" ]; then
+            echo "::error::No packaged chart (.tgz) found"
+            exit 1
+          fi
+
+          case "${CHANNEL}" in
+            development)
+              targets="https://helm.prod.neotys.com/development/"
+              ;;
+            incubator)
+              targets="https://helm.prod.neotys.com/development/ https://helm.prod.neotys.com/incubator/"
+              ;;
+            stable)
+              targets="https://helm.prod.neotys.com/development/ https://helm.prod.neotys.com/incubator/ https://helm.prod.neotys.com/stable/"
+              ;;
+            *)
+              echo "::error::Unsupported channel: ${CHANNEL}"
+              exit 1
+              ;;
+          esac
+
+          summary_file=$(mktemp)
+          for endpoint in ${targets}; do
+            echo "Publishing ${chart_file} to ${endpoint}"
+            response=$(curl --data-binary "@${chart_file}" "${endpoint}api/charts" -is --basic -u "${CHARTMUSEUM_USERNAME}:${CHARTMUSEUM_PASSWORD}")
+            {
+              echo "${endpoint}"
+              echo "${response}"
+              echo
+            } >> "${summary_file}"
+          done
+
+          {
+            echo 'summary<<CHARTMUSEUM_SUMMARY_EOF'
+            cat "${summary_file}"
+            echo 'CHARTMUSEUM_SUMMARY_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Notify Slack
+        if: always() && steps.publish.outcome == 'success'
+        env:
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN_NEOLOAD_HELM }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SLACK_TOKEN}" ]; then
+            echo "::warning::SLACK_TOKEN_NEOLOAD_HELM secret is not configured, skipping Slack notification"
+            exit 0
+          fi
+
+          text=$(printf 'Published `%s` version `%s` from `%s@%s`:\n```\n%s\n```' \
+            "${{ steps.version.outputs.chart-name }}" \
+            "${{ steps.version.outputs.target-version }}" \
+            "${{ github.repository }}" \
+            "${{ github.ref_name }}" \
+            "${{ steps.publish.outputs.summary }}")
+
+          payload=$(jq -n --arg text "${text}" --arg channel "#neoload-helm" '{channel: $channel, text: $text}')
+          response=$(curl -sS -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer ${SLACK_TOKEN}" \
+            -H "Content-type: application/json; charset=utf-8" \
+            --data "${payload}")
+          ok=$(printf '%s' "${response}" | jq -r '.ok')
+          if [ "${ok}" != "true" ]; then
+            err=$(printf '%s' "${response}" | jq -r '.error // "unknown"')
+            echo "::error::Slack notification failed: ${err}"
+            exit 1
+          fi
