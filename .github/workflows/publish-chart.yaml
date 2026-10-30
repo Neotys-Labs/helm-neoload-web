@@ -134,51 +134,38 @@ jobs:
               ;;
           esac
 
-          summary_file=$(mktemp)
           for endpoint in ${targets}; do
             echo "Publishing ${chart_file} to ${endpoint}"
-            response=$(curl --data-binary "@${chart_file}" "${endpoint}api/charts" -is --basic -u "${CHARTMUSEUM_USERNAME}:${CHARTMUSEUM_PASSWORD}")
-            {
-              echo "${endpoint}"
-              echo "${response}"
-              echo
-            } >> "${summary_file}"
+            curl --fail-with-body --data-binary "@${chart_file}" "${endpoint}api/charts" -is --basic -u "${CHARTMUSEUM_USERNAME}:${CHARTMUSEUM_PASSWORD}"
           done
 
-          {
-            echo 'summary<<CHARTMUSEUM_SUMMARY_EOF'
-            cat "${summary_file}"
-            echo 'CHARTMUSEUM_SUMMARY_EOF'
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Notify Slack
-        if: always() && steps.publish.outcome == 'success'
-        env:
-          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN_NEOLOAD_HELM }}
+      - name: Write job summary
+        if: steps.publish.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
-
-          if [ -z "${SLACK_TOKEN}" ]; then
-            echo "::warning::SLACK_TOKEN_NEOLOAD_HELM secret is not configured, skipping Slack notification"
-            exit 0
-          fi
-
-          text=$(printf 'Published `%s` version `%s` from `%s@%s`:\n```\n%s\n```' \
-            "${{ steps.version.outputs.chart-name }}" \
-            "${{ steps.version.outputs.target-version }}" \
-            "${{ github.repository }}" \
-            "${{ github.ref_name }}" \
-            "${{ steps.publish.outputs.summary }}")
-
-          payload=$(jq -n --arg text "${text}" --arg channel "#neoload-helm" '{channel: $channel, text: $text}')
-          response=$(curl -sS -X POST https://slack.com/api/chat.postMessage \
-            -H "Authorization: Bearer ${SLACK_TOKEN}" \
-            -H "Content-type: application/json; charset=utf-8" \
-            --data "${payload}")
-          ok=$(printf '%s' "${response}" | jq -r '.ok')
-          if [ "${ok}" != "true" ]; then
-            err=$(printf '%s' "${response}" | jq -r '.error // "unknown"')
-            echo "::error::Slack notification failed: ${err}"
-            exit 1
-          fi
+          case "${CHANNEL}" in
+            development)
+              repositories="development"
+              ;;
+            incubator)
+              repositories="development, incubator"
+              ;;
+            stable)
+              repositories="development, incubator, stable"
+              ;;
+            *)
+              echo "::error::Unsupported channel: ${CHANNEL}"
+              exit 1
+              ;;
+          esac
+          {
+            echo "### Chart published"
+            echo ""
+            echo "| | |"
+            echo "| --- | --- |"
+            echo "| Chart | ${{ steps.version.outputs.chart-name }} |"
+            echo "| Version | ${{ steps.version.outputs.target-version }} |"
+            echo "| Channel | ${CHANNEL} |"
+            echo "| Repositories | ${repositories} |"
+          } >> "$GITHUB_STEP_SUMMARY"
