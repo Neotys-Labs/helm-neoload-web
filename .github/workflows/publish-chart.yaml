@@ -20,7 +20,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: publish-chart-${{ github.workflow }}
+  group: publish-chart-${{ github.workflow }}-${{ inputs.channel }}
   cancel-in-progress: false
 
 jobs:
