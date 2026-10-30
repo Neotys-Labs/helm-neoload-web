@@ -154,13 +154,13 @@ jobs:
       - name: Notify Slack
         if: always() && steps.publish.outcome == 'success'
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_NEOLOAD_HELM }}
+          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN_NEOLOAD_HELM }}
         shell: bash
         run: |
           set -euo pipefail
 
-          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
-            echo "::warning::SLACK_WEBHOOK_URL_NEOLOAD_HELM secret is not configured, skipping Slack notification"
+          if [ -z "${SLACK_TOKEN}" ]; then
+            echo "::warning::SLACK_TOKEN_NEOLOAD_HELM secret is not configured, skipping Slack notification"
             exit 0
           fi
 
@@ -171,5 +171,14 @@ jobs:
             "${{ github.ref_name }}" \
             "${{ steps.publish.outputs.summary }}")
 
-          payload=$(jq -n --arg text "${text}" '{text: $text}')
-          curl -sf -X POST -H 'Content-type: application/json' --data "${payload}" "${SLACK_WEBHOOK_URL}"
+          payload=$(jq -n --arg text "${text}" --arg channel "#neoload-helm" '{channel: $channel, text: $text}')
+          response=$(curl -sS -X POST https://slack.com/api/chat.postMessage \
+            -H "Authorization: Bearer ${SLACK_TOKEN}" \
+            -H "Content-type: application/json; charset=utf-8" \
+            --data "${payload}")
+          ok=$(printf '%s' "${response}" | jq -r '.ok')
+          if [ "${ok}" != "true" ]; then
+            err=$(printf '%s' "${response}" | jq -r '.error // "unknown"')
+            echo "::error::Slack notification failed: ${err}"
+            exit 1
+          fi
