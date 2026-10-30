@@ -1,0 +1,159 @@
+name: Publish chart to ChartMuseum
+
+on:
+  workflow_dispatch:
+    inputs:
+      is-incubator:
+        description: Also publish an incubator (-rc.N) release, in addition to development
+        type: boolean
+        default: false
+      is-stable:
+        description: Publish the current Chart.yaml version unchanged to development, incubator, and stable
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-chart-${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish chart
+    runs-on: ubuntu-stepsecurity-x64
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@ccd8616d44fd3846e67624a50d5aad6d37bf2d25  # v2.22.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Set up Helm
+        uses: azure/setup-helm@dda3372f752e03dde6b3237bc9431cdc2f7a02a2  # v5
+        with:
+          version: v3.18.4
+
+      - name: Add ChartMuseum repositories
+        shell: bash
+        run: |
+          set -euo pipefail
+          helm repo add neotys-dev https://helm.prod.neotys.com/development/
+          helm repo add neotys-inc https://helm.prod.neotys.com/incubator/
+          helm repo update
+
+      - name: Lint chart
+        run: helm lint . -f values-custom.yaml
+
+      - name: Resolve target chart version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          chart_name=$(awk -F': ' '/^name:/{print $2; exit}' Chart.yaml)
+          base_version=$(awk -F': ' '/^version:/{print $2; exit}' Chart.yaml)
+
+          if [ "${{ inputs.is-stable }}" = "true" ]; then
+            target_version="${base_version}"
+          else
+            if [ "${{ inputs.is-incubator }}" = "true" ]; then
+              repo_alias=neotys-inc
+              suffix=rc
+              upper_suffix=s
+            else
+              repo_alias=neotys-dev
+              suffix=dev
+              upper_suffix=e
+            fi
+            prefix="${base_version}-${suffix}."
+            constraint=">=${base_version}-${suffix}.0 <${base_version}-${upper_suffix}"
+
+            latest_chart_yaml=$(helm show chart "${repo_alias}/${chart_name}" --devel --version "${constraint}" 2>/dev/null || true)
+            if [ -n "${latest_chart_yaml}" ]; then
+              latest_version=$(printf '%s\n' "${latest_chart_yaml}" | awk -F': ' '/^version:/{print $2; exit}')
+              increment=${latest_version#"${prefix}"}
+              target_version="${prefix}$((increment + 1))"
+            else
+              target_version="${prefix}0"
+            fi
+          fi
+
+          echo "Target version: ${target_version}"
+          {
+            echo "chart-name=${chart_name}"
+            echo "target-version=${target_version}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Package chart
+        run: helm package . --version "${{ steps.version.outputs.target-version }}"
+
+      - name: Publish chart to ChartMuseum
+        id: publish
+        env:
+          CHARTMUSEUM_USERNAME: ${{ secrets.CHARTMUSEUM_USERNAME }}
+          CHARTMUSEUM_PASSWORD: ${{ secrets.CHARTMUSEUM_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "${CHARTMUSEUM_USERNAME}" ] || [ -z "${CHARTMUSEUM_PASSWORD}" ]; then
+            echo "::error::CHARTMUSEUM_USERNAME and/or CHARTMUSEUM_PASSWORD secrets are not configured"
+            exit 1
+          fi
+
+          chart_file=$(find . -maxdepth 1 -name '*.tgz' -print -quit)
+          if [ -z "${chart_file}" ]; then
+            echo "::error::No packaged chart (.tgz) found"
+            exit 1
+          fi
+
+          targets="https://helm.prod.neotys.com/development/"
+          if [ "${{ inputs.is-incubator }}" = "true" ] || [ "${{ inputs.is-stable }}" = "true" ]; then
+            targets="${targets} https://helm.prod.neotys.com/incubator/"
+          fi
+          if [ "${{ inputs.is-stable }}" = "true" ]; then
+            targets="${targets} https://helm.prod.neotys.com/stable/"
+          fi
+
+          summary_file=$(mktemp)
+          for endpoint in ${targets}; do
+            echo "Publishing ${chart_file} to ${endpoint}"
+            response=$(curl --data-binary "@${chart_file}" "${endpoint}api/charts" -is --basic -u "${CHARTMUSEUM_USERNAME}:${CHARTMUSEUM_PASSWORD}")
+            {
+              echo "${endpoint}"
+              echo "${response}"
+              echo
+            } >> "${summary_file}"
+          done
+
+          {
+            echo 'summary<<CHARTMUSEUM_SUMMARY_EOF'
+            cat "${summary_file}"
+            echo 'CHARTMUSEUM_SUMMARY_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Notify Slack
+        if: always() && steps.publish.outcome == 'success'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL_NEOLOAD_HELM }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SLACK_WEBHOOK_URL}" ]; then
+            echo "::warning::SLACK_WEBHOOK_URL_NEOLOAD_HELM secret is not configured, skipping Slack notification"
+            exit 0
+          fi
+
+          text=$(printf 'Published `%s` version `%s` from `%s@%s`:\n```\n%s\n```' \
+            "${{ steps.version.outputs.chart-name }}" \
+            "${{ steps.version.outputs.target-version }}" \
+            "${{ github.repository }}" \
+            "${{ github.ref_name }}" \
+            "${{ steps.publish.outputs.summary }}")
+
+          payload=$(jq -n --arg text "${text}" '{text: $text}')
+          curl -sf -X POST -H 'Content-type: application/json' --data "${payload}" "${SLACK_WEBHOOK_URL}"
