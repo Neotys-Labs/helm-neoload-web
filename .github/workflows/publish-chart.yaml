@@ -134,64 +134,38 @@ jobs:
               ;;
           esac
 
-          summary_file=$(mktemp)
           for endpoint in ${targets}; do
             echo "Publishing ${chart_file} to ${endpoint}"
-            response=$(curl --data-binary "@${chart_file}" "${endpoint}api/charts" -is --basic -u "${CHARTMUSEUM_USERNAME}:${CHARTMUSEUM_PASSWORD}")
-            {
-              echo "${endpoint}"
-              echo "${response}"
-              echo
-            } >> "${summary_file}"
+            curl --fail-with-body --data-binary "@${chart_file}" "${endpoint}api/charts" -is --basic -u "${CHARTMUSEUM_USERNAME}:${CHARTMUSEUM_PASSWORD}"
           done
 
-          {
-            echo 'summary<<CHARTMUSEUM_SUMMARY_EOF'
-            cat "${summary_file}"
-            echo 'CHARTMUSEUM_SUMMARY_EOF'
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Notify Slack
-        if: always() && steps.publish.outcome == 'success'
-        env:
-          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN_NEOLOAD_HELM }}
+      - name: Write job summary
+        if: steps.publish.outcome == 'success'
         shell: bash
         run: |
           set -euo pipefail
-
-          if [ -z "${SLACK_TOKEN}" ]; then
-            echo "::warning::SLACK_TOKEN_NEOLOAD_HELM secret is not configured, skipping Slack notification"
-            exit 0
-          fi
-
-          text=$(printf 'Published `%s` version `%s` from `%s@%s`:\n```\n%s\n```' \
-            "${{ steps.version.outputs.chart-name }}" \
-            "${{ steps.version.outputs.target-version }}" \
-            "${{ github.repository }}" \
-            "${{ github.ref_name }}" \
-            "${{ steps.publish.outputs.summary }}")
-
-          payload=$(jq -n --arg text "${text}" --arg channel "#neoload-helm" '{
-            channel: $channel,
-            link_names: "1",
-            unfurl_links: "true",
-            unfurl_media: "true",
-            attachments: [{
-              fallback: $text,
-              color: "good",
-              mrkdwn_in: ["pretext", "text", "fields"],
-              fields: [{short: false, value: $text}]
-            }]
-          }')
-          response_file=$(mktemp)
-          http_code=$(curl -sS -o "${response_file}" -w "%{http_code}" \
-            -X POST \
-            -H "Content-type: application/json; charset=utf-8" \
-            --data "${payload}" \
-            --url-query "token=${SLACK_TOKEN}" \
-            "https://Tricentis.slack.com/services/hooks/jenkins-ci")
-          if [ "${http_code}" != "200" ]; then
-            echo "::error::Slack notification failed with HTTP ${http_code}"
-            RESPONSE_FILE="${response_file}" python3 -c 'import os, pathlib; token = os.environ["SLACK_TOKEN"]; body = pathlib.Path(os.environ["RESPONSE_FILE"]).read_text(); print(body.replace(token, "***"))'
-            exit 1
-          fi
+          case "${CHANNEL}" in
+            development)
+              repositories="development"
+              ;;
+            incubator)
+              repositories="development, incubator"
+              ;;
+            stable)
+              repositories="development, incubator, stable"
+              ;;
+            *)
+              echo "::error::Unsupported channel: ${CHANNEL}"
+              exit 1
+              ;;
+          esac
+          {
+            echo "### Chart published"
+            echo ""
+            echo "| | |"
+            echo "| --- | --- |"
+            echo "| Chart | ${{ steps.version.outputs.chart-name }} |"
+            echo "| Version | ${{ steps.version.outputs.target-version }} |"
+            echo "| Channel | ${CHANNEL} |"
+            echo "| Repositories | ${repositories} |"
+          } >> "$GITHUB_STEP_SUMMARY"
