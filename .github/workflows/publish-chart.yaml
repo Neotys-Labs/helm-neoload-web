@@ -3,14 +3,18 @@ name: Publish chart to ChartMuseum
 on:
   workflow_dispatch:
     inputs:
-      is-incubator:
-        description: Also publish an incubator (-rc.N) release, in addition to development
-        type: boolean
-        default: false
-      is-stable:
-        description: Publish the current Chart.yaml version unchanged to development, incubator, and stable
-        type: boolean
-        default: false
+      channel:
+        description: >-
+          development publishes the next {version}-dev.N to the development repository.
+          incubator publishes the next {version}-rc.N to development and incubator.
+          stable publishes the Chart.yaml version unchanged to development, incubator, and stable.
+        type: choice
+        required: true
+        default: development
+        options:
+          - development
+          - incubator
+          - stable
 
 permissions:
   contents: read
@@ -23,6 +27,8 @@ jobs:
   publish:
     name: Publish chart
     runs-on: ubuntu-stepsecurity-x64
+    env:
+      CHANNEL: ${{ inputs.channel }}
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -51,30 +57,37 @@ jobs:
           chart_name=$(awk -F': ' '/^name:/{print $2; exit}' Chart.yaml)
           base_version=$(awk -F': ' '/^version:/{print $2; exit}' Chart.yaml)
 
-          if [ "${{ inputs.is-stable }}" = "true" ]; then
-            target_version="${base_version}"
-          else
-            if [ "${{ inputs.is-incubator }}" = "true" ]; then
-              repo_alias=neotys-inc
-              suffix=rc
-              upper_suffix=s
-            else
-              repo_alias=neotys-dev
-              suffix=dev
-              upper_suffix=e
-            fi
-            prefix="${base_version}-${suffix}."
-            constraint=">=${base_version}-${suffix}.0 <${base_version}-${upper_suffix}"
+          case "${CHANNEL}" in
+            stable)
+              target_version="${base_version}"
+              ;;
+            incubator|development)
+              if [ "${CHANNEL}" = "incubator" ]; then
+                repo_alias=neotys-inc
+                suffix=rc
+                upper_suffix=s
+              else
+                repo_alias=neotys-dev
+                suffix=dev
+                upper_suffix=e
+              fi
+              prefix="${base_version}-${suffix}."
+              constraint=">=${base_version}-${suffix}.0 <${base_version}-${upper_suffix}"
 
-            latest_chart_yaml=$(helm show chart "${repo_alias}/${chart_name}" --devel --version "${constraint}" 2>/dev/null || true)
-            if [ -n "${latest_chart_yaml}" ]; then
-              latest_version=$(printf '%s\n' "${latest_chart_yaml}" | awk -F': ' '/^version:/{print $2; exit}')
-              increment=${latest_version#"${prefix}"}
-              target_version="${prefix}$((increment + 1))"
-            else
-              target_version="${prefix}0"
-            fi
-          fi
+              latest_chart_yaml=$(helm show chart "${repo_alias}/${chart_name}" --devel --version "${constraint}" 2>/dev/null || true)
+              if [ -n "${latest_chart_yaml}" ]; then
+                latest_version=$(printf '%s\n' "${latest_chart_yaml}" | awk -F': ' '/^version:/{print $2; exit}')
+                increment=${latest_version#"${prefix}"}
+                target_version="${prefix}$((increment + 1))"
+              else
+                target_version="${prefix}0"
+              fi
+              ;;
+            *)
+              echo "::error::Unsupported channel: ${CHANNEL}"
+              exit 1
+              ;;
+          esac
 
           echo "Target version: ${target_version}"
           {
@@ -105,13 +118,21 @@ jobs:
             exit 1
           fi
 
-          targets="https://helm.prod.neotys.com/development/"
-          if [ "${{ inputs.is-incubator }}" = "true" ] || [ "${{ inputs.is-stable }}" = "true" ]; then
-            targets="${targets} https://helm.prod.neotys.com/incubator/"
-          fi
-          if [ "${{ inputs.is-stable }}" = "true" ]; then
-            targets="${targets} https://helm.prod.neotys.com/stable/"
-          fi
+          case "${CHANNEL}" in
+            development)
+              targets="https://helm.prod.neotys.com/development/"
+              ;;
+            incubator)
+              targets="https://helm.prod.neotys.com/development/ https://helm.prod.neotys.com/incubator/"
+              ;;
+            stable)
+              targets="https://helm.prod.neotys.com/development/ https://helm.prod.neotys.com/incubator/ https://helm.prod.neotys.com/stable/"
+              ;;
+            *)
+              echo "::error::Unsupported channel: ${CHANNEL}"
+              exit 1
+              ;;
+          esac
 
           summary_file=$(mktemp)
           for endpoint in ${targets}; do
