@@ -5,6 +5,8 @@
 # Common VCS dirs
 .git/
 .gitignore
+# GitHub Actions workflows are not part of the chart
+.github/
 .bzr/
 .bzrignore
 .hg/
