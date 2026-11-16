@@ -1,0 +1,40 @@
+suite: test frontend URLs with TLS
+templates:
+  - deployment-front.yaml
+tests:
+  - it: should use https for public URLs when ingress TLS is enabled
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: true
+      ingress.tls[0].secretName: web-tls
+      neoload.configuration.backend.mongo.host: mymongo.example.com
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: API_URL
+            value: https://myapi.example.com
+          any: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: API_FILE_URL
+            value: https://myfiles.example.com
+          any: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: FRONT_PUBLIC_URL
+            value: https://myapp.example.com/public
+          any: true
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: API_URL_KUB
+            value: http://RELEASE-NAME-nlweb-svc-api-v4.default.svc.cluster.local
+          any: true
