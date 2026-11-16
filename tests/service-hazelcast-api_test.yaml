@@ -1,0 +1,33 @@
+suite: test hazelcast service in API mode
+templates:
+  - service-hazelcast.yaml
+tests:
+  - it: should expose port 6901 as a ClusterIP service
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: metadata.name
+          value: RELEASE-NAME-nlweb-svc-hazelcast-api
+      - equal:
+          path: spec.type
+          value: ClusterIP
+      - equal:
+          path: spec.ports[0].port
+          value: 6901
+      - equal:
+          path: spec.ports[0].name
+          value: http
+      - notExists:
+          path: spec.clusterIP
+      - notExists:
+          path: spec.publishNotReadyAddresses
