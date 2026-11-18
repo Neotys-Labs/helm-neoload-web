@@ -1,0 +1,30 @@
+suite: test webapp service selector
+templates:
+  - service.yaml
+tests:
+  - it: should select the frontend component
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
+    documentSelector:
+      path: metadata.name
+      value: RELEASE-NAME-nlweb-svc-webapp
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.ports[0].targetPort
+          value: webapp
+      - equal:
+          path: spec.selector
+          value:
+            app.kubernetes.io/name: nlweb
+            app.kubernetes.io/instance: RELEASE-NAME
+            app: RELEASE-NAME
+            app.kubernetes.io/component: frontend
