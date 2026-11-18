@@ -40,7 +40,7 @@ tests:
     asserts:
       - lengthEqual:
           path: spec.template.spec.containers[0].env
-          count: 33
+          count: 34
       - contains:
           path: spec.template.spec.containers[0].env
           content:
@@ -330,6 +330,11 @@ tests:
           content:
             name: GIT_NAMESPACE_DENIED_PORTS
             value: "0,22,25,465,587,3306,5432,6379,9200,11211,27017"
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: GIT_CONNECTIVITY_CHECK_MAX_CONCURRENT
+            value: "20"
       - contains:
           path: spec.template.spec.containers[0].env
           content:
