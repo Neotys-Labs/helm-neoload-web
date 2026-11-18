@@ -1,0 +1,19 @@
+suite: test cluster role in DNS mode
+templates:
+  - cluster-role.yaml
+tests:
+  - it: should not render a ClusterRole when HA mode is DNS
+    release:
+      namespace: default
+    set:
+      services.webapp.host: myapp.example.com
+      services.api.host: myapi.example.com
+      services.files.host: myfiles.example.com
+      domain: .example.com
+      ingress.enabled: false
+      neoload.configuration.backend.mongo.host: mymongo.example.com
+      neoload.configuration.ha.mode: DNS
+      clusterRbac.enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0
