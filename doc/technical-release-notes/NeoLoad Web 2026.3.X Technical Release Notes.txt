@@ -1,0 +1,12 @@
+NeoLoad Web 2026.3.0 Technical Release Notes
+
+Chart version 3.2.1. Public images use tag 2026.3.0 on neotys/neoload-web-backend, neotys/neoload-web-frontend, neotys/neoload-web-backend-utilities, and neotys/neoload-web-mcp.
+
+MCP Server
+The chart deploys the MCP Server by default as a fourth workload. It is routed at /mcp-server on the API host. Set replicaCount.mcpServer to 0 to remove the pod, Service, and Ingress. Upgrade details are in doc/upgrade-2026.2.x-to-2026.3.x.md.
+
+Hazelcast
+The cluster port is 6901. Chart 3.1.x used 6801.
+
+Security
+Outbound Git connections are restricted by default (LOAD-40743). The backend blocks loopback and link-local ranges, denies selected ports, and limits Git URL length. Set the matching GIT_* value to an empty string to disable that check.
